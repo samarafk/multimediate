@@ -1,3 +1,32 @@
+#' multimediate_survival
+#'
+#' The `multimediate_survival` function performs causal mediation analysis
+#' in the context of survival outcomes, allowing for multiple, potentially correlated mediators.
+#' It supports linear, generalized linear, ordinal logistic, and XXX models.
+#'
+#' @param lmodel.m A list of fitted mediator models (`lm`, `glm`, or `polr` objects).
+#' @param correlated a logical value. if 'FALSE' a identity matrix is used for the matrix of correlation of mediators; if 'TRUE' matrix of correlation is estimated. Default is 'FALSE'.
+#' @param model.y A fitted outcome model (`lm`, `glm`, `polr`, or `aalen` object).
+#' @param treat The name of the treatment variable (character).
+#' @param treat.value The value representing the treatment condition (default: 1).
+#' @param control.value The value representing the control condition (default: 0).
+#' @param J Number of Monte Carlo simulations for effect estimation (default: 1000).
+#' @param conf.level Confidence level for confidence intervals (default: 0.95).
+#' @param fun A summary function applied to the simulated effects (default: `mean`).
+#' @param data A data frame containing the variables used in the models.
+#' @param peryr Scaling factor for incidence rates per person-year (default: 100,000).
+#'
+#' @return A list containing estimated direct, indirect (mediated), and total effects,
+#' along with confidence intervals and p-values for each.
+#'
+#'
+#' @export
+
+
+
+
+
+
 multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.value=1,control.value=0,J=1000,conf.level=0.95, fun=mean, data, peryr=100000){
 
   N=dim(lmodel.m[[1]]$model)[1]
