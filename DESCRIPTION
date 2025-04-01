@@ -1,11 +1,20 @@
 Package: multimediate
 Title: Causal mediation analysis in presence of multiple mediators uncausally related
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: 
-    person(given = "Allan",
-           family = "Jerolon",
-           role = c("aut", "cre"),
-           email = "allan.jerolon@parisdescartes.fr")
+    c(person(given = "Allan",
+             family = "Jerolon",
+             role = c("aut")),
+      person(given = "Arce",
+             family = "Domingo-Relloso",
+             role = c("aut")),       
+      person(given = "Maria",
+             family = "Tellez-Plaza",
+             role = c("aut")),
+      person(given = "Samara",
+             family = "Kiihl",
+             role = "cre",
+             email = "samarak@unicamp.br"))       
 Description: Estimating various quantities for causal mediation analysis, including average causal mediation effects (indirect effect), average direct effects, proportions mediated, and total effect, in presence of multiple mediators uncausally related.
 License: GPL-3
 Encoding: UTF-8
