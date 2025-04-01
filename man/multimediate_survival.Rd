@@ -48,5 +48,5 @@ along with confidence intervals and p-values for each.
 \description{
 The `multimediate_survival` function performs causal mediation analysis
 in the context of survival outcomes, allowing for multiple, potentially correlated mediators.
-It supports linear, generalized linear, ordinal logistic, and XXX models.
+It supports linear, generalized linear, ordinal logistic and aalen models.
 }
