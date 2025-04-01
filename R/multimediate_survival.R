@@ -2,7 +2,7 @@
 #'
 #' The `multimediate_survival` function performs causal mediation analysis
 #' in the context of survival outcomes, allowing for multiple, potentially correlated mediators.
-#' It supports linear, generalized linear, ordinal logistic, and XXX models.
+#' It supports linear, generalized linear, ordinal logistic and aalen models.
 #'
 #' @param lmodel.m A list of fitted mediator models (`lm`, `glm`, or `polr` objects).
 #' @param correlated a logical value. if 'FALSE' a identity matrix is used for the matrix of correlation of mediators; if 'TRUE' matrix of correlation is estimated. Default is 'FALSE'.
@@ -391,28 +391,51 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
               ymat.t = as.data.frame(trans.t)
               ymat.c = as.data.frame(trans.c)
               position <- grep(' * ', row.names(coef(model.y)))
+              count <- 0
+              order <- unlist(strsplit(substr(row.names(coef(model.y)), 7, unlist(gregexpr(')', row.names(coef(model.y))))),')'))
               for(i in mediator){
-                if (grepl(i, row.names(coef(model.y))[position])){
+                count <- count + 1
+                if (grepl(i, row.names(coef(model.y))[position[count]])){
+                  med_int <- i
+                  order[position[count]] <- paste0('interaction_', count)
+                  ymat.t[,paste0('interaction_', count)] <- ymat.t[,treat]*ymat.t[,med_int]
+                  ymat.c[,paste0('interaction_', count)] <- ymat.c[,treat]*ymat.c[,med_int]
+                }
+              }
+              ymat.t <- as.matrix(ymat.t[,pmatch(order, colnames(ymat.t))])
+              ymat.c <- as.matrix(ymat.c[,pmatch(order, colnames(ymat.c))])
+            }
+          } else{
+            ymat.t=ymat.c=model.matrix(model.y)
+            trans.t <- model.matrix(terms(model.y), data = pred.data.t)
+            trans.c <- model.matrix(terms(model.y), data = pred.data.c)
+
+            ymat.t[,colnames(ymat.t) %in% colnames(trans.t)]=trans.t
+            ymat.t[,!(colnames(ymat.t) %in% colnames(trans.t))]=0
+            ymat.c[,colnames(ymat.c) %in% colnames(trans.c)]=trans.c
+            ymat.c[,!(colnames(ymat.c) %in% colnames(trans.c))]=0
+
+
+            # Check if exposure-mediator interactions
+            if(!inherits(model.y,"polr") & length(grep(':', names(coef(model.y))))>0){
+              ymat.t <- as.data.frame(ymat.t)
+              ymat.c <- as.data.frame(ymat.c)
+              position <- grep(':', names(coef(model.y)))
+              for(i in mediator){
+                if (grepl(i, names(coef(model.y))[position])){
                   med_int <- i
                 }
               }
-              order <- unlist(strsplit(substr(row.names(coef(model.y)), 7, nchar(row.names(coef(model.y)))),')'))
+
+              order <- names(coef(model.y))
               order[position] <- 'interaction'
               ymat.t$interaction <- ymat.t$Exposant*ymat.t[,med_int]
               ymat.t <- as.matrix(ymat.t[,order])
               ymat.c$interaction <- ymat.c$Exposant*ymat.c[,med_int]
               ymat.c <- as.matrix(ymat.c[,order])
             }
-          } else{
-            ymat.t=ymat.c=model.matrix(model.y)
-            trans.t <- model.matrix(terms(model.y), data = pred.data.t)
-            trans.c <- model.matrix(terms(model.y), data = pred.data.c)
           }
 
-          ymat.t[,colnames(ymat.t) %in% colnames(trans.t)]=trans.t
-          ymat.t[,!(colnames(ymat.t) %in% colnames(trans.t))]=0
-          ymat.c[,colnames(ymat.c) %in% colnames(trans.c)]=trans.c
-          ymat.c[,!(colnames(ymat.c) %in% colnames(trans.c))]=0
 
 
           if(!inherits(model.y,"polr")){
