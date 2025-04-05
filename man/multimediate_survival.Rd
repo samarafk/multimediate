@@ -14,7 +14,7 @@ multimediate_survival(
   J = 1000,
   conf.level = 0.95,
   fun = mean,
-  data,
+  data = NULL,
   peryr = 1e+05
 )
 }
