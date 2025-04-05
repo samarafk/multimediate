@@ -21,484 +21,490 @@
 #'
 #'
 #' @export
-
-
-multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.value=1,control.value=0,J=1000,conf.level=0.95, fun=mean, data, peryr=100000){
-
-  # auxiliary functions
-  #################
-
-
-  # Get variable names of a regression model (suitable for Aalen additive hazards models)
-  getvarnames <- function(formula, data = NULL)
-  {
-    if (is.character(formula))
-      return(list(varnames=formula, xvar=formula, yvar=NULL))
-    if (is.null(formula)) return(list(varnames=NULL, xvar=NULL, yvar=NULL))
-
-    formula <- formula(formula)
-    lyv <- NULL
-    lxv <- lvnm <- all.vars(formula[1:2])
-    if (length(formula)==3) {
-      lyv <- lxv
-      lxv <- all.vars(formula[-2])
-      if ("." %in% lxv) {
-        if (length(data)==0)
-          stop("!getvarnames! '.' in formula and no 'data'")
-        lform <- formula(terms(formula, data=data))
-        lxv <- all.vars(lform[-2])
-      }
-      lvnm <- c(lxv, lvnm)
-    }
-    list(varnames=lvnm, xvar=lxv, yvar=lyv)
-  }
-
-
-
-  # Calculate covariance matrix of mediators (calls CorConds2)
-  CorCond=function(e,lmodel.m){
-    NM=length(lmodel.m)
-    k=1
-
-    out=list()
-    while(k < NM){
-      for(l in (k+1):NM){
-        a=paste("cor",names(lmodel.m[[k]]$model)[1],names(lmodel.m[[l]]$model)[1],sep=".")
-        #print(a)
-        out[[a]]=CorCond2(e,lmodel=list(lmodel.m[[k]],lmodel.m[[l]]))
-      }
-      k=k+1
-    }
-    Variance=rep(1,NM)
-    for (z in 1:NM){
-      if (inherits(lmodel.m[[z]],"lm") & !inherits(lmodel.m[[z]],"glm")){
-        Variance[z]=var(lmodel.m[[z]]$residuals)
-      }
-    }
-    sigmaestim=diag(Variance)
-    correstim=diag(1,NM)
-    i=1
-    l=1
-    vcor=c()
-    vcov=c()
-    while (i <NM){
-      j=i+1
-      for(k in j:NM){
-        sigmaestim[i,k]=sigmaestim[k,i]=weighted.mean(out[[l]]$Covariance.estim,out[[l]]$Proportion,na.rm = TRUE)
-        vcov=c(vcov,weighted.mean(out[[l]]$Covariance.estim,out[[l]]$Proportion,na.rm = TRUE))
-        correstim[i,k]=correstim[k,i]=weighted.mean(out[[l]]$Correlation.estim,out[[l]]$Proportion,na.rm = TRUE)
-        vcor=c(vcor,weighted.mean(out[[l]]$Correlation.estim,out[[l]]$Proportion,na.rm = TRUE))
-        l=l+1
-      }
-      i=i+1
-    }
-    out[["sigmaestim"]]=sigmaestim
-    out[["vcov"]]=vcov
-    out[["correstim"]]=correstim
-    out[["vcor"]]=vcor
-    return(out)
-  }
-
-
-
-  # Calculate covariance matrix of mediators
-  CorCond2=function(e,lmodel){
-
-    is.Lm.Mi=inherits(lmodel[[1]],"lm") & !inherits(lmodel[[1]],"glm")
-    is.Lm.Mj=inherits(lmodel[[2]],"lm") & !inherits(lmodel[[2]],"glm")
-
-
-    if(is.Lm.Mi & is.Lm.Mj){
-      Estim=data.frame(NA)
-      Estim$Proportion=1
-      Estim$Covariance.estim=cov(lmodel[[1]]$residuals,lmodel[[2]]$residuals)
-      Estim$Correlation.estim=cor(lmodel[[1]]$residuals,lmodel[[2]]$residuals)
-    }
-
-    else{
-      Mi=names(lmodel[[1]]$model)[1]
-      Mj=names(lmodel[[2]]$model)[1]
-      data=cbind(lmodel[[1]]$model,lmodel[[2]]$model)[,unique(c(names(lmodel[[1]]$model),names(lmodel[[2]]$model)))]
-      datav=data[,-c(which(names(data)==Mi),which(names(data)==Mj))]
-      value=unique(datav)
-
-      if(is.null(dim(value))){
-        value=data.frame(t(t(value)))
-        colnames(value)=names(lmodel[[1]]$model)[2]
-        datav=data.frame(t(t(datav)))
-        colnames(datav)=names(lmodel[[1]]$model)[2]
-      }
-      else{
-        for (y in 1:dim(value)[2]){
-
-          if (is.factor(value[,y])){
-            test=length(grep(pattern = "[a-z][1-9][a-z]", value[,y], value = TRUE, fixed=FALSE))
-            if (test==0){
-              value[,y]=as.numeric(as.character(value[,y]))
-            }
-
-          }
-        }
-      }
-
-      is.Polr.Mi=inherits(lmodel[[1]],"polr")
-      is.Polr.Mj=inherits(lmodel[[2]],"polr")
-      is.Glm.Mi=inherits(lmodel[[1]],"glm")
-      is.Glm.Mj=inherits(lmodel[[2]],"glm")
-
-      if(is.Polr.Mi & is.Polr.Mj){
-        p=sort(as.numeric(as.character(unique(data[,Mi]))))
-        interceptp=as.vector(c(-Inf,lmodel[[1]]$zeta,Inf))
-        coefp=as.vector(lmodel[[1]]$coefficients)
-        q=sort(as.numeric(as.character(unique(data[,Mj]))))
-        interceptq=as.vector(c(-Inf,lmodel[[2]]$zeta,Inf))
-        coefq=as.vector(lmodel[[2]]$coefficients)
-      }
-
-      if(is.Glm.Mi & is.Glm.Mj){
-        p=c(0,1)
-        interceptp=c(-Inf,-summary(lmodel[[1]])$coefficients[1,1],Inf)
-        coefp=as.vector(summary(lmodel[[1]])$coefficients[-1,1])
-        q=c(0,1)
-        interceptq=c(-Inf,-summary(lmodel[[2]])$coefficients[1,1],Inf)
-        coefq=as.vector(summary(lmodel[[2]])$coefficients[-1,1])
-      }
-
-      else if(is.Polr.Mi & is.Glm.Mj){
-        p=sort(as.numeric(as.character(unique(data[,Mi]))))
-        interceptp=as.vector(c(-Inf,lmodel[[1]]$zeta,Inf))
-        coefp=as.vector(lmodel[[1]]$coefficients)
-        q=c(0,1)
-        interceptq=c(-Inf,-summary(lmodel[[2]])$coefficients[1,1],Inf)
-        coefq=as.vector(summary(lmodel[[2]])$coefficients[-1,1])
-      }
-
-      else if(is.Glm.Mi & is.Polr.Mj){
-        p=c(0,1)
-        interceptp=c(-Inf,-summary(lmodel[[1]])$coefficients[1,1],Inf)
-        coefp=as.vector(summary(lmodel[[1]])$coefficients[-1,1])
-        q=sort(as.numeric(as.character(unique(data[,Mj]))))
-        interceptq=as.vector(c(-Inf,lmodel[[2]]$zeta,Inf))
-        coefq=as.vector(lmodel[[2]]$coefficients)
-      }
-
-      else if(is.Polr.Mi & is.Lm.Mj){
-        p=sort(as.numeric(as.character(unique(data[,Mi]))))
-        interceptp=as.vector(c(-Inf,lmodel[[1]]$zeta,Inf))
-        coefp=as.vector(lmodel[[1]]$coefficients)
-      }
-
-      else if(is.Lm.Mi & is.Polr.Mj){
-        p=sort(as.numeric(as.character(unique(data[,Mj]))))
-        interceptp=as.vector(c(-Inf,lmodel[[2]]$zeta,Inf))
-        coefp=as.vector(lmodel[[2]]$coefficients)
-      }
-
-      else if(is.Glm.Mi & is.Lm.Mj){
-        p=c(0,1)
-        interceptp=c(-Inf,-summary(lmodel[[1]])$coefficients[1,1],Inf)
-        coefp=as.vector(summary(lmodel[[1]])$coefficients[-1,1])
-      }
-
-      else if (is.Lm.Mi & is.Glm.Mj){
-        p=c(0,1)
-        interceptp=c(-Inf,-summary(lmodel[[2]])$coefficients[1,1],Inf)
-        coefp=as.vector(summary(lmodel[[2]])$coefficients[-1,1])
-      }
-
-      Value=NULL
-      Proportion=NULL
-      Covariance.estim=NULL
-      Correlation.estim=NULL
-      for (i in 1:dim(value)[1]){
-        com = parse(text= paste(paste(names(datav),value[i,], sep = "=="), collapse = " & "))
-        datai=subset(data,eval(com))
-        valueMi=c(1,as.numeric(as.character(value[i,names(value) %in% names(lmodel[[1]]$model)])))
-        valueMj=c(1,as.numeric(as.character(value[i,names(value) %in% names(lmodel[[2]]$model)])))
-
-        covMiMj=cov(as.numeric(as.character(datai[,Mi])),as.numeric(as.character(datai[,Mj])))
-
-        if( (is.Polr.Mi & is.Polr.Mj) | (is.Glm.Mi & is.Polr.Mj) | (is.Polr.Mi & is.Glm.Mj) | (is.Glm.Mi & is.Glm.Mj) ){
-          bornep=borneq=NULL
-          for (o in 1:length(interceptp)){
-            bornep=c(bornep,sum(c(interceptp[o],-coefp)*valueMi))
-          }
-          for (o in 1:length(interceptq)){
-            borneq=c(borneq,sum(c(interceptq[o],-coefq)*valueMj))
-          }
-
-          pMit=pnorm(bornep)
-          pMit=pMit[2:length(pMit)]-pMit[1:(length(pMit)-1)]
-          pMi=sum(p*pMit)
-          pMjt=pnorm(borneq)
-          pMjt=pMjt[2:length(pMjt)]-pMjt[1:(length(pMjt)-1)]
-          pMj=sum(q*pMjt)
-          cor=DichotomiePD(fPD,e,covMiMj,pMi,bornep,p,pMj,borneq,q)
-        }
-
-        if ((is.Polr.Mi & is.Lm.Mj) | (is.Lm.Mi & is.Polr.Mj) | (is.Glm.Mi & is.Lm.Mj) | (is.Lm.Mi & is.Glm.Mj))  {
-          if(is.Polr.Mi & is.Lm.Mj){
-            valueM=valueMi
-          }
-
-          else if(is.Lm.Mi & is.Polr.Mj){
-            valueM=valueMj
-          }
-
-          else if(is.Glm.Mi & is.Lm.Mj){
-            valueM=valueMi
-          }
-
-          else if (is.Lm.Mi & is.Glm.Mj){
-            valueM=valueMj
-          }
-          bornep=NULL
-          for (o in 1:length(interceptp)){
-            bornep=c(bornep,sum(c(interceptp[o],-coefp)*valueM))
-          }
-          g=function(x){
-            #out=sqrt((1-rho^2)/(1+rho^2))*x*dnorm(x,0,(1+rho^2)/(1-rho^2))
-            return(x*dnorm(x,0,1))
-          }
-          smp=NULL
-          for (e in 1:length(p)){
-            smp=c(smp,p[e]*int(g, a=bornep[e], b=bornep[e+1]))
-          }
-          cor=covMiMj/sum(smp) #DichotomieCP(fCP,e,covMiMj,bornep,p)
-        }
-
-
-        Valuetf1=paste(value[i,])
-        Valuetf2=NULL
-        for (j in 1:length(Valuetf1)){
-          Valuetf2=paste(Valuetf2,Valuetf1[j],sep="")
-        }
-        Value=c(Value,Valuetf2)
-        Proportion=c(Proportion,dim(datai)[1]/dim(data)[1])
-        Covariance.estim=c(Covariance.estim,round(covMiMj,4))
-        Correlation.estim=c(Correlation.estim,round(cor,4))
-      }
-
-      Estim=data.frame(Value,Proportion,Covariance.estim,Correlation.estim)
-
-    }
-
-    return(Estim)
-  }
-
-
-
-  # Calculate p-values
-  pval <- function(x, xhat,seu=0){
-    if (xhat == seu) {out <- 1}
-    else {
-      out <- 2 * min(sum(x > seu,na.rm=TRUE), sum(x < seu,na.rm=TRUE)) / length(x)
-    }
-    return(min(out, 1))
-  }
-
-
-  # Display the results of the mediation analyses done with "multimediate"
-  summary.mm = function(object,opt="navg",logit="all",...){
-    nom.navg=c("ACME.joint.treat","PM(treat)","ACME.joint.control","PM(control)",paste(c("ACME.treat.","PM(treat).","ACME.control.","PM(control)."),rep(object$mediator,each=4),sep=""),"ADE.treat","ADE.control","Total Effect")
-    nom.avg=c("ACME.joint","PM.joint",paste(c("ACME.","PM."),rep(object$mediator,each=2),sep=""),"ADE","Total Effect")
-
-
-    if (length(object$mediator)>1){
-      navg=data.frame("."        =nom.navg,
-                      Estimation=round(c(object$d1,object$n1,object$d0,object$n0,triout.NM(object$d1.NM,object$n1.NM,object$d0.NM,object$n0.NM),object$z1,object$z0,object$tau.coef),4),
-                      IC.inf    =round(c(object$d1.ci[1],object$n1.ci[1],object$d0.ci[1],object$n0.ci[1],triout.ci.NM(object$d1.ci.NM,object$n1.ci.NM,object$d0.ci.NM,object$n0.ci.NM)[,1],object$z1.ci[1],object$z0.ci[1],object$tau.ci[1]),4),
-                      IC.sup    =round(c(object$d1.ci[2],object$n1.ci[2],object$d0.ci[2],object$n0.ci[2],triout.ci.NM(object$d1.ci.NM,object$n1.ci.NM,object$d0.ci.NM,object$n0.ci.NM)[,2],object$z1.ci[2],object$z0.ci[2],object$tau.ci[2]),4),
-                      P.val     =round(c(object$d1.p,object$n1.p,object$d0.p,object$n0.p,triout.NM(object$d1.p.NM,object$n1.p.NM,object$d0.p.NM,object$n0.p.NM),object$z1.p,object$z0.p,object$tau.p),4)
-      )
-      avg=data.frame("."        =nom.avg,
-                     Estimation=round(c(object$d.avg,object$n.avg,triout.avg.NM(object$d.avg.NM,object$n.avg.NM),object$z.avg,object$tau.coef),4),
-                     IC.inf    =round(c(object$d.avg.ci[1],object$n.avg.ci[1],triout.ci.avg.NM(object$d.avg.ci.NM,object$n.avg.ci.NM)[,1],object$z.avg.ci[1],object$tau.ci[1]),4),
-                     IC.sup    =round(c(object$d.avg.ci[2],object$n.avg.ci[2],triout.ci.avg.NM(object$d.avg.ci.NM,object$n.avg.ci.NM)[,2],object$z.avg.ci[2],object$tau.ci[2]),4),
-                     P.val     =round(c(object$d.avg.p,object$n.avg.p,triout.avg.NM(object$d.avg.p.NM,object$n.avg.p.NM),object$z.avg.p,object$tau.p),4)
-      )
-
-      if (!is.null(object$model.y$family)){
-        if (object$model.y$family$link=="logit"){
-
-          warning("The proportions mediated on the OR scale can be considered if the outcome is rare, otherwise the proportions mediated on effects scale and/or logOR scale have to be considered.")
-          ORnavg=data.frame("."        =paste("OR",nom.navg),
-                            Estimation=round(c(object$ORd1,object$ORn1,object$ORd0,object$ORn0,triout.NM(object$ORd1.NM,object$ORn1.NM,object$ORd0.NM,object$ORn0.NM),object$ORz1,object$ORz0,object$ORtau.coef),4),
-                            IC.inf    =round(c(object$ORd1.ci[1],object$ORn1.ci[1],object$ORd0.ci[1],object$ORn0.ci[1],triout.ci.NM(object$ORd1.ci.NM,object$ORn1.ci.NM,object$ORd0.ci.NM,object$ORn0.ci.NM)[,1],object$ORz1.ci[1],object$ORz0.ci[1],object$ORtau.ci[1]),4),
-                            IC.sup    =round(c(object$ORd1.ci[2],object$ORn1.ci[2],object$ORd0.ci[2],object$ORn0.ci[2],triout.ci.NM(object$ORd1.ci.NM,object$ORn1.ci.NM,object$ORd0.ci.NM,object$ORn0.ci.NM)[,2],object$ORz1.ci[2],object$ORz0.ci[2],object$ORtau.ci[2]),4),
-                            P.val     =round(c(object$ORd1.p,object$ORn1.p,object$ORd0.p,object$ORn0.p,triout.NM(object$ORd1.p.NM,object$ORn1.p.NM,object$ORd0.p.NM,object$ORn0.p.NM),object$ORz1.p,object$ORz0.p,object$ORtau.p),4)
-          )
-          ORavg=data.frame("."        =paste("OR",nom.avg),
-                           Estimation=round(c(object$ORd.avg      ,object$ORn.avg      ,triout.avg.NM(   object$ORd.avg.NM                   ,object$ORn.avg.NM)       ,object$ORz.avg      ,object$ORtau.coef) ,4),
-                           IC.inf    =round(c(object$ORd.avg.ci[1],object$ORn.avg.ci[1],triout.ci.avg.NM(object$ORd.avg.ci.NM             ,object$ORn.avg.ci.NM)[,1],object$ORz.avg.ci[1],object$ORtau.ci[1]),4),
-                           IC.sup    =round(c(object$ORd.avg.ci[2],object$ORn.avg.ci[2],triout.ci.avg.NM(object$ORd.avg.ci.NM             ,object$ORn.avg.ci.NM)[,2],object$ORz.avg.ci[2],object$ORtau.ci[2]),4),
-                           P.val     =round(c(object$ORd.avg.p    ,object$ORn.avg.p    ,triout.avg.NM(   object$ORd.avg.p.NM                 ,object$ORn.avg.p.NM)     ,object$ORz.avg.p    ,object$ORtau.p)    ,4)
-          )
-
-          logORnavg=data.frame("."        =paste("logOR",nom.navg),
-                               Estimation=round(c(object$logORd1,               object$logORn1,      object$logORd0,      object$logORn0,      triout.NM(   object$logORd1.NM,   object$logORn1.NM,   object$logORd0.NM,   object$logORn0.NM),       object$logORz1,      object$logORz0,      object$logORtau.coef), 4),
-                               IC.inf    =round(c(object$logORd1.ci[1],         object$logORn1.ci[1],object$logORd0.ci[1],object$logORn0.ci[1],triout.ci.NM(object$logORd1.ci.NM,object$logORn1.ci.NM,object$logORd0.ci.NM,object$logORn0.ci.NM)[,1],object$logORz1.ci[1],object$logORz0.ci[1],object$logORtau.ci[1]),4),
-                               IC.sup    =round(c(object$logORd1.ci[2],         object$logORn1.ci[2],object$logORd0.ci[2],object$logORn0.ci[2],triout.ci.NM(object$logORd1.ci.NM,object$logORn1.ci.NM,object$logORd0.ci.NM,object$logORn0.ci.NM)[,2],object$logORz1.ci[2],object$logORz0.ci[2],object$logORtau.ci[2]),4),
-                               P.val     =round(c(object$logORd1.p,             object$logORn1.p,    object$logORd0.p,    object$logORn0.p,    triout.NM(   object$logORd1.p.NM, object$logORn1.p.NM, object$logORd0.p.NM, object$logORn0.p.NM),     object$logORz1.p,    object$logORz0.p,    object$logORtau.p),    4)
-          )
-          logORavg=data.frame("."        =paste("logOR",nom.avg),
-                              Estimation=round(c(object$logORd.avg,object$logORn.avg,triout.avg.NM(object$logORd.avg.NM,object$logORn.avg.NM),object$logORz.avg,object$logORtau.coef),4),
-                              IC.inf    =round(c(object$logORd.avg.ci[1],object$logORn.avg.ci[1],triout.ci.avg.NM(object$logORd.avg.ci.NM,object$logORn.avg.ci.NM)[,1],object$logORz.avg.ci[1],object$logORtau.ci[1]),4),
-                              IC.sup    =round(c(object$logORd.avg.ci[2],object$logORn.avg.ci[2],triout.ci.avg.NM(object$logORd.avg.ci.NM,object$logORn.avg.ci.NM)[,2],object$logORz.avg.ci[2],object$logORtau.ci[2]),4),
-                              P.val     =round(c(object$logORd.avg.p,object$logORn.avg.p,triout.avg.NM(object$logORd.avg.p.NM,object$logORn.avg.p.NM),object$logORz.avg.p,object$logORtau.p),4)
-          )
-        }}
-      pmtest= c(object$d1,object$d0,object$d1.NM,object$d0.NM,object$z1,object$z0,object$tau.coef)
-      if(sum(pmtest>0)!=length(pmtest)){
-        warning("Proportion mediated warning : This quantity makes sense only when the sign the causal mediated effects (i.e., the numerator) are the same as the sign of the average total effect (i.e., the denominator) and when the total effect is bigger than the mediated effect. Confidence intervals may be meaningless when the mediated and/or direct effects have a different sign.")
-      }
-    }
-    else {
-      navg=data.frame("."        =c("ACME.treat","PM(treat)","ACME.control","PM(control)","ADE.treat","ADE.control","Total Effect"),
-                      Estimation=round(c(object$d1,object$n1,object$d0,object$n0,object$z1,object$z0,object$tau.coef),4),
-                      IC.inf    =round(c(object$d1.ci[1],object$n1.ci[1],object$d0.ci[1],object$n0.ci[1],object$z1.ci[1],object$z0.ci[1],object$tau.ci[1]),4),
-                      IC.sup    =round(c(object$d1.ci[2],object$n1.ci[2],object$d0.ci[2],object$n0.ci[2],object$z1.ci[2],object$z0.ci[2],object$tau.ci[2]),4),
-                      P.val     =round(c(object$d1.p,object$n1.p,object$d0.p,object$n0.p,object$z1.p,object$z0.p,object$tau.p),4)
-      )
-
-      avg=data.frame("."        =c("ACME","PM","ADE","Total Effect"),
-                     Estimation=round(c(object$d.avg,object$n.avg,object$z.avg,object$tau.coef),4),
-                     IC.inf    =round(c(object$d.avg.ci[1],object$n.avg.ci[1],object$z.avg.ci[1],object$tau.ci[1]),4),
-                     IC.sup    =round(c(object$d.avg.ci[2],object$n.avg.ci[2],object$z.avg.ci[2],object$tau.ci[2]),4),
-                     P.val     =round(c(object$d.avg.p,object$n.avg.p,object$z.avg.p,object$tau.p),4)
-      )
-      if (!is.null(object$model.y$family)){
-        if (object$model.y$family$link=="logit"){
-          warning("The proportion mediated on the OR scale can be considered if the outcome is rare, otherwise the proportion mediated on effect scale and/or logOR scale have to be considered.")
-
-          ORnavg=data.frame("."        =c("OR.ACME.treat","OR.PM(treat)","OR.ACME.control","OR.PM(control)","OR.ADE.treat","OR.ADE.control","OR.Total Effect"),
-                            Estimation=round(c(object$ORd1,object$ORn1,object$ORd0,object$ORn0,object$ORz1,object$ORz0,object$ORtau.coef),4),
-                            IC.inf    =round(c(object$ORd1.ci[1],object$ORn1.ci[1],object$ORd0.ci[1],object$ORn0.ci[1],object$ORz1.ci[1],object$ORz0.ci[1],object$ORtau.ci[1]),4),
-                            IC.sup    =round(c(object$ORd1.ci[2],object$ORn1.ci[2],object$ORd0.ci[2],object$ORn0.ci[2],object$ORz1.ci[2],object$ORz0.ci[2],object$ORtau.ci[2]),4),
-                            P.val     =round(c(object$ORd1.p,object$ORn1.p,object$ORd0.p,object$ORn0.p,object$ORz1.p,object$ORz0.p,object$ORtau.p),4)
-          )
-
-          ORavg=data.frame("."        =c("OR.ACME","OR.PM","OR.ADE","OR.Total Effect"),
-                           Estimation=round(c(object$ORd.avg,object$ORn.avg,object$ORz.avg,object$ORtau.coef),4),
-                           IC.inf    =round(c(object$ORd.avg.ci[1],object$ORn.avg.ci[1],object$ORz.avg.ci[1],object$ORtau.ci[1]),4),
-                           IC.sup    =round(c(object$ORd.avg.ci[2],object$ORn.avg.ci[2],object$ORz.avg.ci[2],object$ORtau.ci[2]),4),
-                           P.val     =round(c(object$ORd.avg.p,object$ORn.avg.p,object$ORz.avg.p,object$ORtau.p),4)
-          )
-
-          logORnavg=data.frame("."        =c("logOR.ACME.treat","logOR.PM(treat)","logOR.ACME.control","logOR.PM(control)","logOR.ADE.treat","logOR.ADE.control","logOR.Total Effect"),
-                               Estimation=round(c(object$logORd1,object$logORn1,object$logORd0,object$logORn0,object$logORz1,object$logORz0,object$logORtau.coef),4),
-                               IC.inf    =round(c(object$logORd1.ci[1],object$logORn1.ci[1],object$logORd0.ci[1],object$logORn0.ci[1],object$logORz1.ci[1],object$logORz0.ci[1],object$logORtau.ci[1]),4),
-                               IC.sup    =round(c(object$logORd1.ci[2],object$logORn1.ci[2],object$logORd0.ci[2],object$logORn0.ci[2],object$logORz1.ci[2],object$logORz0.ci[2],object$logORtau.ci[2]),4),
-                               P.val     =round(c(object$logORd1.p,object$logORn1.p,object$logORd0.p,object$logORn0.p,object$logORz1.p,object$logORz0.p,object$logORtau.p),4)
-          )
-          logORavg=data.frame("."        =c("logOR.ACME","logOR.PM","logOR.ADE","logOR.Total Effect"),
-                              Estimation=round(c(object$logORd.avg,object$logORn.avg,object$logORz.avg,object$logORtau.coef),4),
-                              IC.inf    =round(c(object$logORd.avg.ci[1],object$logORn.avg.ci[1],object$logORz.avg.ci[1],object$logORtau.ci[1]),4),
-                              IC.sup    =round(c(object$logORd.avg.ci[2],object$logORn.avg.ci[2],object$logORz.avg.ci[2],object$logORtau.ci[2]),4),
-                              P.val     =round(c(object$logORd.avg.p,object$logORn.avg.p,object$logORz.avg.p,object$logORtau.p),4)
-          )
-        }}
-      pmtest= c(object$d1,object$d0,object$z1,object$z0,object$tau.coef)
-      if(sum(pmtest>0)!=length(pmtest)){
-        warning("Proportion mediated warning : This quantity makes sense only when the sign the causal mediated effects (i.e., the numerator) are the same as the sign of the average total effect (i.e., the denominator) and when the total effect is bigger than the mediated effect. Confidence intervals may be meaningless when the mediated and/or direct effects have a different sign.")
-      }
-    }
-    if (opt=="avg"){
-      if (is.null(object$model.y$family) || object$model.y$family$link=="probit")
-      {res=avg}
-      else{
-        if (object$model.y$family$link=="logit" & logit=="all"){
-          res=cbind(avg,ORavg,logORavg)
-        }
-        else if (object$model.y$family$link=="logit" & logit=="OR"){
-          res=ORavg
-        }
-        else if (object$model.y$family$link=="logit" & logit=="logOR"){
-          res=logORavg
-        }
-        else{
-          res=avg
-        }
-      }
-
-    }
-    else{
-
-      if (is.null(object$model.y$family) || object$model.y$family$link=="probit")
-      {res=navg}
-      else {
-        if (object$model.y$family$link=="logit" & logit=="all"){
-          res=cbind(navg,ORnavg,logORnavg)
-        }
-        else if (object$model.y$family$link=="logit" & logit=="OR"){
-          res=ORnavg
-        }
-        else if (object$model.y$family$link=="logit" & logit=="logOR"){
-          res=logORnavg
-        }
-        else{
-          res=navg
-        }
-      }
-
-    }
-    return(res)
-  }
-
-
-  triout.NM = function(d1,pm1,d0,pm0){
-    NM=length(d1)
-    out=rep(NA,4*NM)
-    u=seq(1,4*NM,4)
-    out[u]=d1
-    out[u+1]=pm1
-    out[u+2]=d0
-    out[u+3]=pm0
-    return(out)
-  }
-
-  triout.ci.NM = function(d1.ci,p1.ci,d0.ci,p0.ci){
-    NM=length(d1.ci[,1])
-    res=array(NA,dim=c(4*NM,2))
-    u=seq(1,4*NM,4)
-    v=u+1
-    w=u+2
-    m=u+3
-
-    for (i in 1:NM){
-      res[u[i],] = d1.ci[i,]
-      res[v[i],] = p1.ci[i,]
-      res[w[i],] = d0.ci[i,]
-      res[m[i],] = p0.ci[i,]
-    }
-
-    return(res)
-  }
-
-  triout.ci.avg.NM = function(d.ci,pm.ci){
-    NM = length(d.ci[,1])
-    res = array(NA,dim=c(2*NM,2))
-    u = seq(1,2*NM,2)
-    v = u+1
-
-    for (i in 1:NM){
-      res[u[i],] = d.ci[i,]
-      res[v[i],] = pm.ci[i,]
-    }
-
-    return(res)
-  }
-
-  triout.avg.NM = function(d,pm){
-    NM=length(d)
-    out=rep(NA,2*NM)
-    u=seq(1,2*NM,2)
-    out[u]=d
-    out[u+1]=pm
-    return(out)
-  }
-
-
+#' @importFrom MASS mvrnorm
+#' @importFrom mvtnorm rmvnorm
+#' @importFrom utils txtProgressBar
+#' @importFrom utils setTxtProgressBar
+#' @importFrom timereg aalen
+
+
+
+multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.value=1,control.value=0,J=1000,conf.level=0.95, fun=mean, data=NULL, peryr=100000){
+
+  # # auxiliary functions
+  # #################
+  #
+  #
+  # # Get variable names of a regression model (suitable for Aalen additive hazards models)
+  # getvarnames <- function(formula, data = NULL)
+  # {
+  #   if (is.character(formula))
+  #     return(list(varnames=formula, xvar=formula, yvar=NULL))
+  #   if (is.null(formula)) return(list(varnames=NULL, xvar=NULL, yvar=NULL))
+  #
+  #   formula <- formula(formula)
+  #   lyv <- NULL
+  #   lxv <- lvnm <- all.vars(formula[1:2])
+  #   if (length(formula)==3) {
+  #     lyv <- lxv
+  #     lxv <- all.vars(formula[-2])
+  #     if ("." %in% lxv) {
+  #       if (length(data)==0)
+  #         stop("!getvarnames! '.' in formula and no 'data'")
+  #       lform <- formula(terms(formula, data=data))
+  #       lxv <- all.vars(lform[-2])
+  #     }
+  #     lvnm <- c(lxv, lvnm)
+  #   }
+  #   list(varnames=lvnm, xvar=lxv, yvar=lyv)
+  # }
+  #
+  #
+  #
+  # # Calculate covariance matrix of mediators (calls CorConds2)
+  # CorCond=function(e,lmodel.m){
+  #   NM=length(lmodel.m)
+  #   k=1
+  #
+  #   out=list()
+  #   while(k < NM){
+  #     for(l in (k+1):NM){
+  #       a=paste("cor",names(lmodel.m[[k]]$model)[1],names(lmodel.m[[l]]$model)[1],sep=".")
+  #       #print(a)
+  #       out[[a]]=CorCond2(e,lmodel=list(lmodel.m[[k]],lmodel.m[[l]]))
+  #     }
+  #     k=k+1
+  #   }
+  #   Variance=rep(1,NM)
+  #   for (z in 1:NM){
+  #     if (inherits(lmodel.m[[z]],"lm") & !inherits(lmodel.m[[z]],"glm")){
+  #       Variance[z]=var(lmodel.m[[z]]$residuals)
+  #     }
+  #   }
+  #   sigmaestim=diag(Variance)
+  #   correstim=diag(1,NM)
+  #   i=1
+  #   l=1
+  #   vcor=c()
+  #   vcov=c()
+  #   while (i <NM){
+  #     j=i+1
+  #     for(k in j:NM){
+  #       sigmaestim[i,k]=sigmaestim[k,i]=weighted.mean(out[[l]]$Covariance.estim,out[[l]]$Proportion,na.rm = TRUE)
+  #       vcov=c(vcov,weighted.mean(out[[l]]$Covariance.estim,out[[l]]$Proportion,na.rm = TRUE))
+  #       correstim[i,k]=correstim[k,i]=weighted.mean(out[[l]]$Correlation.estim,out[[l]]$Proportion,na.rm = TRUE)
+  #       vcor=c(vcor,weighted.mean(out[[l]]$Correlation.estim,out[[l]]$Proportion,na.rm = TRUE))
+  #       l=l+1
+  #     }
+  #     i=i+1
+  #   }
+  #   out[["sigmaestim"]]=sigmaestim
+  #   out[["vcov"]]=vcov
+  #   out[["correstim"]]=correstim
+  #   out[["vcor"]]=vcor
+  #   return(out)
+  # }
+  #
+  #
+  #
+  # # Calculate covariance matrix of mediators
+  # CorCond2=function(e,lmodel){
+  #
+  #   is.Lm.Mi=inherits(lmodel[[1]],"lm") & !inherits(lmodel[[1]],"glm")
+  #   is.Lm.Mj=inherits(lmodel[[2]],"lm") & !inherits(lmodel[[2]],"glm")
+  #
+  #
+  #   if(is.Lm.Mi & is.Lm.Mj){
+  #     Estim=data.frame(NA)
+  #     Estim$Proportion=1
+  #     Estim$Covariance.estim=cov(lmodel[[1]]$residuals,lmodel[[2]]$residuals)
+  #     Estim$Correlation.estim=cor(lmodel[[1]]$residuals,lmodel[[2]]$residuals)
+  #   }
+  #
+  #   else{
+  #     Mi=names(lmodel[[1]]$model)[1]
+  #     Mj=names(lmodel[[2]]$model)[1]
+  #     data=cbind(lmodel[[1]]$model,lmodel[[2]]$model)[,unique(c(names(lmodel[[1]]$model),names(lmodel[[2]]$model)))]
+  #     datav=data[,-c(which(names(data)==Mi),which(names(data)==Mj))]
+  #     value=unique(datav)
+  #
+  #     if(is.null(dim(value))){
+  #       value=data.frame(t(t(value)))
+  #       colnames(value)=names(lmodel[[1]]$model)[2]
+  #       datav=data.frame(t(t(datav)))
+  #       colnames(datav)=names(lmodel[[1]]$model)[2]
+  #     }
+  #     else{
+  #       for (y in 1:dim(value)[2]){
+  #
+  #         if (is.factor(value[,y])){
+  #           test=length(grep(pattern = "[a-z][1-9][a-z]", value[,y], value = TRUE, fixed=FALSE))
+  #           if (test==0){
+  #             value[,y]=as.numeric(as.character(value[,y]))
+  #           }
+  #
+  #         }
+  #       }
+  #     }
+  #
+  #     is.Polr.Mi=inherits(lmodel[[1]],"polr")
+  #     is.Polr.Mj=inherits(lmodel[[2]],"polr")
+  #     is.Glm.Mi=inherits(lmodel[[1]],"glm")
+  #     is.Glm.Mj=inherits(lmodel[[2]],"glm")
+  #
+  #     if(is.Polr.Mi & is.Polr.Mj){
+  #       p=sort(as.numeric(as.character(unique(data[,Mi]))))
+  #       interceptp=as.vector(c(-Inf,lmodel[[1]]$zeta,Inf))
+  #       coefp=as.vector(lmodel[[1]]$coefficients)
+  #       q=sort(as.numeric(as.character(unique(data[,Mj]))))
+  #       interceptq=as.vector(c(-Inf,lmodel[[2]]$zeta,Inf))
+  #       coefq=as.vector(lmodel[[2]]$coefficients)
+  #     }
+  #
+  #     if(is.Glm.Mi & is.Glm.Mj){
+  #       p=c(0,1)
+  #       interceptp=c(-Inf,-summary(lmodel[[1]])$coefficients[1,1],Inf)
+  #       coefp=as.vector(summary(lmodel[[1]])$coefficients[-1,1])
+  #       q=c(0,1)
+  #       interceptq=c(-Inf,-summary(lmodel[[2]])$coefficients[1,1],Inf)
+  #       coefq=as.vector(summary(lmodel[[2]])$coefficients[-1,1])
+  #     }
+  #
+  #     else if(is.Polr.Mi & is.Glm.Mj){
+  #       p=sort(as.numeric(as.character(unique(data[,Mi]))))
+  #       interceptp=as.vector(c(-Inf,lmodel[[1]]$zeta,Inf))
+  #       coefp=as.vector(lmodel[[1]]$coefficients)
+  #       q=c(0,1)
+  #       interceptq=c(-Inf,-summary(lmodel[[2]])$coefficients[1,1],Inf)
+  #       coefq=as.vector(summary(lmodel[[2]])$coefficients[-1,1])
+  #     }
+  #
+  #     else if(is.Glm.Mi & is.Polr.Mj){
+  #       p=c(0,1)
+  #       interceptp=c(-Inf,-summary(lmodel[[1]])$coefficients[1,1],Inf)
+  #       coefp=as.vector(summary(lmodel[[1]])$coefficients[-1,1])
+  #       q=sort(as.numeric(as.character(unique(data[,Mj]))))
+  #       interceptq=as.vector(c(-Inf,lmodel[[2]]$zeta,Inf))
+  #       coefq=as.vector(lmodel[[2]]$coefficients)
+  #     }
+  #
+  #     else if(is.Polr.Mi & is.Lm.Mj){
+  #       p=sort(as.numeric(as.character(unique(data[,Mi]))))
+  #       interceptp=as.vector(c(-Inf,lmodel[[1]]$zeta,Inf))
+  #       coefp=as.vector(lmodel[[1]]$coefficients)
+  #     }
+  #
+  #     else if(is.Lm.Mi & is.Polr.Mj){
+  #       p=sort(as.numeric(as.character(unique(data[,Mj]))))
+  #       interceptp=as.vector(c(-Inf,lmodel[[2]]$zeta,Inf))
+  #       coefp=as.vector(lmodel[[2]]$coefficients)
+  #     }
+  #
+  #     else if(is.Glm.Mi & is.Lm.Mj){
+  #       p=c(0,1)
+  #       interceptp=c(-Inf,-summary(lmodel[[1]])$coefficients[1,1],Inf)
+  #       coefp=as.vector(summary(lmodel[[1]])$coefficients[-1,1])
+  #     }
+  #
+  #     else if (is.Lm.Mi & is.Glm.Mj){
+  #       p=c(0,1)
+  #       interceptp=c(-Inf,-summary(lmodel[[2]])$coefficients[1,1],Inf)
+  #       coefp=as.vector(summary(lmodel[[2]])$coefficients[-1,1])
+  #     }
+  #
+  #     Value=NULL
+  #     Proportion=NULL
+  #     Covariance.estim=NULL
+  #     Correlation.estim=NULL
+  #     for (i in 1:dim(value)[1]){
+  #       com = parse(text= paste(paste(names(datav),value[i,], sep = "=="), collapse = " & "))
+  #       datai=subset(data,eval(com))
+  #       valueMi=c(1,as.numeric(as.character(value[i,names(value) %in% names(lmodel[[1]]$model)])))
+  #       valueMj=c(1,as.numeric(as.character(value[i,names(value) %in% names(lmodel[[2]]$model)])))
+  #
+  #       covMiMj=cov(as.numeric(as.character(datai[,Mi])),as.numeric(as.character(datai[,Mj])))
+  #
+  #       if( (is.Polr.Mi & is.Polr.Mj) | (is.Glm.Mi & is.Polr.Mj) | (is.Polr.Mi & is.Glm.Mj) | (is.Glm.Mi & is.Glm.Mj) ){
+  #         bornep=borneq=NULL
+  #         for (o in 1:length(interceptp)){
+  #           bornep=c(bornep,sum(c(interceptp[o],-coefp)*valueMi))
+  #         }
+  #         for (o in 1:length(interceptq)){
+  #           borneq=c(borneq,sum(c(interceptq[o],-coefq)*valueMj))
+  #         }
+  #
+  #         pMit=pnorm(bornep)
+  #         pMit=pMit[2:length(pMit)]-pMit[1:(length(pMit)-1)]
+  #         pMi=sum(p*pMit)
+  #         pMjt=pnorm(borneq)
+  #         pMjt=pMjt[2:length(pMjt)]-pMjt[1:(length(pMjt)-1)]
+  #         pMj=sum(q*pMjt)
+  #         cor=DichotomiePD(fPD,e,covMiMj,pMi,bornep,p,pMj,borneq,q)
+  #       }
+  #
+  #       if ((is.Polr.Mi & is.Lm.Mj) | (is.Lm.Mi & is.Polr.Mj) | (is.Glm.Mi & is.Lm.Mj) | (is.Lm.Mi & is.Glm.Mj))  {
+  #         if(is.Polr.Mi & is.Lm.Mj){
+  #           valueM=valueMi
+  #         }
+  #
+  #         else if(is.Lm.Mi & is.Polr.Mj){
+  #           valueM=valueMj
+  #         }
+  #
+  #         else if(is.Glm.Mi & is.Lm.Mj){
+  #           valueM=valueMi
+  #         }
+  #
+  #         else if (is.Lm.Mi & is.Glm.Mj){
+  #           valueM=valueMj
+  #         }
+  #         bornep=NULL
+  #         for (o in 1:length(interceptp)){
+  #           bornep=c(bornep,sum(c(interceptp[o],-coefp)*valueM))
+  #         }
+  #         g=function(x){
+  #           #out=sqrt((1-rho^2)/(1+rho^2))*x*dnorm(x,0,(1+rho^2)/(1-rho^2))
+  #           return(x*dnorm(x,0,1))
+  #         }
+  #         smp=NULL
+  #         for (e in 1:length(p)){
+  #           smp=c(smp,p[e]*int(g, a=bornep[e], b=bornep[e+1]))
+  #         }
+  #         cor=covMiMj/sum(smp) #DichotomieCP(fCP,e,covMiMj,bornep,p)
+  #       }
+  #
+  #
+  #       Valuetf1=paste(value[i,])
+  #       Valuetf2=NULL
+  #       for (j in 1:length(Valuetf1)){
+  #         Valuetf2=paste(Valuetf2,Valuetf1[j],sep="")
+  #       }
+  #       Value=c(Value,Valuetf2)
+  #       Proportion=c(Proportion,dim(datai)[1]/dim(data)[1])
+  #       Covariance.estim=c(Covariance.estim,round(covMiMj,4))
+  #       Correlation.estim=c(Correlation.estim,round(cor,4))
+  #     }
+  #
+  #     Estim=data.frame(Value,Proportion,Covariance.estim,Correlation.estim)
+  #
+  #   }
+  #
+  #   return(Estim)
+  # }
+  #
+  #
+  #
+  # # Calculate p-values
+  # pval <- function(x, xhat,seu=0){
+  #   if (xhat == seu) {out <- 1}
+  #   else {
+  #     out <- 2 * min(sum(x > seu,na.rm=TRUE), sum(x < seu,na.rm=TRUE)) / length(x)
+  #   }
+  #   return(min(out, 1))
+  # }
+  #
+  #
+  # # Display the results of the mediation analyses done with "multimediate"
+  # summary.mm = function(object,opt="navg",logit="all",...){
+  #   nom.navg=c("ACME.joint.treat","PM(treat)","ACME.joint.control","PM(control)",paste(c("ACME.treat.","PM(treat).","ACME.control.","PM(control)."),rep(object$mediator,each=4),sep=""),"ADE.treat","ADE.control","Total Effect")
+  #   nom.avg=c("ACME.joint","PM.joint",paste(c("ACME.","PM."),rep(object$mediator,each=2),sep=""),"ADE","Total Effect")
+  #
+  #
+  #   if (length(object$mediator)>1){
+  #     navg=data.frame("."        =nom.navg,
+  #                     Estimation=round(c(object$d1,object$n1,object$d0,object$n0,triout.NM(object$d1.NM,object$n1.NM,object$d0.NM,object$n0.NM),object$z1,object$z0,object$tau.coef),4),
+  #                     IC.inf    =round(c(object$d1.ci[1],object$n1.ci[1],object$d0.ci[1],object$n0.ci[1],triout.ci.NM(object$d1.ci.NM,object$n1.ci.NM,object$d0.ci.NM,object$n0.ci.NM)[,1],object$z1.ci[1],object$z0.ci[1],object$tau.ci[1]),4),
+  #                     IC.sup    =round(c(object$d1.ci[2],object$n1.ci[2],object$d0.ci[2],object$n0.ci[2],triout.ci.NM(object$d1.ci.NM,object$n1.ci.NM,object$d0.ci.NM,object$n0.ci.NM)[,2],object$z1.ci[2],object$z0.ci[2],object$tau.ci[2]),4),
+  #                     P.val     =round(c(object$d1.p,object$n1.p,object$d0.p,object$n0.p,triout.NM(object$d1.p.NM,object$n1.p.NM,object$d0.p.NM,object$n0.p.NM),object$z1.p,object$z0.p,object$tau.p),4)
+  #     )
+  #     avg=data.frame("."        =nom.avg,
+  #                    Estimation=round(c(object$d.avg,object$n.avg,triout.avg.NM(object$d.avg.NM,object$n.avg.NM),object$z.avg,object$tau.coef),4),
+  #                    IC.inf    =round(c(object$d.avg.ci[1],object$n.avg.ci[1],triout.ci.avg.NM(object$d.avg.ci.NM,object$n.avg.ci.NM)[,1],object$z.avg.ci[1],object$tau.ci[1]),4),
+  #                    IC.sup    =round(c(object$d.avg.ci[2],object$n.avg.ci[2],triout.ci.avg.NM(object$d.avg.ci.NM,object$n.avg.ci.NM)[,2],object$z.avg.ci[2],object$tau.ci[2]),4),
+  #                    P.val     =round(c(object$d.avg.p,object$n.avg.p,triout.avg.NM(object$d.avg.p.NM,object$n.avg.p.NM),object$z.avg.p,object$tau.p),4)
+  #     )
+  #
+  #     if (!is.null(object$model.y$family)){
+  #       if (object$model.y$family$link=="logit"){
+  #
+  #         warning("The proportions mediated on the OR scale can be considered if the outcome is rare, otherwise the proportions mediated on effects scale and/or logOR scale have to be considered.")
+  #         ORnavg=data.frame("."        =paste("OR",nom.navg),
+  #                           Estimation=round(c(object$ORd1,object$ORn1,object$ORd0,object$ORn0,triout.NM(object$ORd1.NM,object$ORn1.NM,object$ORd0.NM,object$ORn0.NM),object$ORz1,object$ORz0,object$ORtau.coef),4),
+  #                           IC.inf    =round(c(object$ORd1.ci[1],object$ORn1.ci[1],object$ORd0.ci[1],object$ORn0.ci[1],triout.ci.NM(object$ORd1.ci.NM,object$ORn1.ci.NM,object$ORd0.ci.NM,object$ORn0.ci.NM)[,1],object$ORz1.ci[1],object$ORz0.ci[1],object$ORtau.ci[1]),4),
+  #                           IC.sup    =round(c(object$ORd1.ci[2],object$ORn1.ci[2],object$ORd0.ci[2],object$ORn0.ci[2],triout.ci.NM(object$ORd1.ci.NM,object$ORn1.ci.NM,object$ORd0.ci.NM,object$ORn0.ci.NM)[,2],object$ORz1.ci[2],object$ORz0.ci[2],object$ORtau.ci[2]),4),
+  #                           P.val     =round(c(object$ORd1.p,object$ORn1.p,object$ORd0.p,object$ORn0.p,triout.NM(object$ORd1.p.NM,object$ORn1.p.NM,object$ORd0.p.NM,object$ORn0.p.NM),object$ORz1.p,object$ORz0.p,object$ORtau.p),4)
+  #         )
+  #         ORavg=data.frame("."        =paste("OR",nom.avg),
+  #                          Estimation=round(c(object$ORd.avg      ,object$ORn.avg      ,triout.avg.NM(   object$ORd.avg.NM                   ,object$ORn.avg.NM)       ,object$ORz.avg      ,object$ORtau.coef) ,4),
+  #                          IC.inf    =round(c(object$ORd.avg.ci[1],object$ORn.avg.ci[1],triout.ci.avg.NM(object$ORd.avg.ci.NM             ,object$ORn.avg.ci.NM)[,1],object$ORz.avg.ci[1],object$ORtau.ci[1]),4),
+  #                          IC.sup    =round(c(object$ORd.avg.ci[2],object$ORn.avg.ci[2],triout.ci.avg.NM(object$ORd.avg.ci.NM             ,object$ORn.avg.ci.NM)[,2],object$ORz.avg.ci[2],object$ORtau.ci[2]),4),
+  #                          P.val     =round(c(object$ORd.avg.p    ,object$ORn.avg.p    ,triout.avg.NM(   object$ORd.avg.p.NM                 ,object$ORn.avg.p.NM)     ,object$ORz.avg.p    ,object$ORtau.p)    ,4)
+  #         )
+  #
+  #         logORnavg=data.frame("."        =paste("logOR",nom.navg),
+  #                              Estimation=round(c(object$logORd1,               object$logORn1,      object$logORd0,      object$logORn0,      triout.NM(   object$logORd1.NM,   object$logORn1.NM,   object$logORd0.NM,   object$logORn0.NM),       object$logORz1,      object$logORz0,      object$logORtau.coef), 4),
+  #                              IC.inf    =round(c(object$logORd1.ci[1],         object$logORn1.ci[1],object$logORd0.ci[1],object$logORn0.ci[1],triout.ci.NM(object$logORd1.ci.NM,object$logORn1.ci.NM,object$logORd0.ci.NM,object$logORn0.ci.NM)[,1],object$logORz1.ci[1],object$logORz0.ci[1],object$logORtau.ci[1]),4),
+  #                              IC.sup    =round(c(object$logORd1.ci[2],         object$logORn1.ci[2],object$logORd0.ci[2],object$logORn0.ci[2],triout.ci.NM(object$logORd1.ci.NM,object$logORn1.ci.NM,object$logORd0.ci.NM,object$logORn0.ci.NM)[,2],object$logORz1.ci[2],object$logORz0.ci[2],object$logORtau.ci[2]),4),
+  #                              P.val     =round(c(object$logORd1.p,             object$logORn1.p,    object$logORd0.p,    object$logORn0.p,    triout.NM(   object$logORd1.p.NM, object$logORn1.p.NM, object$logORd0.p.NM, object$logORn0.p.NM),     object$logORz1.p,    object$logORz0.p,    object$logORtau.p),    4)
+  #         )
+  #         logORavg=data.frame("."        =paste("logOR",nom.avg),
+  #                             Estimation=round(c(object$logORd.avg,object$logORn.avg,triout.avg.NM(object$logORd.avg.NM,object$logORn.avg.NM),object$logORz.avg,object$logORtau.coef),4),
+  #                             IC.inf    =round(c(object$logORd.avg.ci[1],object$logORn.avg.ci[1],triout.ci.avg.NM(object$logORd.avg.ci.NM,object$logORn.avg.ci.NM)[,1],object$logORz.avg.ci[1],object$logORtau.ci[1]),4),
+  #                             IC.sup    =round(c(object$logORd.avg.ci[2],object$logORn.avg.ci[2],triout.ci.avg.NM(object$logORd.avg.ci.NM,object$logORn.avg.ci.NM)[,2],object$logORz.avg.ci[2],object$logORtau.ci[2]),4),
+  #                             P.val     =round(c(object$logORd.avg.p,object$logORn.avg.p,triout.avg.NM(object$logORd.avg.p.NM,object$logORn.avg.p.NM),object$logORz.avg.p,object$logORtau.p),4)
+  #         )
+  #       }}
+  #     pmtest= c(object$d1,object$d0,object$d1.NM,object$d0.NM,object$z1,object$z0,object$tau.coef)
+  #     if(sum(pmtest>0)!=length(pmtest)){
+  #       warning("Proportion mediated warning : This quantity makes sense only when the sign the causal mediated effects (i.e., the numerator) are the same as the sign of the average total effect (i.e., the denominator) and when the total effect is bigger than the mediated effect. Confidence intervals may be meaningless when the mediated and/or direct effects have a different sign.")
+  #     }
+  #   }
+  #   else {
+  #     navg=data.frame("."        =c("ACME.treat","PM(treat)","ACME.control","PM(control)","ADE.treat","ADE.control","Total Effect"),
+  #                     Estimation=round(c(object$d1,object$n1,object$d0,object$n0,object$z1,object$z0,object$tau.coef),4),
+  #                     IC.inf    =round(c(object$d1.ci[1],object$n1.ci[1],object$d0.ci[1],object$n0.ci[1],object$z1.ci[1],object$z0.ci[1],object$tau.ci[1]),4),
+  #                     IC.sup    =round(c(object$d1.ci[2],object$n1.ci[2],object$d0.ci[2],object$n0.ci[2],object$z1.ci[2],object$z0.ci[2],object$tau.ci[2]),4),
+  #                     P.val     =round(c(object$d1.p,object$n1.p,object$d0.p,object$n0.p,object$z1.p,object$z0.p,object$tau.p),4)
+  #     )
+  #
+  #     avg=data.frame("."        =c("ACME","PM","ADE","Total Effect"),
+  #                    Estimation=round(c(object$d.avg,object$n.avg,object$z.avg,object$tau.coef),4),
+  #                    IC.inf    =round(c(object$d.avg.ci[1],object$n.avg.ci[1],object$z.avg.ci[1],object$tau.ci[1]),4),
+  #                    IC.sup    =round(c(object$d.avg.ci[2],object$n.avg.ci[2],object$z.avg.ci[2],object$tau.ci[2]),4),
+  #                    P.val     =round(c(object$d.avg.p,object$n.avg.p,object$z.avg.p,object$tau.p),4)
+  #     )
+  #     if (!is.null(object$model.y$family)){
+  #       if (object$model.y$family$link=="logit"){
+  #         warning("The proportion mediated on the OR scale can be considered if the outcome is rare, otherwise the proportion mediated on effect scale and/or logOR scale have to be considered.")
+  #
+  #         ORnavg=data.frame("."        =c("OR.ACME.treat","OR.PM(treat)","OR.ACME.control","OR.PM(control)","OR.ADE.treat","OR.ADE.control","OR.Total Effect"),
+  #                           Estimation=round(c(object$ORd1,object$ORn1,object$ORd0,object$ORn0,object$ORz1,object$ORz0,object$ORtau.coef),4),
+  #                           IC.inf    =round(c(object$ORd1.ci[1],object$ORn1.ci[1],object$ORd0.ci[1],object$ORn0.ci[1],object$ORz1.ci[1],object$ORz0.ci[1],object$ORtau.ci[1]),4),
+  #                           IC.sup    =round(c(object$ORd1.ci[2],object$ORn1.ci[2],object$ORd0.ci[2],object$ORn0.ci[2],object$ORz1.ci[2],object$ORz0.ci[2],object$ORtau.ci[2]),4),
+  #                           P.val     =round(c(object$ORd1.p,object$ORn1.p,object$ORd0.p,object$ORn0.p,object$ORz1.p,object$ORz0.p,object$ORtau.p),4)
+  #         )
+  #
+  #         ORavg=data.frame("."        =c("OR.ACME","OR.PM","OR.ADE","OR.Total Effect"),
+  #                          Estimation=round(c(object$ORd.avg,object$ORn.avg,object$ORz.avg,object$ORtau.coef),4),
+  #                          IC.inf    =round(c(object$ORd.avg.ci[1],object$ORn.avg.ci[1],object$ORz.avg.ci[1],object$ORtau.ci[1]),4),
+  #                          IC.sup    =round(c(object$ORd.avg.ci[2],object$ORn.avg.ci[2],object$ORz.avg.ci[2],object$ORtau.ci[2]),4),
+  #                          P.val     =round(c(object$ORd.avg.p,object$ORn.avg.p,object$ORz.avg.p,object$ORtau.p),4)
+  #         )
+  #
+  #         logORnavg=data.frame("."        =c("logOR.ACME.treat","logOR.PM(treat)","logOR.ACME.control","logOR.PM(control)","logOR.ADE.treat","logOR.ADE.control","logOR.Total Effect"),
+  #                              Estimation=round(c(object$logORd1,object$logORn1,object$logORd0,object$logORn0,object$logORz1,object$logORz0,object$logORtau.coef),4),
+  #                              IC.inf    =round(c(object$logORd1.ci[1],object$logORn1.ci[1],object$logORd0.ci[1],object$logORn0.ci[1],object$logORz1.ci[1],object$logORz0.ci[1],object$logORtau.ci[1]),4),
+  #                              IC.sup    =round(c(object$logORd1.ci[2],object$logORn1.ci[2],object$logORd0.ci[2],object$logORn0.ci[2],object$logORz1.ci[2],object$logORz0.ci[2],object$logORtau.ci[2]),4),
+  #                              P.val     =round(c(object$logORd1.p,object$logORn1.p,object$logORd0.p,object$logORn0.p,object$logORz1.p,object$logORz0.p,object$logORtau.p),4)
+  #         )
+  #         logORavg=data.frame("."        =c("logOR.ACME","logOR.PM","logOR.ADE","logOR.Total Effect"),
+  #                             Estimation=round(c(object$logORd.avg,object$logORn.avg,object$logORz.avg,object$logORtau.coef),4),
+  #                             IC.inf    =round(c(object$logORd.avg.ci[1],object$logORn.avg.ci[1],object$logORz.avg.ci[1],object$logORtau.ci[1]),4),
+  #                             IC.sup    =round(c(object$logORd.avg.ci[2],object$logORn.avg.ci[2],object$logORz.avg.ci[2],object$logORtau.ci[2]),4),
+  #                             P.val     =round(c(object$logORd.avg.p,object$logORn.avg.p,object$logORz.avg.p,object$logORtau.p),4)
+  #         )
+  #       }}
+  #     pmtest= c(object$d1,object$d0,object$z1,object$z0,object$tau.coef)
+  #     if(sum(pmtest>0)!=length(pmtest)){
+  #       warning("Proportion mediated warning : This quantity makes sense only when the sign the causal mediated effects (i.e., the numerator) are the same as the sign of the average total effect (i.e., the denominator) and when the total effect is bigger than the mediated effect. Confidence intervals may be meaningless when the mediated and/or direct effects have a different sign.")
+  #     }
+  #   }
+  #   if (opt=="avg"){
+  #     if (is.null(object$model.y$family) || object$model.y$family$link=="probit")
+  #     {res=avg}
+  #     else{
+  #       if (object$model.y$family$link=="logit" & logit=="all"){
+  #         res=cbind(avg,ORavg,logORavg)
+  #       }
+  #       else if (object$model.y$family$link=="logit" & logit=="OR"){
+  #         res=ORavg
+  #       }
+  #       else if (object$model.y$family$link=="logit" & logit=="logOR"){
+  #         res=logORavg
+  #       }
+  #       else{
+  #         res=avg
+  #       }
+  #     }
+  #
+  #   }
+  #   else{
+  #
+  #     if (is.null(object$model.y$family) || object$model.y$family$link=="probit")
+  #     {res=navg}
+  #     else {
+  #       if (object$model.y$family$link=="logit" & logit=="all"){
+  #         res=cbind(navg,ORnavg,logORnavg)
+  #       }
+  #       else if (object$model.y$family$link=="logit" & logit=="OR"){
+  #         res=ORnavg
+  #       }
+  #       else if (object$model.y$family$link=="logit" & logit=="logOR"){
+  #         res=logORnavg
+  #       }
+  #       else{
+  #         res=navg
+  #       }
+  #     }
+  #
+  #   }
+  #   return(res)
+  # }
+  #
+  #
+  # triout.NM = function(d1,pm1,d0,pm0){
+  #   NM=length(d1)
+  #   out=rep(NA,4*NM)
+  #   u=seq(1,4*NM,4)
+  #   out[u]=d1
+  #   out[u+1]=pm1
+  #   out[u+2]=d0
+  #   out[u+3]=pm0
+  #   return(out)
+  # }
+  #
+  # triout.ci.NM = function(d1.ci,p1.ci,d0.ci,p0.ci){
+  #   NM=length(d1.ci[,1])
+  #   res=array(NA,dim=c(4*NM,2))
+  #   u=seq(1,4*NM,4)
+  #   v=u+1
+  #   w=u+2
+  #   m=u+3
+  #
+  #   for (i in 1:NM){
+  #     res[u[i],] = d1.ci[i,]
+  #     res[v[i],] = p1.ci[i,]
+  #     res[w[i],] = d0.ci[i,]
+  #     res[m[i],] = p0.ci[i,]
+  #   }
+  #
+  #   return(res)
+  # }
+  #
+  # triout.ci.avg.NM = function(d.ci,pm.ci){
+  #   NM = length(d.ci[,1])
+  #   res = array(NA,dim=c(2*NM,2))
+  #   u = seq(1,2*NM,2)
+  #   v = u+1
+  #
+  #   for (i in 1:NM){
+  #     res[u[i],] = d.ci[i,]
+  #     res[v[i],] = pm.ci[i,]
+  #   }
+  #
+  #   return(res)
+  # }
+  #
+  # triout.avg.NM = function(d,pm){
+  #   NM=length(d)
+  #   out=rep(NA,2*NM)
+  #   u=seq(1,2*NM,2)
+  #   out[u]=d
+  #   out[u+1]=pm
+  #   return(out)
+  # }
+  #
+  #
 
   # end of auxiliary functions
   #####################
