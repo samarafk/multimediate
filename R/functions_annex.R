@@ -1,12 +1,3 @@
-#' getvarnames
-#'
-#'
-#' 'getvarnames' is used to get all variable names from a regression model
-#'
-#'@param formula the formula from which to extract variable names
-#'@param data data frame with variables from the formula
-#'@return 'getvarnames' returns a list with 'varnames' (referring to all variable names), 'xvar' (referring to the predictors), and 'yvar' (referring to the outcome)
-
 getvarnames = function(formula, data = NULL)
 {
   if (is.character(formula))
@@ -30,6 +21,7 @@ getvarnames = function(formula, data = NULL)
   return(list(varnames=lvnm, xvar=lxv, yvar=lyv))
 }
 
+#' @export
 plot.process = function(model,logit="effects"){
 
   if (logit=="OR"){
