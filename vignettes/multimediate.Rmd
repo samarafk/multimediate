@@ -5,6 +5,7 @@ vignette: >
   %\VignetteIndexEntry{multimediate}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteBuild false
 ---
 ## Multiple mediation analysis 
 ```{r, include = FALSE}
