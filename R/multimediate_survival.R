@@ -1,4 +1,4 @@
-#' multimediate_survival - internal function called by multimediate function
+#' multimediate_survival - internal function
 #'
 #' @param lmodel.m A list of fitted mediator models (`lm`, `glm`, or `polr` objects).
 #' @param correlated a logical value. if 'FALSE' a identity matrix is used for the matrix of correlation of mediators; if 'TRUE' matrix of correlation is estimated. Default is 'FALSE'.
@@ -16,7 +16,6 @@
 #' along with confidence intervals and p-values for each.
 #'
 #'
-#' @export
 #' @importFrom MASS mvrnorm
 #' @importFrom mvtnorm rmvnorm
 #' @importFrom utils txtProgressBar
