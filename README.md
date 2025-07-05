@@ -24,4 +24,4 @@ install.packages("multimediate")
 
 ## Examples
 
-Vignettes and examples of usage can be found at (https://samarafk.github.io/multimediate/).
+Vignettes and examples of usage can be found at https://samarafk.github.io/multimediate/.
