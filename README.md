@@ -1,32 +1,29 @@
 # multimediate
 
-This package is based on the work presented in A. Jérolon et al., [Causal mediation analysis in presence of multiple mediators uncausally related](https://www.degruyter.com/document/doi/10.1515/ijb-2019-0088/html).
+This package is based on the work presented in A. Jérolon et al., [Causal mediation analysis in presence of multiple mediators uncausally related](https://doi.org/10.1515/ijb-2019-0088).
 
 The work allowing multiple mediation analyzes with a survival outcome was 
 largely developed with Arce Domingo-Relloso. 
-This work is presented in Domingo-Relloso et al., [Causal mediation for uncausally related mediators in the context of survival analysis](https://pubmed.ncbi.nlm.nih.gov/38405856/). 
+This work is presented in Domingo-Relloso et al., [Causal mediation for uncausally related mediators in the context of survival analysis](https://doi.org/10.1101/2024.02.16.24302923). 
 
 
-Examples of use and supported models by our package are shown in vignettes/multimediate.html .
 
+## Installation
 
-Follow the following instructions to download the package and install / use the vignettes :
+Follow the following instructions to install the package:
 
 ```r
 library(devtools)
 
-install_github("samarafk/multimediate", build_vignettes = TRUE) # It will take time as the vignettes are generated
+install_github("samarafk/multimediate") 
 
 library(multimediate)
 
 ?multimediate
 ```
 
+## Examples
 
 
-Click on "Index" at the end of the help page
 
-Click on "User guides, package vignettes and other documentation"
-
-Then you can choose the vignettes your are interested in
-
+[Vignette: Introduction to the Package](https://github.com/samarafk/multimediate/blob/master/vignettes/multimediate.html)
