@@ -9,7 +9,7 @@ This work is presented in Domingo-Relloso et al., [Causal mediation for uncausal
 
 ## Installation
 
-Follow the following instructions to install the package from the repository (https://github.com/samarafk/multimediate):
+You can install the package from the repository (https://github.com/samarafk/multimediate):
 
 ```r
 library(devtools)
