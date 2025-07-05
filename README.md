@@ -25,6 +25,6 @@ library(multimediate)
 ## Examples
 
 
-[![Vignette](https://img.shields.io/badge/vignette-online-blue)](multimediateVignette1.html)
+[![Vignette](https://img.shields.io/badge/vignette-online-blue)](https://samarafk.github.io/multimediate)
 
 
