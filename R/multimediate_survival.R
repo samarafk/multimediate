@@ -1,8 +1,4 @@
-#' multimediate_survival
-#'
-#' The `multimediate_survival` function performs causal mediation analysis
-#' in the context of survival outcomes, allowing for multiple, potentially correlated mediators.
-#' It supports linear, generalized linear, ordinal logistic and aalen models.
+#' multimediate_survival - internal function called by multimediate function
 #'
 #' @param lmodel.m A list of fitted mediator models (`lm`, `glm`, or `polr` objects).
 #' @param correlated a logical value. if 'FALSE' a identity matrix is used for the matrix of correlation of mediators; if 'TRUE' matrix of correlation is estimated. Default is 'FALSE'.
