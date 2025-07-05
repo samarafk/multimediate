@@ -21,3 +21,7 @@ Or you can install the released version of skewlmm from [CRAN](https://cran.r-pr
 ```r
 install.packages("multimediate")
 ```
+
+## Examples
+
+Vignettes and examples of usage can be found at (https://samarafk.github.io/multimediate/).
