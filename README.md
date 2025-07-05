@@ -9,7 +9,7 @@ This work is presented in Domingo-Relloso et al., [Causal mediation for uncausal
 
 ## Installation
 
-Follow the following instructions to install the package:
+Follow the following instructions to install the package from the repository (https://github.com/samarafk/multimediate):
 
 ```r
 library(devtools)
@@ -18,6 +18,6 @@ install_github("samarafk/multimediate")
 
 Or you can install the released version of skewlmm from [CRAN](https://cran.r-project.org) with:
 
-```{r}
+```r
 install.packages("multimediate")
 ```
