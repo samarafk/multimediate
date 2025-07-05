@@ -42,17 +42,17 @@ plot.mm = function(x, treatment = NULL,logit="logOR", labels = NULL, effect.type
                         three = c(0, 1, 2))
   }
   if (logit=="logOR"){
-    param <- plot.process(x,logit="logOR")
+    param <- extract.plot.process(x,logit="logOR")
     main=paste(main, "on log OR scale")
     vline <- 0
   }
   else if (logit=="OR"){
-    param <- plot.process(x,logit="OR")
+    param <- extract.plot.process(x,logit="OR")
     main=paste(main, "on OR scale")
     vline <- 1
   }
   else{
-    param <- plot.process(x,logit="effects")
+    param <- extract.plot.process(x,logit="effects")
     vline <- 0
   }
   NM=length(x$mediator)
