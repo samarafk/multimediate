@@ -22,7 +22,7 @@ getvarnames = function(formula, data = NULL)
 }
 
 #' @export
-plot.process = function(model,logit="effects"){
+extract.plot.process = function(model,logit="effects"){
 
   if (logit=="OR"){
     coef.vec.1 <- c(model$ORd1, model$ORz1)
