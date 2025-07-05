@@ -19,7 +19,8 @@ Description: Estimating various quantities for causal mediation analysis, includ
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-URL: https://github.com/samarafk/multimediate
+URL: https://github.com/samarafk/multimediate,
+     https://samarafk.github.io/multimediate/
 Imports: 
     rmutil,
     MASS, 
