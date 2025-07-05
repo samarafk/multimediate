@@ -21,7 +21,6 @@ getvarnames = function(formula, data = NULL)
   return(list(varnames=lvnm, xvar=lxv, yvar=lyv))
 }
 
-#' @export
 extract.plot.process = function(model,logit="effects"){
 
   if (logit=="OR"){
