@@ -2,7 +2,7 @@
 % Please edit documentation in R/multimediate_survival.R
 \name{multimediate_survival}
 \alias{multimediate_survival}
-\title{multimediate_survival - internal function called by multimediate function}
+\title{multimediate_survival - internal function}
 \usage{
 multimediate_survival(
   lmodel.m,
@@ -46,5 +46,5 @@ A list containing estimated direct, indirect (mediated), and total effects,
 along with confidence intervals and p-values for each.
 }
 \description{
-multimediate_survival - internal function called by multimediate function
+multimediate_survival - internal function
 }
