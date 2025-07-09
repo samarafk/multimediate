@@ -11,6 +11,7 @@
 #' @param fun A summary function applied to the simulated effects (default: `mean`).
 #' @param data A data frame containing the variables used in the models.
 #' @param peryr Scaling factor for incidence rates per person-year (default: 100,000).
+#' @param verbose Logical. If `TRUE` (default), messages and a progress bar are displayed during execution.
 #'
 #' @return A list containing estimated direct, indirect (mediated), and total effects,
 #' along with confidence intervals and p-values for each.
@@ -22,10 +23,13 @@
 #' @importFrom utils setTxtProgressBar
 #' @importFrom timereg aalen
 #' @importFrom utils tail
+#'
+#' @keywords internal
 
 
 
-multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.value=1,control.value=0,J=1000,conf.level=0.95, fun=mean, data=NULL, peryr=100000){
+
+multimediate_survival=function(lmodel.m, correlated = FALSE, model.y, treat, treat.value = 1, control.value = 0, J = 1000,conf.level = 0.95, fun = mean, data = NULL, peryr = 100000, verbose = TRUE){
 
   N=dim(lmodel.m[[1]]$model)[1]
   NM=length(lmodel.m)
@@ -56,7 +60,6 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
   MModel = list()
   for (nm in 1:NM){
     MModel[[nm]]=rmvnorm(J, mean = c(coef(lmodel.m[[nm]]),lmodel.m[[nm]]$zeta), sigma = vcov(lmodel.m[[nm]]))
-    #MModel[[nm]]=rmvnorm(J, mean = c(coef(lmodel.m[[nm]])), sigma = vcov(lmodel.m[[nm]]))
     mediator=c(mediator,names(lmodel.m[[nm]]$model)[1])
   }
 
@@ -92,8 +95,8 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
 
   PredictM1<-PredictM0<-PredictM1b<-PredictM0b<- array(0, dim=c(J,N,NM))
 
-  print("Simulation of counterfactuals mediators")
-  pb <- txtProgressBar(min = 0, max = NM, style = 3,title ="Simulation of counterfactuals mediators")
+  if (verbose) print("Simulation of counterfactuals mediators")
+  if (verbose) pb <- txtProgressBar(min = 0, max = NM, style = 3,title ="Simulation of counterfactuals mediators")
   for (nm in 1:NM){
     pred.data.t <- pred.data.c <- model.frame(lmodel.m[[nm]])
 
@@ -127,22 +130,10 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
       PredictM0b[,,nm] = array(muM0,dim=c(J,N)) + array(error[,nm], dim=c(J,N))
 
       seuil=c(-Inf,lmodel.m[[nm]]$zeta,Inf)
-      # if (is.null(dim(mmat.t))){
-      #   seuil=cbind(-Inf,MModel[[nm]][,-1],Inf)}
-      # else{
-      #   seuil=cbind(-Inf,MModel[[nm]][,-(1:dim(mmat.t)[2])],Inf)
-      # }
       for (k in 1:length(lmodel.m[[nm]]$lev)){
         for (j in 1:J){
-          #for (n in 1:N){
-          # a=which(PredictM1b[,n,nm]>seuil[,k] & PredictM1b[,n,nm]<=seuil[,k+1])
-          # b=which(PredictM0b[,n,nm]>seuil[,k] & PredictM0b[,n,nm]<=seuil[,k+1])
-          # a=which(PredictM1b[,n,nm]>seuil[k] & PredictM1b[,n,nm]<=seuil[k+1])
-          # b=which(PredictM0b[,n,nm]>seuil[k] & PredictM0b[,n,nm]<=seuil[k+1])
           a=which(PredictM1b[j,,nm]>seuil[k] & PredictM1b[j,,nm]<=seuil[k+1])
           b=which(PredictM0b[j,,nm]>seuil[k] & PredictM0b[j,,nm]<=seuil[k+1])
-          # PredictM1[a,n,nm]=lmodel.m[[nm]]$lev[k]
-          # PredictM0[b,n,nm]=lmodel.m[[nm]]$lev[k]
           PredictM1[j,a,nm]=lmodel.m[[nm]]$lev[k]
           PredictM0[j,b,nm]=lmodel.m[[nm]]$lev[k]
         }
@@ -161,20 +152,14 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
         PredictM0[,,nm]=(PredictM0[,,nm]>0)*1
       }
     }
-    setTxtProgressBar(pb, nm,title)
+    if (verbose) setTxtProgressBar(pb, nm,title)
   }
-  close(pb)
+  if (verbose) close(pb)
 
   effect.tmp.NM=OR.NM=array(NA, dim = c(N, J, 2, NM))
   effect.tmp=OR=array(NA, dim = c(N, J, 4))
-  #OR.NM=array(NA, dim = c(J, 2, NM))
-  #OR=array(NA, dim = c(J, 4))
-  #OR.NM.polr=array(NA, dim = c(J, 2, NM,(length(model.y$lev)-2)))
-  #OR.polr=array(NA, dim = c(J, 4,(length(model.y$lev)-2)))
-
   title=paste("Simulation of counterfactuals outcomes ",1:4,"/4",sep="")
   for (e in 1:4) {
-    # switch: switch to the value at the e-th position of the values provided
     tt <- switch(e, c(1, 1, 1, 0), c(0, 0, 1, 0),
                  c(1, 0, 1, 1), c(1, 0, 0, 0))
     Pr0<-Pr1<-ORPr0<-ORPr1<- matrix(NA, nrow = N, ncol = J)
@@ -182,8 +167,8 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
       Pr0.NM<-Pr1.NM <-ORPr0.NM<-ORPr1.NM <- array(NA,dim=c(N,J,NM))
     }
 
-    print(title[e])
-    pb <- txtProgressBar(min = 0, max = J, style = 3,title=title[e])
+    if (verbose) print(title[e])
+    if (verbose) pb <- txtProgressBar(min = 0, max = J, style = 3,title=title[e])
 
     for (j in 1:J) {
       if(inherits(model.y, "aalen")){
@@ -219,8 +204,6 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
       pred.data.t[, mediator] <- PredictMt
       pred.data.c[, mediator] <- PredictMc
 
-
-      #################
       for (nm in 1:NM){
         if(inherits(lmodel.m[[nm]],"polr")){
           pred.data.c[,mediator[nm]]=as.factor(pred.data.c[,mediator[nm]])
@@ -242,10 +225,7 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
         }
       }
 
-      #get_last_level <- function(f) {
-       # if (!is.factor(f)) stop("Input must be a factor.")
-      #  levels(f)[length(levels(f))]
-     # }
+
 
       get_last_level <- function(data, cols) {
         sapply(cols, function(col) {
@@ -269,25 +249,19 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
         }))
       }
 
-      ###############################
       if(inherits(model.y, "aalen")){
         trans.t <- model.matrix(~ ., data=data[,getvarnames(model.y$call)$xvar])[,-1]
         trans.t[, grep(treat,colnames(trans.t))] <- as.numeric(as.character(pred.data.t[, treat]))
-        #alteracao samara criei mediator_y
         mediator_y <- get_levels_except_first(data, mediator)
-        #alteracao samara substitui mediator por mediator_y
         trans.t[, mediator_y] <- as.matrix(apply(pred.data.t[, mediator, drop = FALSE], 2, function(x) as.numeric(as.character(x))))
 
         trans.c <- model.matrix(~ ., data=data[,getvarnames(model.y$call)$xvar])[,-1]
         trans.c[, grep(treat,colnames(trans.c))] <- as.numeric(as.character(pred.data.c[, treat]))
-        #alteracao samara substitui mediator por mediator_y
         trans.c[, mediator_y] <- as.matrix(apply(pred.data.c[, mediator, drop = FALSE], 2, function(x) as.numeric(as.character(x))))
 
         ymat.t = trans.t
         ymat.c = trans.c
 
-
-        # Check if exposure-mediator interactions
         if(length(grep(' * ', row.names(coef(model.y))))>0){
           ymat.t = as.data.frame(trans.t)
           ymat.c = as.data.frame(trans.c)
@@ -317,7 +291,6 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
         ymat.c[,colnames(ymat.c) %in% colnames(trans.c)]=trans.c
         ymat.c[,!(colnames(ymat.c) %in% colnames(trans.c))]=0
 
-        # Check if exposure-mediator interactions
         if(!inherits(model.y,"polr") & length(grep(':', names(coef(model.y))))>0){
           ymat.t <- as.data.frame(ymat.t)
           ymat.c <- as.data.frame(ymat.c)
@@ -355,13 +328,10 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
         Pr1[,j] <- t(as.matrix(YModel[j,1:dim(ymat.t)[2]])) %*% t(ymat.t)+ Yerror
         Pr0[,j] <- t(as.matrix(YModel[j,1:dim(ymat.c)[2]])) %*% t(ymat.c)+ Yerror
 
-        #seuilY=cbind(-Inf,YModel[,-(1:dim(ymat.t)[2]+1)],Inf)
         seuilY=c(-Inf,model.y$zeta,Inf)
         Pr1b=as.numeric(Pr1[,j])
         Pr0b=as.numeric(Pr0[,j])
         for (k in 1:length(model.y$lev)){
-          #a=which(Pr1b>seuilY[j,k] & Pr1b<=seuilY[j,k+1])
-          #b=which(Pr0b>seuilY[j,k] & Pr0b<=seuilY[j,k+1])
           a=which(Pr1b>seuilY[k] & Pr1b<=seuilY[k+1])
           b=which(Pr0b>seuilY[k] & Pr0b<=seuilY[k+1])
           Pr1[a,j]=model.y$lev[k]
@@ -426,13 +396,8 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
           if(inherits(model.y, "aalen")){
             trans.t <- model.matrix(~ ., data=data[,getvarnames(model.y$call)$xvar])[,-1]
             trans.t[, grep(treat,colnames(trans.t))] <- as.numeric(as.character(pred.data.t[, treat]))
-            #alteracao samara criei mediator_y
             mediator_y <- get_levels_except_first(data, mediator)
-            #alteracao samara substitui mediator por mediator_y
-            #alteracao samara substitui as.matrix por as.matrix(as.numeric(as.character(
-            #trans.t[, mediator_y] <- as.matrix(as.numeric(as.character(pred.data.t[, mediator])))
             trans.t[, mediator_y] <- as.matrix(apply(pred.data.t[, mediator, drop = FALSE], 2, function(x) as.numeric(as.character(x))))
-            #trans.t[, mediator] <- as.matrix(pred.data.t[, mediator])
 
             trans.c <- model.matrix(~ ., data=data[,getvarnames(model.y$call)$xvar])[,-1]
             trans.c[, grep(treat,colnames(trans.c))] <- as.numeric(as.character(pred.data.c[, treat]))
@@ -442,7 +407,6 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
             ymat.c = trans.c
 
 
-            # Check if exposure-mediator interactions
             if(length(grep(' * ', row.names(coef(model.y))))>0){
               ymat.t = as.data.frame(trans.t)
               ymat.c = as.data.frame(trans.c)
@@ -472,7 +436,6 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
             ymat.c[,!(colnames(ymat.c) %in% colnames(trans.c))]=0
 
 
-            # Check if exposure-mediator interactions
             if(!inherits(model.y,"polr") & length(grep(':', names(coef(model.y))))>0){
               ymat.t <- as.data.frame(ymat.t)
               ymat.c <- as.data.frame(ymat.c)
@@ -513,8 +476,6 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
             Pr1b.NM=as.numeric(Pr1.NM[,j,nm])
             Pr0b.NM=as.numeric(Pr0.NM[,j,nm])
             for (k in 1:length(model.y$lev)){
-              # a=which(Pr1b.NM>seuilY[j,k] & Pr1b.NM<=seuilY[j,k+1])
-              # b=which(Pr0b.NM>seuilY[j,k] & Pr0b.NM<=seuilY[j,k+1])
               a=which(Pr1b.NM>seuilY[k] & Pr1b.NM<=seuilY[k+1])
               b=which(Pr0b.NM>seuilY[k] & Pr0b.NM<=seuilY[k+1])
               Pr1.NM[a,j,nm]=model.y$lev[k]
@@ -525,9 +486,9 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
           }
         }
       }
-      setTxtProgressBar(pb, j,title=title[e])
+      if (verbose) setTxtProgressBar(pb, j,title=title[e])
     }
-    close(pb)
+    if (verbose) close(pb)
 
     if (!is.null(model.y$family)){
 
@@ -540,14 +501,12 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
         }
 
         OR[,,e]=((1-expit(ORPr0))/expit(ORPr0))*((expit(ORPr1))/(1-expit(ORPr1)))
-        #OR[,e]=(1-apply(Pr0>0,c(2),mean))/(1-apply(Pr1>0,c(2),mean))*(1+(apply(effect.tmp[,,e],c(2),mean)/apply(Pr0>0,c(2),mean)))
       }
       if (NM!=1 & e<=2){
 
         effect.tmp.NM[,,e,]=(Pr1.NM>0)-(Pr0.NM>0)
         if (model.y$family$link=="logit"){
           OR.NM[,,e,]=((1-expit(ORPr0.NM))/expit(ORPr0.NM))*((expit(ORPr1.NM))/(1-expit(ORPr1.NM)))
-          #OR.NM[,e,]=(1-apply(Pr0.NM>=0, c(2,3), mean))/(1-apply(Pr1.NM>=0, c(2,3), mean))*(1+(apply(effect.tmp.NM[,,e,],c(2,3),mean)/apply(Pr0.NM>=0, c(2,3), mean)))
         }
 
       }
@@ -557,16 +516,8 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
       } else{
         effect.tmp[,,e]=Pr1-Pr0
       }
-      # if (inherits(model.y,"polr")){
-      #   for( pol in 2:(length(model.y$lev)-1)){
-      #     print(pol)
-      #     lev=as.numeric(model.y$lev)[pol]
-      #     OR.polr[,e,pol]=(apply(Pr0<=lev,c(2),mean))/(apply(Pr1<=lev,c(2),mean))*(apply(Pr1>lev,c(2),mean))/(apply(Pr0>lev,c(2),mean))
-      #   }
-      #
-      # }
 
-      ###################
+
 
       if (NM!=1 & e<=2){
         if(inherits(model.y, "aalen")){
@@ -574,22 +525,12 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
         } else{
           effect.tmp.NM[,,e,]=(Pr1.NM-Pr0.NM)
         }
-        #  if (inherits(model.y,"polr")){
-        #   for( pol in 2:(length(model.y$lev)-1)){
-        #     print(pol)
-        #     lev=as.numeric(model.y$lev)[pol]
-        #     OR.NM.polr[,e,,pol]=(apply(Pr0.NM<=lev,c(2,3),mean))/(apply(Pr1.NM<=lev,c(2,3),mean))*(apply(Pr1.NM>lev,c(2,3),mean))/(apply(Pr0.NM>lev,c(2,3),mean))
-        #   }
-        # }
+
       }
     }
   }
-  print("Computing average point estimates together with p-values and confidence intervals")
-  # Step 3.3 : Compute the effects.
-  # Compute the average effects. That is, we simply take the difference accross
-  # two outcome predictions under treatment and the two outcome predictions under
-  # control and average across the predictions for each of the n units in the study.
-  # This provides us with effect^(j)(t), which is one Monte Carlo draw of the average effect
+  if (verbose) print("Computing average point estimates together with p-values and confidence intervals")
+
 
   et1 <- effect.tmp[, , 1] # joint mediated effect delta(1)
   et2 <- effect.tmp[, , 2] # joint mediated effect delta(0)
@@ -613,8 +554,8 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
   z1 <- fun(zeta.1,na.rm=TRUE)
   z0 <- fun(zeta.0,na.rm=TRUE)
   tau.coef <- fun(tau,na.rm=TRUE)
-  n0 <- fun(nu.0*is.finite(nu.0),na.rm=TRUE)#median(nu.0,na.rm=TRUE) # when total effect is 0 it produce NaN
-  n1 <- fun(nu.1*is.finite(nu.1),na.rm=TRUE)#median(nu.1,na.rm=TRUE)
+  n0 <- fun(nu.0*is.finite(nu.0),na.rm=TRUE)
+  n1 <- fun(nu.1*is.finite(nu.1),na.rm=TRUE)
   d.avg <- (d0 + d1)/2
   z.avg <- (z0 + z1)/2
   n.avg <- (n0 + n1)/2
@@ -630,27 +571,22 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
       ORzeta.1 <- t(as.matrix(apply(ORet3, 2, mean,na.rm=TRUE)))
       ORzeta.0 <- t(as.matrix(apply(ORet4, 2, mean,na.rm=TRUE)))
 
-      # ORdelta.1 <- OR[ , 1] # joint mediated effect ORdelta(1)
-      # ORdelta.0 <- OR[ , 2] # joint mediated effect ORdelta(0)
-      # ORzeta.1  <- OR[ , 3] # direct effect ORzeta(1)
-      # ORzeta.0  <- OR[ , 4] # direct effect ORzeta(0)
-
       ORtau <- (ORzeta.1*ORdelta.0 + ORzeta.0*ORdelta.1)/2
       ORnu.1 <- ORzeta.0*(ORdelta.1-1)/(ORzeta.0*ORdelta.1-1)
       ORnu.0 <- ORzeta.1*(ORdelta.0-1)/(ORzeta.1*ORdelta.0-1)
 
-      ORtau.coef <- fun(ORtau,na.rm=TRUE)#median(ORtau,na.rm=TRUE)
+      ORtau.coef <- fun(ORtau,na.rm=TRUE)
 
       ORdelta.avg <- (ORdelta.1 + ORdelta.0)/2
       ORnu.avg <- (ORnu.1 + ORnu.0)/2
       ORzeta.avg <- (ORzeta.1 + ORzeta.0)/2
 
-      ORd1 <- fun(ORdelta.1*is.finite(ORdelta.1),na.rm=TRUE)#median(ORdelta.1*is.finite(ORdelta.1),na.rm=TRUE)
-      ORn1 <- fun(ORnu.1*is.finite(ORnu.1),na.rm=TRUE)#median(ORnu.1*is.finite(ORnu.1),na.rm=TRUE)
-      ORd0 <- fun(ORdelta.0*is.finite(ORdelta.0),na.rm=TRUE)#median(ORdelta.0*is.finite(ORdelta.0),na.rm=TRUE)
-      ORn0 <- fun(ORnu.0*is.finite(ORnu.0),na.rm=TRUE)#median(ORnu.0*is.finite(ORnu.0),na.rm=TRUE)
-      ORz1 <- fun(ORzeta.1*is.finite(ORzeta.1),na.rm=TRUE)#median(ORzeta.1*is.finite(ORzeta.1),na.rm=TRUE)
-      ORz0 <- fun(ORzeta.0*is.finite(ORzeta.0),na.rm=TRUE)#median(ORzeta.0*is.finite(ORzeta.0),na.rm=TRUE)
+      ORd1 <- fun(ORdelta.1*is.finite(ORdelta.1),na.rm=TRUE)
+      ORn1 <- fun(ORnu.1*is.finite(ORnu.1),na.rm=TRUE)
+      ORd0 <- fun(ORdelta.0*is.finite(ORdelta.0),na.rm=TRUE)
+      ORn0 <- fun(ORnu.0*is.finite(ORnu.0),na.rm=TRUE)
+      ORz1 <- fun(ORzeta.1*is.finite(ORzeta.1),na.rm=TRUE)
+      ORz0 <- fun(ORzeta.0*is.finite(ORzeta.0),na.rm=TRUE)
 
       ORd.avg <- (ORd0 + ORd1)/2
       ORz.avg <- (ORz0 + ORz1)/2
@@ -664,26 +600,26 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
       logORzeta.1 <- log(ORzeta.1)
       logORzeta.0 <- log(ORzeta.0)
 
-      logORtau.coef <- fun(logORtau*is.finite(logORtau),na.rm=TRUE)#median(logORtau*is.finite(logORtau),na.rm=TRUE)
+      logORtau.coef <- fun(logORtau*is.finite(logORtau),na.rm=TRUE)
       logORnu.avg <- (logORnu.1 + logORnu.0)/2
-      logORn0 <- fun(logORnu.0*is.finite(logORnu.0),na.rm=TRUE)#median(logORnu.0*is.finite(logORnu.0),na.rm=TRUE)
-      logORn1 <- fun(logORnu.1*is.finite(logORnu.1),na.rm=TRUE)#median(logORnu.1*is.finite(logORnu.1),na.rm=TRUE)
+      logORn0 <- fun(logORnu.0*is.finite(logORnu.0),na.rm=TRUE)
+      logORn1 <- fun(logORnu.1*is.finite(logORnu.1),na.rm=TRUE)
       logORn.avg <- (logORn0 + logORn1)/2
 
       logORdelta.avg <- (logORdelta.1 + logORdelta.0)/2
       logORzeta.avg <- (logORzeta.1 + logORzeta.0)/2
-      logORd0 <- fun(logORdelta.0*is.finite(logORdelta.0),na.rm=TRUE)#median(logORdelta.0*is.finite(logORdelta.0),na.rm=TRUE)
-      logORd1 <- fun(logORdelta.1*is.finite(logORdelta.1),na.rm=TRUE)#median(logORdelta.1*is.finite(logORdelta.1),na.rm=TRUE)
-      logORz1 <- fun(logORzeta.1*is.finite(logORzeta.1),na.rm=TRUE)#median(logORzeta.1*is.finite(logORzeta.1),na.rm=TRUE)
-      logORz0 <- fun(logORzeta.0*is.finite(logORzeta.0),na.rm=TRUE)#median(logORzeta.0*is.finite(logORzeta.0),na.rm=TRUE)
-      logORtau.coef <- fun(logORtau*is.finite(logORtau),na.rm=TRUE)#median(logORtau*is.finite(logORtau),na.rm=TRUE)
+      logORd0 <- fun(logORdelta.0*is.finite(logORdelta.0),na.rm=TRUE)
+      logORd1 <- fun(logORdelta.1*is.finite(logORdelta.1),na.rm=TRUE)
+      logORz1 <- fun(logORzeta.1*is.finite(logORzeta.1),na.rm=TRUE)
+      logORz0 <- fun(logORzeta.0*is.finite(logORzeta.0),na.rm=TRUE)
+      logORtau.coef <- fun(logORtau*is.finite(logORtau),na.rm=TRUE)
       logORd.avg <- (logORd0 + logORd1)/2
       logORz.avg <- (logORz0 + logORz1)/2
     }}
 
   if (NM!=1){
-    et5 <- effect.tmp.NM[, ,1,] # mediated effect delta(1)
-    et6 <- effect.tmp.NM[, ,2,] # mediated effect delta(0)
+    et5 <- effect.tmp.NM[, ,1,]
+    et6 <- effect.tmp.NM[, ,2,]
 
     delta.1.NM <- t((apply(et5, c(2,3), mean)))
     eta.1.NM <- array(delta.1,dim=c(NM,J))-delta.1.NM
@@ -696,15 +632,15 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
     nu.avg.NM <- (nu.1.NM + nu.0.NM)/2
     d0.NM <- apply(delta.0.NM*is.finite(delta.0.NM),1,fun,na.rm=TRUE)
     d1.NM <- apply(delta.1.NM*is.finite(delta.1.NM),1,fun,na.rm=TRUE)
-    n0.NM <- apply(nu.0.NM*is.finite(nu.0.NM),1,fun,na.rm=TRUE)#apply(nu.0.NM,1,median,na.rm=TRUE)
-    n1.NM <- apply(nu.1.NM*is.finite(nu.1.NM),1,fun,na.rm=TRUE)#apply(nu.1.NM,1,median,na.rm=TRUE)
+    n0.NM <- apply(nu.0.NM*is.finite(nu.0.NM),1,fun,na.rm=TRUE)
+    n1.NM <- apply(nu.1.NM*is.finite(nu.1.NM),1,fun,na.rm=TRUE)
     d.avg.NM <- (d0.NM + d1.NM)/2
     n.avg.NM <- (n0.NM + n1.NM)/2
 
     if (!is.null(model.y$family)){
       if (model.y$family$link=="logit"){
-        ORet5 <- OR.NM[, ,1,] # mediated effect ORdelta(1)
-        ORet6 <- OR.NM[, ,2,] # mediated effect ORdelta(0)
+        ORet5 <- OR.NM[, ,1,]
+        ORet6 <- OR.NM[, ,2,]
         ORdelta.1.NM <- t((apply(ORet5, c(2,3), mean)))
         OReta.1.NM <- array(ORdelta.1,dim=c(NM,J))/ORdelta.1.NM
         ORdelta.0.NM <- t(as.matrix(apply(ORet6, c(2,3), mean)))
@@ -714,23 +650,14 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
         ORnu.1.NM <- array(ORzeta.0,dim=c(NM,J))*OReta.1.NM*(ORdelta.1.NM-1)/(array(ORzeta.0*ORdelta.1,dim=c(NM,J))-1)
         ORdelta.avg.NM <- (ORdelta.1.NM + ORdelta.0.NM)/2
         ORnu.avg.NM <- (ORnu.1.NM + ORnu.0.NM)/2
-        ORd0.NM <- apply(ORdelta.0.NM*is.finite(ORdelta.0.NM),1,fun,na.rm=TRUE)#apply(ORdelta.0.NM,2,median,na.rm=TRUE)
-        ORd1.NM <- apply(ORdelta.1.NM*is.finite(ORdelta.1.NM),1,fun,na.rm=TRUE)#apply(ORdelta.1.NM,2,median,na.rm=TRUE)
-        ORn0.NM <- apply(ORnu.0.NM*is.finite(ORnu.0.NM),1,fun,na.rm=TRUE)#apply(ORnu.0.NM,2,median,na.rm=TRUE)
-        ORn1.NM <- apply(ORnu.1.NM*is.finite(ORnu.1.NM),1,fun,na.rm=TRUE)#apply(ORnu.1.NM,2,median,na.rm=TRUE)
+        ORd0.NM <- apply(ORdelta.0.NM*is.finite(ORdelta.0.NM),1,fun,na.rm=TRUE)
+        ORd1.NM <- apply(ORdelta.1.NM*is.finite(ORdelta.1.NM),1,fun,na.rm=TRUE)
+        ORn0.NM <- apply(ORnu.0.NM*is.finite(ORnu.0.NM),1,fun,na.rm=TRUE)
+        ORn1.NM <- apply(ORnu.1.NM*is.finite(ORnu.1.NM),1,fun,na.rm=TRUE)
         ORd.avg.NM <- (ORd0.NM + ORd1.NM)/2
         ORn.avg.NM <- (ORn0.NM + ORn1.NM)/2
 
-        # ORnu.0.NM <- array(ORzeta.1,dim=c(J,NM))*(ORdelta.0.NM-1)/(array(ORzeta.1*ORdelta.0,dim=c(J,NM))-1)
-        # ORnu.1.NM <- array(ORzeta.0,dim=c(J,NM))*(ORdelta.1.NM-1)/(array(ORzeta.0*ORdelta.1,dim=c(J,NM))-1)
-        # ORdelta.avg.NM <- (ORdelta.1.NM + ORdelta.0.NM)/2
-        # ORnu.avg.NM <- (ORnu.1.NM + ORnu.0.NM)/2
-        # ORd0.NM <- apply(ORdelta.0.NM,2,mean,na.rm=TRUE)#apply(ORdelta.0.NM,2,median,na.rm=TRUE)
-        # ORd1.NM <- apply(ORdelta.1.NM,2,mean,na.rm=TRUE)#apply(ORdelta.1.NM,2,median,na.rm=TRUE)
-        # ORn0.NM <- apply(ORnu.0.NM,2,mean,na.rm=TRUE)#apply(ORnu.0.NM,2,median,na.rm=TRUE)
-        # ORn1.NM <- apply(ORnu.1.NM,2,mean,na.rm=TRUE)#apply(ORnu.1.NM,2,median,na.rm=TRUE)
-        # ORd.avg.NM <- (ORd0.NM + ORd1.NM)/2
-        # ORn.avg.NM <- (ORn0.NM + ORn1.NM)/2
+
 
         logORdelta.1.NM <- log(ORdelta.1.NM)
         logORdelta.0.NM <- log(ORdelta.0.NM)
@@ -738,13 +665,13 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
         logORnu.1.NM <- logORdelta.1.NM/array(logORtau,dim=c(NM,J))
 
         logORnu.avg.NM <- (logORnu.1.NM + logORnu.0.NM)/2
-        logORn0.NM <- apply(logORdelta.0.NM/logORtau.coef,1,fun,na.rm=TRUE)#apply(logORdelta.0.NM/logORtau.coef,2,median,na.rm=TRUE)
-        logORn1.NM <- apply(logORdelta.1.NM/logORtau.coef,1,fun,na.rm=TRUE)#apply(logORdelta.1.NM/logORtau.coef,2,median,na.rm=TRUE)
+        logORn0.NM <- apply(logORdelta.0.NM/logORtau.coef,1,fun,na.rm=TRUE)
+        logORn1.NM <- apply(logORdelta.1.NM/logORtau.coef,1,fun,na.rm=TRUE)
         logORn.avg.NM <- (logORn0.NM + logORn1.NM)/2
 
         logORdelta.avg.NM <- (logORdelta.1.NM + logORdelta.0.NM)/2
-        logORd0.NM <- apply(logORdelta.0.NM,1,fun,na.rm=TRUE)#apply(logORdelta.0.NM,2,median,na.rm=TRUE)
-        logORd1.NM <- apply(logORdelta.1.NM,1,fun,na.rm=TRUE)#apply(logORdelta.1.NM,2,median,na.rm=TRUE)
+        logORd0.NM <- apply(logORdelta.0.NM,1,fun,na.rm=TRUE)
+        logORd1.NM <- apply(logORdelta.1.NM,1,fun,na.rm=TRUE)
         logORd.avg.NM <- (logORd0.NM + logORd1.NM)/2
       }}
 
@@ -857,7 +784,6 @@ multimediate_survival=function(lmodel.m,correlated=FALSE,model.y,treat,treat.val
 
         logORd0.ci.NM <- logORd1.ci.NM <- logORn0.ci.NM <- logORn1.ci.NM <- logORd.avg.ci.NM <- logORn.avg.ci.NM <- array(NA,dim=c(NM,2))
         logORd0.p.NM <- logORd1.p.NM <- logORd.avg.p.NM <- logORn0.p.NM <- logORn1.p.NM <- logORn.avg.p.NM <- rep(NA,NM)
-        # logORd0.p.NM <- logORd1.p.NM <- logORd.avg.p.NM <- logn0.p.NM <- logn1.p.NM <- logn.avg.p.NM <- rep(NA,NM)
         for (nm in 1:NM){
           ORd0.ci.NM[nm,] <- quantile(ORdelta.0.NM[,nm], c(low, high), na.rm = TRUE)
           ORd1.ci.NM[nm,] <- quantile(ORdelta.1.NM[,nm], c(low, high), na.rm = TRUE)
