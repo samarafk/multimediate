@@ -1,6 +1,6 @@
 #' plot.mm
 #'
-#' "plot.mm" is used to display the results of the mediation analyzes done with "multimediate".
+#' \code{plot.mm} is used to display the results of the mediation analyzes done with \code{multimediate}.
 #'
 #'
 #' @param x element of the class "mm".
@@ -26,7 +26,8 @@
 #'
 #' @import graphics
 #'
-#'
+#' @keywords internal
+
 
 plot.mm = function(x, treatment = NULL,logit="logOR", labels = NULL, effect.type = c("indirect","direct", "total"), xlim = NULL, ylim = NULL, xlab = "", ylab = "", main = "Estimates and confidence intervals",is.legend=TRUE, lwd = 1.5, cex = 0.85, col = "black",...){
 
