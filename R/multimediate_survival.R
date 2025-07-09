@@ -152,7 +152,7 @@ multimediate_survival=function(lmodel.m, correlated = FALSE, model.y, treat, tre
         PredictM0[,,nm]=(PredictM0[,,nm]>0)*1
       }
     }
-    if (verbose) setTxtProgressBar(pb, nm,title)
+    if (verbose) setTxtProgressBar(pb, nm)
   }
   if (verbose) close(pb)
 
