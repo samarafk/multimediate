@@ -57,5 +57,6 @@
 plot summarizing the causal analysis
 }
 \description{
-"plot.mm" is used to display the results of the mediation analyzes done with "multimediate".
+\code{plot.mm} is used to display the results of the mediation analyzes done with \code{multimediate}.
 }
+\keyword{internal}
