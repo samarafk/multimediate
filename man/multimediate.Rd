@@ -15,7 +15,8 @@ multimediate(
   conf.level = 0.95,
   fun = mean,
   data = NULL,
-  peryr = 1e+05
+  peryr = 1e+05,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -40,12 +41,63 @@ multimediate(
 \item{data}{dataset with all variables used in the mediator and outcome models}
 
 \item{peryr}{the number of person-years to multiply the additive estimator to obtain results in scale of cases per person-years (only applicable to the survival outcome)}
+
+\item{verbose}{Logical. If `TRUE` (default), messages and a progress bar are displayed during execution.}
 }
 \value{
-multimediate returns an object of class "mm", a list that contains the components listed below.
-The function summary (i.e., summary.mm) can be used to obtain a table of the results.
+multimediate returns an object of class \code{mm}, a list that contains at least the components listed below.
+The function \code{summary} (i.e., \code{summary.mm}) can be used to obtain a table of the results.
+\itemize{
+  \item \code{model.y}: the fitted outcome model.
+  \item \code{model.m}: a list of fitted mediator models, one for each mediator.
+  \item \code{treatment}: a character string indicating the name of the treatment variable used in the models.
+  \item \code{treat.value}: value of the treatment variable used as the treatment condition.
+  \item \code{control.value}: value of the treatment variable used as the control condition.
+  \item \code{sims}: the number of Monte Carlo draws for quasi-Bayesian approximation.
+}
 }
 \description{
-'multimediate' is used to estimate various quantities for causal mediation analysis, including average causal mediation effects (indirect effect), average direct effects, proportions mediated, and total effect, in presence of multiple mediators uncausally related. With a binary outcome, 'multimediate' also estimates average causal mediation effects on OR scale and logOR scale.
-with a survival outcome, 'multimediate' also estimates average causal mediation effects on cases per person-year scale.
+\code{multimediate} is used to estimate various quantities for causal mediation analysis, including average causal mediation effects (indirect effect), average direct effects, proportions mediated, and total effect, in presence of multiple mediators uncausally related. With a binary outcome, \code{multimediate} also estimates average causal mediation effects on OR scale and logOR scale.
+with a survival outcome, \code{multimediate} also estimates average causal mediation effects on cases per person-year scale.
+}
+\examples{
+# Load example data
+data(data1)
+summary(data1)
+
+# Fit mediator models
+M1reg <- lm(M1 ~ Treatment + C1 + C2, data = data1)
+M2reg <- lm(M2 ~ Treatment + C1 + C3, data = data1)
+M3reg <- lm(M3 ~ Treatment + C1, data = data1)
+
+# Fit outcome model
+Yreg <- lm(Outcome ~ Treatment + M1 + M2 + M3 + C1 + C2 + C3, data = data1)
+
+# Perform multiple mediation analysis (may take some time)
+
+med.analysis <- multimediate(
+  lmodel.m = list(M1reg, M2reg, M3reg),
+  correlated = TRUE,
+  model.y = Yreg,
+  treat = "Treatment",
+  treat.value = 1,
+  control.value = 0,
+  J = 300,
+  conf.level = 0.95,
+  verbose = FALSE
+)
+
+summary(med.analysis, opt = "avg")
+
+}
+\references{
+Jérolon, A., Baglietto, L., Birmelé, E., Alarcon, F., & Perduca, V. (2021).
+Causal mediation analysis in presence of multiple mediators uncausally related.
+\emph{The International Journal of Biostatistics}, 17(2), 191–221.
+doi:10.1515/ijb-2019-0088
+
+Domingo-Relloso A, Jerolon A, Tellez-Plaza M, Bermudez JD.
+Causal mediation for uncausally related mediators in the context of survival analysis.
+medRxiv [Preprint]. 2024 Feb 18:2024.02.16.24302923.
+doi: 10.1101/2024.02.16.24302923
 }
