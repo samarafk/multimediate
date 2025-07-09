@@ -54,7 +54,7 @@
 #'   treat = "Treatment",
 #'   treat.value = 1,
 #'   control.value = 0,
-#'   J = 300,
+#'   J = 250,
 #'   conf.level = 0.95,
 #'   verbose = FALSE
 #' )
@@ -84,7 +84,7 @@
 multimediate = function(lmodel.m,correlated=FALSE,model.y,treat,treat.value=1,control.value=0,J=1000,conf.level=0.95, fun=mean, data=NULL, peryr=100000, verbose=TRUE){
 
   if(inherits(model.y, "aalen")){
-    return(multimediate_survival(lmodel.m,correlated,model.y,treat,treat.value,control.value,J,conf.level, fun, data, peryr))
+    return(multimediate_survival(lmodel.m,correlated,model.y,treat,treat.value,control.value,J,conf.level, fun, data, peryr, verbose))
   }
   else{
   N=dim(lmodel.m[[1]]$model)[1]
@@ -206,8 +206,7 @@ multimediate = function(lmodel.m,correlated=FALSE,model.y,treat,treat.value=1,co
         PredictM0[,,nm]=(PredictM0[,,nm]>0)*1
       }
     }
-
-    if (verbose) setTxtProgressBar(pb, nm,title)
+    if (verbose) setTxtProgressBar(pb, nm)
   }
   if (verbose) close(pb)
 
