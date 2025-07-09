@@ -7,7 +7,7 @@
 \method{summary}{mm}(object, opt = "navg", logit = "all", ...)
 }
 \arguments{
-\item{object}{element of the class "mm".}
+\item{object}{element of the class \code{mm}.}
 
 \item{opt}{a character string indicating the details of the analysis "navg" for the average causal effects for t=0,1 and "avg"  for the average causal effects.}
 
@@ -19,5 +19,5 @@
 table summarizing the causal analysis
 }
 \description{
-"summary.mm" is used to display the results of the mediation analyzes done with "multimediate".
+\code{summary.mm} is used to display the results of the mediation analyzes done with \code{multimediate}.
 }
