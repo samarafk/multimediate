@@ -15,7 +15,8 @@ multimediate_survival(
   conf.level = 0.95,
   fun = mean,
   data = NULL,
-  peryr = 1e+05
+  peryr = 1e+05,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ multimediate_survival(
 \item{data}{A data frame containing the variables used in the models.}
 
 \item{peryr}{Scaling factor for incidence rates per person-year (default: 100,000).}
+
+\item{verbose}{Logical. If `TRUE` (default), messages and a progress bar are displayed during execution.}
 }
 \value{
 A list containing estimated direct, indirect (mediated), and total effects,
@@ -48,3 +51,4 @@ along with confidence intervals and p-values for each.
 \description{
 multimediate_survival - internal function
 }
+\keyword{internal}
