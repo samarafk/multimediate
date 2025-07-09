@@ -13,7 +13,6 @@ CorCond = function(e,lmodel.m){
   while(k < NM){
     for(l in (k+1):NM){
       a=paste("cor",names(lmodel.m[[k]]$model)[1],names(lmodel.m[[l]]$model)[1],sep=".")
-      #print(a)
       out[[a]]=CorCond2(e,lmodel=list(lmodel.m[[k]],lmodel.m[[l]]))
     }
     k=k+1
@@ -206,14 +205,13 @@ CorCond2 = function(e,lmodel){
           bornep=c(bornep,sum(c(interceptp[o],-coefp)*valueM))
         }
         g=function(x){
-          #out=sqrt((1-rho^2)/(1+rho^2))*x*dnorm(x,0,(1+rho^2)/(1-rho^2))
           return(x*dnorm(x,0,1))
         }
         smp=NULL
         for (e in 1:length(p)){
           smp=c(smp,p[e]*int(g, a=bornep[e], b=bornep[e+1]))
         }
-        cor=covMiMj/sum(smp) #DichotomieCP(fCP,e,covMiMj,bornep,p)
+        cor=covMiMj/sum(smp)
       }
 
 
