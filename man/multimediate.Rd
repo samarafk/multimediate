@@ -86,7 +86,7 @@ med.analysis <- multimediate(
   treat = "Treatment",
   treat.value = 1,
   control.value = 0,
-  J = 300,
+  J = 250,
   conf.level = 0.95,
   verbose = FALSE
 )
