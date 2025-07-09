@@ -57,8 +57,12 @@ The function \code{summary} (i.e., \code{summary.mm}) can be used to obtain a ta
 }
 }
 \description{
-\code{multimediate} is used to estimate various quantities for causal mediation analysis, including average causal mediation effects (indirect effect), average direct effects, proportions mediated, and total effect, in presence of multiple mediators uncausally related. With a binary outcome, \code{multimediate} also estimates average causal mediation effects on OR scale and logOR scale.
-with a survival outcome, \code{multimediate} also estimates average causal mediation effects on cases per person-year scale.
+\code{multimediate} estimates several quantities in causal mediation analysis, including the average causal mediation effect (indirect effect), average direct effect, proportion mediated, and total effect, in the presence of multiple uncausally related mediators.
+}
+\details{
+For binary outcomes, it also estimates average causal mediation effects on the odds ratio (OR) and log-odds (logOR) scales.
+
+For survival outcomes, \code{multimediate} additionally estimates average causal mediation effects on cases per person-year scale.
 }
 \examples{
 # Load example data
