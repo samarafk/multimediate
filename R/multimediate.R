@@ -7,30 +7,22 @@
 #'
 #' For survival outcomes, \code{multimediate} additionally estimates average causal mediation effects on cases per person-year scale.
 #'
-#'@param lmodel.m list of fitted models object for mediators. Can be of class 'lm', 'polr','glm'.
-#'@param correlated a logical value. if 'FALSE' a identity matrix is used for the matrix of correlation of mediators; if 'TRUE' matrix of correlation is estimated. Default is 'FALSE'.
-#'@param model.y a fitted model object for the outcome. Can be of class 'lm', 'polr','glm' or 'aalen'.
+#'@param lmodel.m list of fitted models object for mediators. Can be of class \code{lm}, \code{polr}, \code{glm}.
+#'@param correlated a logical value. if \code{FALSE} a identity matrix is used for the matrix of correlation of mediators; if \code{TRUE} matrix of correlation is estimated. Default is 'FALSE'.
+#'@param model.y a fitted model object for the outcome. Can be of class \code{lm}, \code{polr}, \code{glm} or \code{aalen}.
 #'@param treat a character string indicating the name of the treatment variable used in the models. The treatment can be either binary (integer or a two-valued factor) or continuous (numeric).
 #'@param treat.value value of the treatment variable used as the treatment condition. Default is 1.
 #'@param control.value value of the treatment variable used as the control condition. Default is 0.
 #'@param J number of Monte Carlo draws for quasi-Bayesian approximation.
 #'@param conf.level level of the returned two-sided confidence intervals. Default is to return the 2.5 and 97.5 percentiles of the simulated quantities.
-#'@param fun the function used to compute the point estimate of the effects of interest from its empirical distribution. The function mean or median can be used. Default is the function mean.
+#'@param fun the function used to compute the point estimate of the effects of interest from its empirical distribution. The function \code{mean} or \code{median} can be used. Default is the function \code{mean}.
 #'@param data dataset with all variables used in the mediator and outcome models
 #'@param peryr the number of person-years to multiply the additive estimator to obtain results in scale of cases per person-years (only applicable to the survival outcome)
-#'@param verbose Logical. If `TRUE` (default), messages and a progress bar are displayed during execution.
+#'@param verbose Logical. If \code{TRUE} (default), messages and a progress bar are displayed during execution.
 #'
 #'
-#'@return multimediate returns an object of class \code{mm}, a list that contains at least the components listed below.
-#' The function \code{summary} (i.e., \code{summary.mm}) can be used to obtain a table of the results.
-#' \itemize{
-#'   \item \code{model.y}: the fitted outcome model.
-#'   \item \code{model.m}: a list of fitted mediator models, one for each mediator.
-#'   \item \code{treatment}: a character string indicating the name of the treatment variable used in the models.
-#'   \item \code{treat.value}: value of the treatment variable used as the treatment condition.
-#'   \item \code{control.value}: value of the treatment variable used as the control condition.
-#'   \item \code{sims}: the number of Monte Carlo draws for quasi-Bayesian approximation.
-#' }
+#'@return multimediate returns an object of class \code{mm}. The function \code{summary} (i.e., \code{summary.mm}) can be used to obtain a table of the results.
+#'
 #'
 #' @examples
 #' # Load example data
@@ -54,23 +46,13 @@
 #'   treat = "Treatment",
 #'   treat.value = 1,
 #'   control.value = 0,
-#'   J = 250,
+#'   J = 100,
 #'   conf.level = 0.95,
 #'   verbose = FALSE
 #' )
 #'
 #' summary(med.analysis, opt = "avg")
 #'
-#' @references
-#' Jerolon, A., Baglietto, L., Birmele, E., Alarcon, F., & Perduca, V. (2021).
-#' Causal mediation analysis in presence of multiple mediators uncausally related.
-#' The International Journal of Biostatistics, 17(2), 191-221.
-#' doi:10.1515/ijb-2019-0088
-#'
-#' Domingo-Relloso A, Jerolon A, Tellez-Plaza M, Bermudez JD.
-#' Causal mediation for uncausally related mediators in the context of survival analysis.
-#' medRxiv [Preprint]. 2024 Feb 18:2024.02.16.24302923.
-#' doi: 10.1101/2024.02.16.24302923
 #'
 #' @export
 #'
