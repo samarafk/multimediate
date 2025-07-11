@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Tellez-Plaza, María" />
+
+<meta name="date" content="2025-07-11" />
+
+<title>Causal Mediation in Additive Survival Models with the multimediate package</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Causal Mediation in Additive Survival
+Models with the <code>multimediate</code> package</h1>
+<h4 class="author">Tellez-Plaza, María</h4>
+<h4 class="date">2025-07-11</h4>
+
+
+
+<p>We provide a short toy example that allows interested readers to
+reproduce the analysis from <span class="citation">Ruiz-Hernandez et al.
+(2017)</span> using the <code>multimediate</code> package which
+implements multiple mediation analysis in the setting of additive
+survival.</p>
+<p>To get started, install the development version of the
+<code>multimediate</code> package directly from GitHub using the
+<code>devtools</code> package:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;devtools&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="fu">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>}</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">suppressMessages</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  devtools<span class="sc">::</span><span class="fu">install_github</span>(</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>    <span class="st">&quot;samarafk/multimediate&quot;</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    <span class="at">build_vignettes =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    <span class="at">force =</span> <span class="cn">TRUE</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>  )</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>)</span></code></pre></div>
+<p>We set <code>build_vignettes</code> to <code>FALSE</code> as it will
+take time for the vignettes to be generated. Now, we load the needed
+packages. We can verify that the package correctly uploaded by running
+<code>packageVersion(&quot;multimediate&quot;)</code>. Which should return
+<code>[1] ‘0.1.4’</code>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(multimediate))</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">packageVersion</span>(<span class="st">&quot;multimediate&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(timereg))</span></code></pre></div>
+<p>The toy dataset provided in this vignette is a custom simulated
+dataset with the following features:</p>
+<ul>
+<li><p>Rows (one row per participant in the data set) were selected
+using random sampling with replacement from <span class="citation">Ruiz-Hernandez et al. (2017)</span> study
+population.</p></li>
+<li><p>The sample size matches that of the original study, with 15421
+resampled observations.</p></li>
+<li><p>Please note that the original dataset included imputed values for
+urine that were missing completely at random (MCAR). For more details on
+the imputation process, refer to <span class="citation">Ruiz-Hernandez
+et al. (2017)</span>. Consequently, the source data set for the
+re-sampling cannot be directly derived from the downloadable datasets in
+the official NHANES website.</p></li>
+</ul>
+<div id="multiple-mediation-analysis-with-correlatedfalse" class="section level2">
+<h2>Multiple mediation analysis with <code>correlated=FALSE</code></h2>
+<p>In <span class="citation">Ruiz-Hernandez et al. (2017)</span>, the
+estimated absolute reduction in cardiovascular deaths in the US
+comparing 1999-2004 to 1988-94 was 230.7 deaths/100,000 person-years in
+models adjusted for cardiovascular risk factors. The product of
+coefficients method estimated that, among those avoided deaths, 52.0
+(95% CI 84.4, 96.7) and 19.4 (4.3, 36.4) deaths/100,000 person-years
+were attributable to changes in lead and cadmium, respectively.</p>
+<p>The <code>multimediate()</code> function with
+<code>correlated=FALSE</code> option will reproduce the <span class="citation">Ruiz-Hernandez et al. (2017)</span> results, using
+instead the counterfactual frame, yielding fairly consistent
+findings.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Please provide the corresponding path or place file in working directory.</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>nhanes <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;bootstrap_sample_multimediate.csv&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co"># Multimediate requires that in the Aalen model, factors are recoded as dummy variables</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>nhanes<span class="sc">$</span>race<span class="fl">.1</span> <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(nhanes<span class="sc">$</span>race <span class="sc">==</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>nhanes<span class="sc">$</span>race<span class="fl">.2</span> <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(nhanes<span class="sc">$</span>race <span class="sc">==</span> <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>nhanes<span class="sc">$</span>race<span class="fl">.3</span> <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(nhanes<span class="sc">$</span>race <span class="sc">==</span> <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>nhanes<span class="sc">$</span>race<span class="fl">.4</span> <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(nhanes<span class="sc">$</span>race <span class="sc">==</span> <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>nhanes<span class="sc">$</span>riagendr<span class="fl">.1</span> <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(nhanes<span class="sc">$</span>riagendr <span class="sc">==</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>nhanes<span class="sc">$</span>riagendr<span class="fl">.2</span> <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(nhanes<span class="sc">$</span>riagendr <span class="sc">==</span> <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>nhanes<span class="sc">$</span>smoking<span class="fl">.1</span> <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(nhanes<span class="sc">$</span>smoking <span class="sc">==</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>nhanes<span class="sc">$</span>smoking<span class="fl">.2</span> <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(nhanes<span class="sc">$</span>smoking <span class="sc">==</span> <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>nhanes<span class="sc">$</span>smoking<span class="fl">.3</span> <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(nhanes<span class="sc">$</span>smoking <span class="sc">==</span> <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>nhanes<span class="sc">$</span>bmi_cat <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">I</span>(nhanes<span class="sc">$</span>bmxbmi <span class="sc">&gt;=</span> <span class="dv">30</span>))</span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>nhanes<span class="sc">$</span>lbxtc_cat <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">I</span>(nhanes<span class="sc">$</span>lbxtc <span class="sc">&gt;=</span> <span class="dv">200</span>))</span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>nhanes<span class="sc">$</span>lowhdl <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(nhanes<span class="sc">$</span>lowhdl)</span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>nhanes<span class="sc">$</span>cholmed <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(nhanes<span class="sc">$</span>cholmed)</span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>nhanes<span class="sc">$</span>hbp <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(nhanes<span class="sc">$</span>hbp)</span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>nhanes<span class="sc">$</span>sedent <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(nhanes<span class="sc">$</span>sedent)</span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>nhanes<span class="sc">$</span>diab <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(nhanes<span class="sc">$</span>diab)</span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co"># In this example the multiple mediators are continuous variables.</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co"># We log-transform to improve normality.</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a>nhanes<span class="sc">$</span>log.cr.ucd <span class="ot">&lt;-</span> <span class="fu">log</span>(nhanes<span class="sc">$</span>cr.ucd) <span class="co"># Urine cadmium</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a>nhanes<span class="sc">$</span>log.bpb <span class="ot">&lt;-</span> <span class="fu">log</span>(nhanes<span class="sc">$</span>lbxbpb) <span class="co"># Blood lead</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co"># Cautionary note: treatment variables must NOT BE factors</span></span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co"># In this example treatment if time period.</span></span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a>nhanes<span class="sc">$</span>wv.gr<span class="fl">.1</span> <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(nhanes<span class="sc">$</span>wv.gr <span class="sc">==</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>) <span class="co"># Indicator for 1988-1994 survey</span></span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a>nhanes<span class="sc">$</span>wv.gr<span class="fl">.2</span> <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(nhanes<span class="sc">$</span>wv.gr <span class="sc">==</span> <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">0</span>) <span class="co"># Indicator for 1999-2004 survey</span></span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a><span class="co">#&gt; dim(nhanes)</span></span>
+<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a><span class="co">#[1] 15421   788</span></span>
+<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a></span>
+<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a><span class="co"># We first run the outcome model including indicator for 1999-2004 (treatment)</span></span>
+<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a><span class="co"># the two mediators and confounders:</span></span>
+<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a></span>
+<span id="cb3-41"><a href="#cb3-41" tabindex="-1"></a>variables_y <span class="ot">&lt;-</span> <span class="fu">paste0</span>(</span>
+<span id="cb3-42"><a href="#cb3-42" tabindex="-1"></a>  <span class="st">&quot;Surv(ridageyr,peryr.age.8yr,cvd.8yr==1) ~ const(wv.gr.2) +</span></span>
+<span id="cb3-43"><a href="#cb3-43" tabindex="-1"></a><span class="st">       const(log.bpb) + const(log.cr.ucd) + const(race.2) + </span></span>
+<span id="cb3-44"><a href="#cb3-44" tabindex="-1"></a><span class="st">       const(race.3)+const(race.4) + const(diab) + </span></span>
+<span id="cb3-45"><a href="#cb3-45" tabindex="-1"></a><span class="st">       const(bmi_cat) + const(riagendr.2) + const(smoking.2) + </span></span>
+<span id="cb3-46"><a href="#cb3-46" tabindex="-1"></a><span class="st">       const(smoking.3) + const(lbxtc_cat) + const(lowhdl) + </span></span>
+<span id="cb3-47"><a href="#cb3-47" tabindex="-1"></a><span class="st">       const(cholmed) + const(hbp)+const(sedent)&quot;</span></span>
+<span id="cb3-48"><a href="#cb3-48" tabindex="-1"></a>)</span>
+<span id="cb3-49"><a href="#cb3-49" tabindex="-1"></a></span>
+<span id="cb3-50"><a href="#cb3-50" tabindex="-1"></a>model.y <span class="ot">=</span> <span class="fu">aalen</span>(</span>
+<span id="cb3-51"><a href="#cb3-51" tabindex="-1"></a>  <span class="fu">as.formula</span>(variables_y),</span>
+<span id="cb3-52"><a href="#cb3-52" tabindex="-1"></a>  <span class="at">start.time =</span> <span class="dv">40</span>,</span>
+<span id="cb3-53"><a href="#cb3-53" tabindex="-1"></a>  <span class="at">weights =</span> nhanes<span class="sc">$</span>wtshm12yr,</span>
+<span id="cb3-54"><a href="#cb3-54" tabindex="-1"></a>  <span class="at">data =</span> nhanes,</span>
+<span id="cb3-55"><a href="#cb3-55" tabindex="-1"></a>  <span class="at">robust =</span> T</span>
+<span id="cb3-56"><a href="#cb3-56" tabindex="-1"></a>)</span></code></pre></div>
+<p>We subsequently run the mediator models. Cautionary note: the
+mediators mediators must be entered in the same order as in the outcome
+model.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>variables1 <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;log.bpb ~ wv.gr.2 + riagendr.2 +  ridageyr +  race.2 + race.3 +</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="st">                           race.4 + smoking.2 + smoking.3&quot;</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>variables2 <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;log.cr.ucd ~ wv.gr.2 + riagendr.2 +  ridageyr + race.2 + race.3 +</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="st">                           race.4 + smoking.2 + smoking.3&quot;</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>      </span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: Here we have not adjusted one given mediator model for other correlated </span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co"># mediators, since `multimediate` internally simulate marginal pair-wise correlations </span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co"># between the multiple mediators and we want to compare results with correlated=TRUE</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co"># option in next section. Generally, if we are to set the correlated=TRUE option it is </span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co"># not recommended to adjust one given mediator for other correlated mediators.</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>modM1 <span class="ot">=</span> <span class="fu">lm</span>(variables1, <span class="at">data =</span> nhanes)</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>modM2 <span class="ot">=</span> <span class="fu">lm</span>(variables2, <span class="at">data =</span> nhanes)</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a>lmodel.m<span class="ot">=</span><span class="fu">list</span>(modM1, modM2)</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a>      </span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a>est_1 <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">paste0</span>(<span class="fu">round</span>(<span class="fu">summary</span>(modM1)<span class="sc">$</span>coef[<span class="dv">2</span>, <span class="dv">1</span>], <span class="dv">2</span>), <span class="st">&#39; (&#39;</span>, <span class="fu">round</span>((</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a>  <span class="fu">summary</span>(modM1)<span class="sc">$</span>coef[<span class="dv">2</span>, <span class="dv">1</span>] <span class="sc">-</span> (<span class="fu">summary</span>(modM1)<span class="sc">$</span>coef[<span class="dv">2</span>, <span class="dv">2</span>] <span class="sc">*</span> <span class="fl">1.96</span>)</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>), <span class="dv">2</span>), <span class="st">&#39;, &#39;</span>, <span class="fu">round</span>((</span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a>  <span class="fu">summary</span>(modM1)<span class="sc">$</span>coef[<span class="dv">2</span>, <span class="dv">1</span>] <span class="sc">+</span> (<span class="fu">summary</span>(modM1)<span class="sc">$</span>coef[<span class="dv">2</span>, <span class="dv">2</span>] <span class="sc">*</span> <span class="fl">1.96</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a>), <span class="dv">2</span>), <span class="st">&#39;)&#39;</span>))</span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co"># Note that exp(est_1) will estimate the relative change in blood lead levels </span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co"># comparing time periods</span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a>est_2 <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">paste0</span>(<span class="fu">round</span>(<span class="fu">summary</span>(modM2)<span class="sc">$</span>coef[<span class="dv">2</span>,<span class="dv">1</span>],<span class="dv">2</span>), <span class="st">&#39; (&#39;</span>, <span class="fu">round</span>((<span class="fu">summary</span>(modM2)<span class="sc">$</span>coef[<span class="dv">2</span>,<span class="dv">1</span>] <span class="sc">-</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a>                    (<span class="fu">summary</span>(modM2)<span class="sc">$</span>coef[<span class="dv">2</span>,<span class="dv">2</span>]<span class="sc">*</span><span class="fl">1.96</span>)),<span class="dv">2</span>), <span class="st">&#39;, &#39;</span>, <span class="fu">round</span>((<span class="fu">summary</span>(modM2)<span class="sc">$</span>coef[<span class="dv">2</span>,<span class="dv">1</span>] <span class="sc">+</span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a>                    (<span class="fu">summary</span>(modM2)<span class="sc">$</span>coef[<span class="dv">2</span>,<span class="dv">2</span>]<span class="sc">*</span><span class="fl">1.96</span>)),<span class="dv">2</span>), <span class="st">&#39;)&#39;</span>))</span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a><span class="co"># Note that exp(est_2) will estimate the relative change in urine cadmium levels </span></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="co"># comparing time periods</span></span></code></pre></div>
+<p>Once we have fitted the outcome and the mediator models we can call
+the <code>multimediate()</code> function to estimate direct, indirect
+and total effects.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>      </span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>multim<span class="ot">=</span><span class="fu">multimediate</span>(lmodel.m,<span class="at">correlated=</span><span class="cn">FALSE</span>,model.y,<span class="at">treat=</span><span class="st">&quot;wv.gr.2&quot;</span>,<span class="at">treat.value=</span><span class="dv">1</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>                        <span class="at">control.value=</span><span class="dv">0</span>,<span class="at">J=</span><span class="dv">10</span>,<span class="at">conf.level=</span><span class="fl">0.95</span>,<span class="at">data=</span>nhanes)</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>     </span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>sum <span class="ot">&lt;-</span> <span class="fu">suppressWarnings</span>(<span class="fu">summary</span>(multim, <span class="at">option=</span><span class="st">&#39;avg&#39;</span>))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">.</th>
+<th align="right">Estimation</th>
+<th align="right">IC.inf</th>
+<th align="right">IC.sup</th>
+<th align="right">P.val</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ACME.joint.treat</td>
+<td align="right">-80.6984</td>
+<td align="right">-100.2410</td>
+<td align="right">-60.4150</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">PM(treat)</td>
+<td align="right">0.3606</td>
+<td align="right">0.2465</td>
+<td align="right">0.6037</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">ACME.joint.control</td>
+<td align="right">-80.6984</td>
+<td align="right">-100.2410</td>
+<td align="right">-60.4150</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">PM(control)</td>
+<td align="right">0.3606</td>
+<td align="right">0.2465</td>
+<td align="right">0.6037</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">ACME.treat.log.bpb</td>
+<td align="right">-49.9598</td>
+<td align="right">-69.6818</td>
+<td align="right">-25.9172</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">PM(treat).log.bpb</td>
+<td align="right">0.2167</td>
+<td align="right">0.1143</td>
+<td align="right">0.3508</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">ACME.control.log.bpb</td>
+<td align="right">-49.9598</td>
+<td align="right">-69.6818</td>
+<td align="right">-25.9172</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">PM(control).log.bpb</td>
+<td align="right">0.2167</td>
+<td align="right">0.1143</td>
+<td align="right">0.3508</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">ACME.treat.log.cr.ucd</td>
+<td align="right">-30.7386</td>
+<td align="right">-51.6954</td>
+<td align="right">-17.0862</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">PM(treat).log.cr.ucd</td>
+<td align="right">0.1421</td>
+<td align="right">0.0678</td>
+<td align="right">0.2350</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">ACME.control.log.cr.ucd</td>
+<td align="right">-30.7386</td>
+<td align="right">-51.6954</td>
+<td align="right">-17.0862</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">PM(control).log.cr.ucd</td>
+<td align="right">0.1421</td>
+<td align="right">0.0678</td>
+<td align="right">0.2350</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">ADE.treat</td>
+<td align="right">-154.4065</td>
+<td align="right">-201.9805</td>
+<td align="right">-63.4050</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">ADE.control</td>
+<td align="right">-154.4065</td>
+<td align="right">-201.9805</td>
+<td align="right">-63.4050</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Total Effect</td>
+<td align="right">-235.1048</td>
+<td align="right">-288.3110</td>
+<td align="right">-158.3210</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p>Note that we set <code>option=&#39;avg&#39;</code> for obtaining average
+mediation effects in the absence of exposure-mediator interactions. Also
+note the output table shows identical mediation effects for treatment
+and control because we have not included exposure-mediator terms in the
+outcome model.</p>
+<p>We next run and outcome model <em>without</em> the mediator.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>variables_y2 <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;Surv(ridageyr,peryr.age.8yr,cvd.8yr==1) ~ const(wv.gr.2) +</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="st">              const(race.2)+const(race.3)+const(race.4)+const(diab)+const(bmi_cat)+const(riagendr.2)+</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="st">              const(smoking.2)+const(smoking.3)+const(lbxtc_cat)+const(lowhdl)+const(cholmed)+const(hbp)+const(sedent)&quot;</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a> </span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>model.y2 <span class="ot">=</span> <span class="fu">aalen</span>(<span class="fu">as.formula</span>(variables_y2), <span class="at">start.time=</span><span class="dv">40</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>                 <span class="at">weights=</span>nhanes<span class="sc">$</span>wtshm12yr, <span class="at">data =</span> nhanes, <span class="at">robust=</span>T)</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>              </span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>    m_y2 <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">as.matrix</span>(<span class="fu">paste0</span>(<span class="fu">round</span>(model.y2<span class="sc">$</span>gamma[<span class="dv">1</span>,<span class="dv">1</span>]<span class="sc">*</span><span class="dv">100000</span>,<span class="dv">2</span>), <span class="st">&#39; (&#39;</span>, <span class="fu">round</span>((model.y2<span class="sc">$</span>gamma[<span class="dv">1</span>,<span class="dv">1</span>] <span class="sc">-</span> (<span class="fu">sqrt</span>(model.y2<span class="sc">$</span>robvar.gamma[<span class="dv">1</span>,<span class="dv">1</span>])<span class="sc">*</span><span class="fl">1.96</span>))<span class="sc">*</span><span class="dv">100000</span>,<span class="dv">2</span>), <span class="st">&#39;, &#39;</span>, <span class="fu">round</span>((model.y2<span class="sc">$</span>gamma[<span class="dv">1</span>,<span class="dv">1</span>] <span class="sc">+</span> (<span class="fu">sqrt</span>(model.y2<span class="sc">$</span>robvar.gamma[<span class="dv">1</span>,<span class="dv">1</span>])<span class="sc">*</span><span class="fl">1.96</span>))<span class="sc">*</span><span class="dv">100000</span>,<span class="dv">2</span>), <span class="st">&#39;)&#39;</span>)))</span></code></pre></div>
+<p>We expect the coeffcient for time period will equal the total effect
+in the multimediate output (sanity check). Happily it does as shown
+next:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">V1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">-230.69 (-327.96, -133.42)</td>
+</tr>
+</tbody>
+</table>
+<p>We repeated the re-sampling with replacement 1000 times and we
+display the distribution of absolute and relative mediation effects:</p>
+<embed role="img" src="data:application/pdf;base64,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bnQgL1N1YnR5cGUgL1R5cGUxIC9OYW1lIC9GMiAvQmFzZUZvbnQgL0hlbHZldGljYQovRW5jb2RpbmcgOSAwIFIgPj4KZW5kb2JqCjExIDAgb2JqCjw8IC9UeXBlIC9Gb250IC9TdWJ0eXBlIC9UeXBlMSAvTmFtZSAvRjMgL0Jhc2VGb250IC9IZWx2ZXRpY2EtQm9sZAovRW5jb2RpbmcgOSAwIFIgPj4KZW5kb2JqCnhyZWYKMCAxMgowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwMjEgMDAwMDAgbiAKMDAwMDAwMDE2MyAwMDAwMCBuIAowMDAwMDAxMjg4IDAwMDAwIG4gCjAwMDAwMDEzNzEgMDAwMDAgbiAKMDAwMDAwMTQ5NCAwMDAwMCBuIAowMDAwMDAxNTI3IDAwMDAwIG4gCjAwMDAwMDAyMTIgMDAwMDAgbiAKMDAwMDAwMDI5MiAwMDAwMCBuIAowMDAwMDA0MjIyIDAwMDAwIG4gCjAwMDAwMDQ0NzkgMDAwMDAgbiAKMDAwMDAwNDU3NiAwMDAwMCBuIAp0cmFpbGVyCjw8IC9TaXplIDEyIC9JbmZvIDEgMCBSIC9Sb290IDIgMCBSID4+CnN0YXJ0eHJlZgo0Njc4CiUlRU9GCg==" width="45%" type="application/pdf"></embed>
+<embed role="img" src="data:application/pdf;base64,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k5mnxT8r/1z7zOTZd794/DIwFTs1/lz0/NOvm1+ov9j/0u5l73TY9P1XGa9mXpe8UX9z4C3rbf+7mHcTM7nvse8rP5h+6PkY9PHup4xPn34D94Tz+2VuZHN0cmVhbQplbmRvYmoKOSAwIG9iago8PAovVHlwZSAvRW5jb2RpbmcgL0Jhc2VFbmNvZGluZyAvV2luQW5zaUVuY29kaW5nCi9EaWZmZXJlbmNlcyBbIDQ1L21pbnVzIDk2L3F1b3RlbGVmdAoxNDQvZG90bGVzc2kgL2dyYXZlIC9hY3V0ZSAvY2lyY3VtZmxleCAvdGlsZGUgL21hY3JvbiAvYnJldmUgL2RvdGFjY2VudAovZGllcmVzaXMgLy5ub3RkZWYgL3JpbmcgL2NlZGlsbGEgLy5ub3RkZWYgL2h1bmdhcnVtbGF1dCAvb2dvbmVrIC9jYXJvbiAvc3BhY2VdCj4+CmVuZG9iagoxMCAwIG9iago8PCAvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL05hbWUgL0YyIC9CYXNlRm9udCAvSGVsdmV0aWNhCi9FbmNvZGluZyA5IDAgUiA+PgplbmRvYmoKMTEgMCBvYmoKPDwgL1R5cGUgL0ZvbnQgL1N1YnR5cGUgL1R5cGUxIC9OYW1lIC9GMyAvQmFzZUZvbnQgL0hlbHZldGljYS1Cb2xkCi9FbmNvZGluZyA5IDAgUiA+PgplbmRvYmoKeHJlZgowIDEyCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAyMSAwMDAwMCBuIAowMDAwMDAwMTYzIDAwMDAwIG4gCjAwMDAwMDE2NjggMDAwMDAgbiAKMDAwMDAwMTc1MSAwMDAwMCBuIAowMDAwMDAxODc0IDAwMDAwIG4gCjAwMDAwMDE5MDcgMDAwMDAgbiAKMDAwMDAwMDIxMiAwMDAwMCBuIAowMDAwMDAwMjkyIDAwMDAwIG4gCjAwMDAwMDQ2MDIgMDAwMDAgbiAKMDAwMDAwNDg1OSAwMDAwMCBuIAowMDAwMDA0OTU2IDAwMDAwIG4gCnRyYWlsZXIKPDwgL1NpemUgMTIgL0luZm8gMSAwIFIgL1Jvb3QgMiAwIFIgPj4Kc3RhcnR4cmVmCjUwNTgKJSVFT0YK" width="45%" type="application/pdf"></embed>
+<p>Next, we show interesting extensions of multiple mediation that we
+could not carry out with the difference and product of coefficient
+methods in the original <span class="citation">Ruiz-Hernandez et al.
+(2017)</span> paper.</p>
+</div>
+<div id="multiple-mediation-analysis-with-correlatedtrue" class="section level2">
+<h2>Multiple mediation analysis with <code>correlated=TRUE</code></h2>
+<p>We will allow for correlation between multiple mediators (in this
+case blood lead and urine cadmium, which are exposure biomarkers), which
+may share common sources of exposure and metabolic pathways.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>multim<span class="ot">=</span><span class="fu">multimediate</span>(lmodel.m,<span class="at">correlated=</span><span class="cn">TRUE</span>,model.y,<span class="at">treat=</span><span class="st">&quot;wv.gr.2&quot;</span>,<span class="at">treat.value=</span><span class="dv">1</span>,</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>                        <span class="at">control.value=</span><span class="dv">0</span>,<span class="at">J=</span><span class="dv">10</span>,<span class="at">conf.level=</span><span class="fl">0.95</span>,<span class="at">data=</span>nhanes)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>     </span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>sum <span class="ot">&lt;-</span> <span class="fu">suppressWarnings</span>(<span class="fu">summary</span>(multim, <span class="at">option=</span><span class="st">&#39;avg&#39;</span>))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">.</th>
+<th align="right">Estimation</th>
+<th align="right">IC.inf</th>
+<th align="right">IC.sup</th>
+<th align="right">P.val</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ACME.joint.treat</td>
+<td align="right">-83.2217</td>
+<td align="right">-121.3536</td>
+<td align="right">-48.5458</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">PM(treat)</td>
+<td align="right">0.3543</td>
+<td align="right">0.2084</td>
+<td align="right">0.5990</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">ACME.joint.control</td>
+<td align="right">-83.2217</td>
+<td align="right">-121.3536</td>
+<td align="right">-48.5458</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">PM(control)</td>
+<td align="right">0.3543</td>
+<td align="right">0.2084</td>
+<td align="right">0.5990</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">ACME.treat.log.bpb</td>
+<td align="right">-55.7318</td>
+<td align="right">-88.1520</td>
+<td align="right">-13.6558</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">PM(treat).log.bpb</td>
+<td align="right">0.2352</td>
+<td align="right">0.0555</td>
+<td align="right">0.3857</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">ACME.control.log.bpb</td>
+<td align="right">-55.7318</td>
+<td align="right">-88.1520</td>
+<td align="right">-13.6558</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">PM(control).log.bpb</td>
+<td align="right">0.2352</td>
+<td align="right">0.0555</td>
+<td align="right">0.3857</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">ACME.treat.log.cr.ucd</td>
+<td align="right">-27.4899</td>
+<td align="right">-41.3279</td>
+<td align="right">-16.2908</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">PM(treat).log.cr.ucd</td>
+<td align="right">0.1183</td>
+<td align="right">0.0623</td>
+<td align="right">0.1787</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">ACME.control.log.cr.ucd</td>
+<td align="right">-27.4899</td>
+<td align="right">-41.3279</td>
+<td align="right">-16.2908</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">PM(control).log.cr.ucd</td>
+<td align="right">0.1183</td>
+<td align="right">0.0623</td>
+<td align="right">0.1787</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">ADE.treat</td>
+<td align="right">-157.4910</td>
+<td align="right">-210.5631</td>
+<td align="right">-74.2622</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">ADE.control</td>
+<td align="right">-157.4910</td>
+<td align="right">-210.5631</td>
+<td align="right">-74.2622</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">Total Effect</td>
+<td align="right">-240.7128</td>
+<td align="right">-299.9146</td>
+<td align="right">-177.2008</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p>We observed that, in this case, the estimated mediation effects do
+not substantially change after allowing for correlation between multiple
+mediators. Thus, supporting the correlation between mediators is not
+relevant in the original <span class="citation">Ruiz-Hernandez et al.
+(2017)</span> paper.</p>
+</div>
+<div id="multiple-mediation-analysis-including-exposure-mediator-interactions" class="section level2">
+<h2>Multiple mediation analysis including exposure-mediator
+interactions</h2>
+<p>Interestingly, <code>Multimediate</code> can also accommodate
+exposure-mediator interactions because the counter factual framework
+enables so.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>variables_y <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;Surv(ridageyr,peryr.age.8yr,cvd.8yr==1) ~ const(wv.gr.2) +</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="st">              const(log.cr.ucd)+const(log.bpb) + const(wv.gr.2*log.cr.ucd)  +const(race.2)+</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="st">              const(race.3)+ const(race.4)+ const(diab)+ const(bmi_cat)+ const(riagendr.2)+</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="st">              const(smoking.2)+const(smoking.3)+ const(lbxtc_cat)+const(lowhdl)+const(cholmed)+</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="st">                const(hbp)+const(sedent)&quot;</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>model.y <span class="ot">=</span> <span class="fu">aalen</span>(<span class="fu">as.formula</span>(variables_y),<span class="at">start.time=</span><span class="dv">40</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>                <span class="at">weights=</span>nhanes<span class="sc">$</span>wtshm12yr, <span class="at">data =</span> nhanes, <span class="at">robust=</span>T)</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>                      </span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>                      </span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a> </span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co"># Warning: at the current moment multimediate only takes one exposure-mediator </span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="co"># interaction at a time (work in progress to accomodate more). Note that the first </span></span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co"># mediator model in the lmodel.m list must be the one with the interaction, and this </span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="co"># ordering must be consistent with the order mediators have been included in the outcome</span></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co"># model.</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>        </span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>variables1 <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;log.cr.ucd ~ wv.gr.2 + riagendr.2 +  ridageyr + race.2 + race.3 +</span></span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a><span class="st">                     race.4 + smoking.2 + smoking.3&quot;</span>)</span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a>variables2 <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;log.bpb ~  wv.gr.2 + riagendr.2 +  ridageyr +  race.2 + race.3 +</span></span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a><span class="st">                     race.4 + smoking.2 + smoking.3&quot;</span>)</span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a>      </span>
+<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a>    </span>
+<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a>modM1 <span class="ot">=</span> <span class="fu">lm</span>(variables1, <span class="at">data =</span> nhanes)</span>
+<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a>modM2 <span class="ot">=</span> <span class="fu">lm</span>(variables2, <span class="at">data =</span> nhanes)</span>
+<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a>lmodel.m<span class="ot">=</span><span class="fu">list</span>(modM1, modM2)</span>
+<span id="cb8-29"><a href="#cb8-29" tabindex="-1"></a>      </span>
+<span id="cb8-30"><a href="#cb8-30" tabindex="-1"></a>    </span>
+<span id="cb8-31"><a href="#cb8-31" tabindex="-1"></a>multim<span class="ot">=</span><span class="fu">multimediate</span>(lmodel.m,<span class="at">correlated=</span><span class="cn">TRUE</span>,model.y,<span class="at">treat=</span><span class="st">&quot;wv.gr.2&quot;</span>,<span class="at">treat.value=</span><span class="dv">1</span>,</span>
+<span id="cb8-32"><a href="#cb8-32" tabindex="-1"></a>                             <span class="at">control.value=</span><span class="dv">0</span>,<span class="at">J=</span><span class="dv">10</span>,<span class="at">conf.level=</span><span class="fl">0.95</span>,<span class="at">data=</span>nhanes)</span>
+<span id="cb8-33"><a href="#cb8-33" tabindex="-1"></a></span>
+<span id="cb8-34"><a href="#cb8-34" tabindex="-1"></a>sum <span class="ot">&lt;-</span> <span class="fu">suppressWarnings</span>(<span class="fu">summary</span>(multim, <span class="at">option=</span><span class="st">&#39;navg&#39;</span>))</span></code></pre></div>
+<p>Note the option <code>option=&#39;navg&#39;</code> for obtaining average
+mediation effects in the presence of exposure-mediator interactions.
+Now, we obtain different mediation effects estimates for both NHANES
+periods.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">.</th>
+<th align="right">Estimation</th>
+<th align="right">IC.inf</th>
+<th align="right">IC.sup</th>
+<th align="right">P.val</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ACME.joint.treat</td>
+<td align="right">-34.7880</td>
+<td align="right">-70.0133</td>
+<td align="right">-1.3855</td>
+<td align="right">0.2</td>
+</tr>
+<tr class="even">
+<td align="left">PM(treat)</td>
+<td align="right">0.1539</td>
+<td align="right">0.0040</td>
+<td align="right">0.3548</td>
+<td align="right">0.2</td>
+</tr>
+<tr class="odd">
+<td align="left">ACME.joint.control</td>
+<td align="right">-75.0272</td>
+<td align="right">-96.9534</td>
+<td align="right">-48.9867</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="left">PM(control)</td>
+<td align="right">0.3157</td>
+<td align="right">0.1818</td>
+<td align="right">0.4633</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="left">ACME.treat.log.cr.ucd</td>
+<td align="right">12.5531</td>
+<td align="right">-12.3672</td>
+<td align="right">39.7541</td>
+<td align="right">0.8</td>
+</tr>
+<tr class="even">
+<td align="left">PM(treat).log.cr.ucd</td>
+<td align="right">-0.0557</td>
+<td align="right">-0.1632</td>
+<td align="right">0.0532</td>
+<td align="right">0.8</td>
+</tr>
+<tr class="odd">
+<td align="left">ACME.control.log.cr.ucd</td>
+<td align="right">-27.6861</td>
+<td align="right">-50.8156</td>
+<td align="right">-12.8910</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="left">PM(control).log.cr.ucd</td>
+<td align="right">0.1235</td>
+<td align="right">0.0624</td>
+<td align="right">0.2264</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="left">ACME.treat.log.bpb</td>
+<td align="right">-47.3411</td>
+<td align="right">-69.5043</td>
+<td align="right">-21.9894</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="left">PM(treat).log.bpb</td>
+<td align="right">0.1833</td>
+<td align="right">0.0873</td>
+<td align="right">0.2913</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="left">ACME.control.log.bpb</td>
+<td align="right">-47.3411</td>
+<td align="right">-69.5043</td>
+<td align="right">-21.9894</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="left">PM(control).log.bpb</td>
+<td align="right">0.1833</td>
+<td align="right">0.0873</td>
+<td align="right">0.2913</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="left">ADE.treat</td>
+<td align="right">-169.5399</td>
+<td align="right">-244.1041</td>
+<td align="right">-107.2505</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="even">
+<td align="left">ADE.control</td>
+<td align="right">-209.7791</td>
+<td align="right">-311.1016</td>
+<td align="right">-129.4398</td>
+<td align="right">0.0</td>
+</tr>
+<tr class="odd">
+<td align="left">Total Effect</td>
+<td align="right">-244.5671</td>
+<td align="right">-321.5531</td>
+<td align="right">-198.5887</td>
+<td align="right">0.0</td>
+</tr>
+</tbody>
+</table>
+<p>The results suggest that at the cadmium exposure levels observed in
+NHANES 1999-2004, the association of cadmium with cardiovascular
+mortality might be weaker compared to the association at cadmium
+exposure levels observed in 1988-1994. The interaction p-value in the
+outcome model, however, is suggestive (equal to 0.09).</p>
+</div>
+<div id="multimediate-can-do-more" class="section level2">
+<h2>Multimediate can do more!</h2>
+<p>Note that <code>multimediate</code> can also accommodate continuous
+and binary outcome models, as well as categorical or continuous
+exposures/treatments (<span class="citation">Jérolon et al.
+(2020)</span>). We could also think of modeling a non linear single
+mediator, by treating the mediator’s main and spline terms as correlated
+mediators. For the moment, <code>multimediate</code> should only be used
+for continuous mediators, but we have work in progress to accommodate
+categorical mediators and both.</p>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2 class="unnumbered">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-Jerolon2020" class="csl-entry">
+Jérolon, Allan, Laura Baglietto, Etienne Birmelé, Flora Alarcon, and
+Vittorio Perduca. 2020. <span>“Causal Mediation Analysis in Presence of
+Multiple Mediators Uncausally Related.”</span> <em>The International
+Journal of Biostatistics</em> 17 (2): 191–221. <a href="https://doi.org/10.1515/ijb-2019-0088">https://doi.org/10.1515/ijb-2019-0088</a>.
+</div>
+<div id="ref-RuizHernandez2017" class="csl-entry">
+Ruiz-Hernandez, Adrian, Ana Navas-Acien, Roberto Pastor-Barriuso,
+Ciprian M Crainiceanu, Josep Redon, Eliseo Guallar, and Maria
+Tellez-Plaza. 2017. <span>“Declining Exposures to Lead and Cadmium
+Contribute to Explaining the Reduction of Cardiovascular Mortality in
+the US Population, 1988–2004.”</span> <em>International Journal of
+Epidemiology</em> 46 (6): 1903–12. <a href="https://doi.org/10.1093/ije/dyx176">https://doi.org/10.1093/ije/dyx176</a>.
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
