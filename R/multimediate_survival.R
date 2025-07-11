@@ -95,7 +95,7 @@ multimediate_survival=function(lmodel.m, correlated = FALSE, model.y, treat, tre
 
   PredictM1<-PredictM0<-PredictM1b<-PredictM0b<- array(0, dim=c(J,N,NM))
 
-  if (verbose) print("Simulation of counterfactuals mediators")
+  if (verbose) message("Simulation of counterfactuals mediators")
   if (verbose) pb <- txtProgressBar(min = 0, max = NM, style = 3,title ="Simulation of counterfactuals mediators")
   for (nm in 1:NM){
     pred.data.t <- pred.data.c <- model.frame(lmodel.m[[nm]])
@@ -167,7 +167,7 @@ multimediate_survival=function(lmodel.m, correlated = FALSE, model.y, treat, tre
       Pr0.NM<-Pr1.NM <-ORPr0.NM<-ORPr1.NM <- array(NA,dim=c(N,J,NM))
     }
 
-    if (verbose) print(title[e])
+    if (verbose) message(title[e])
     if (verbose) pb <- txtProgressBar(min = 0, max = J, style = 3,title=title[e])
 
     for (j in 1:J) {
@@ -529,7 +529,7 @@ multimediate_survival=function(lmodel.m, correlated = FALSE, model.y, treat, tre
       }
     }
   }
-  if (verbose) print("Computing average point estimates together with p-values and confidence intervals")
+  if (verbose) message("Computing average point estimates together with p-values and confidence intervals")
 
 
   et1 <- effect.tmp[, , 1] # joint mediated effect delta(1)
