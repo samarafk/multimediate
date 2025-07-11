@@ -2,10 +2,9 @@
 title: "Getting Started with the `multimediate` package"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{multimediate}
+  %\VignetteIndexEntry{Getting Started with the `multimediate` package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-  %\VignetteBuild false
 ---
 ## Multiple mediation analysis 
 ```{r, include = FALSE}
