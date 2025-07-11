@@ -6,7 +6,7 @@ output:
   rmarkdown::html_vignette
 bibliography: refs.bib
 vignette: >
-  %\VignetteIndexEntry{Vignette: Multimediate function for causal mediation in the additive survival setting.}
+  %\VignetteIndexEntry{"Causal Mediation in Additive Survival Models with the `multimediate` package"}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
