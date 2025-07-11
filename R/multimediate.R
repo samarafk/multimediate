@@ -184,9 +184,9 @@ multimediate = function(lmodel.m,
     PredictM1 <- PredictM0 <- PredictM1b <- PredictM0b <- array(0, dim = c(J, N, NM))
 
 
-    if (verbose)
+    if (isTRUE(verbose))
       message("Simulation of counterfactuals mediators")
-    if (verbose)
+    if (isTRUE(verbose))
       pb <- txtProgressBar(
         min = 0,
         max = NM,
@@ -257,10 +257,10 @@ multimediate = function(lmodel.m,
           PredictM0[, , nm] = (PredictM0[, , nm] > 0) * 1
         }
       }
-      if (verbose)
+      if (isTRUE(verbose))
         setTxtProgressBar(pb, nm)
     }
-    if (verbose)
+    if (isTRUE(verbose))
       close(pb)
 
 
@@ -274,9 +274,9 @@ multimediate = function(lmodel.m,
       if (NM != 1 & e <= 2) {
         Pr0.NM <- Pr1.NM <- ORPr0.NM <- ORPr1.NM <- array(NA, dim = c(N, J, NM))
       }
-      if (verbose)
+      if (isTRUE(verbose))
         message(title[e])
-      if (verbose)
+      if (isTRUE(verbose))
         pb <- txtProgressBar(
           min = 0,
           max = J,
@@ -466,10 +466,10 @@ multimediate = function(lmodel.m,
             }
           }
         }
-        if (verbose)
+        if (isTRUE(verbose))
           setTxtProgressBar(pb, j, title = title[e])
       }
-      if (verbose)
+      if (isTRUE(verbose))
         close(pb)
 
       if (!is.null(model.y$family)) {
@@ -500,7 +500,7 @@ multimediate = function(lmodel.m,
         }
       }
     }
-    if (verbose)
+    if (isTRUE(verbose))
       message("Computing average point estimates together with p-values and confidence intervals")
     # Step 3.3 : Compute the effects.
     # Compute the average effects. That is, we simply take the difference accross
