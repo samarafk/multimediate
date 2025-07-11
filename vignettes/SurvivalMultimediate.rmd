@@ -1,0 +1,306 @@
+---
+title: "Causal Mediation in Additive Survival Models with the `multimediate` package"
+author: "Tellez-Plaza, María"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette
+bibliography: refs.bib
+vignette: >
+  %\VignetteIndexEntry{Vignette: Multimediate function for causal mediation in the additive survival setting.}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+We provide a short toy example that allows interested readers to reproduce the analysis from @RuizHernandez2017 using the `multimediate` package which implements multiple mediation analysis in the setting of additive survival.
+
+
+To get started, install the development version of the `multimediate` package directly from GitHub using the `devtools` package:
+
+```{r install-package, echo=TRUE, error=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, results='hide'}
+if (!requireNamespace("devtools", quietly = TRUE)) {
+  install.packages("devtools")
+}
+
+suppressMessages(
+  devtools::install_github(
+    "samarafk/multimediate",
+    build_vignettes = FALSE,
+    force = TRUE
+  )
+)
+```
+
+
+We set `build_vignettes` to `FALSE` as it will take time for the vignettes to be generated. Now, we load the needed packages. We can verify that the package correctly uploaded by running  `packageVersion("multimediate")`. Which should return `[1] ‘0.1.4’`. 
+
+
+```{r echo=TRUE, fig.show='hold', results='hide', warning=FALSE, error=FALSE, message=FALSE}
+suppressPackageStartupMessages(library(multimediate))
+packageVersion("multimediate")
+suppressPackageStartupMessages(library(timereg))
+```
+
+
+The toy dataset provided in this vignette is a custom simulated dataset with the following features:
+
+- Rows (one row per participant in the data set) were selected using random sampling with replacement from @RuizHernandez2017 study population.
+
+- The sample size matches that of the original study, with 15421 resampled observations.
+
+- Please note that the original dataset included imputed values for urine that were missing completely at random (MCAR). For more details on the imputation process, refer to @RuizHernandez2017. Consequently, the source data set for the re-sampling cannot be directly derived from the downloadable datasets in the official NHANES website.
+
+
+
+## Multiple mediation analysis with `correlated=FALSE`
+
+
+In @RuizHernandez2017, the estimated absolute reduction in cardiovascular deaths in the US comparing 1999-2004 to 1988-94
+was 230.7 deaths/100,000 person-years in models adjusted for cardiovascular
+risk factors. The product of coefficients method estimated that, among those
+avoided deaths, 52.0 (95% CI 84.4, 96.7) and 19.4 (4.3, 36.4) deaths/100,000 person-years
+were attributable to changes in lead and cadmium, respectively.
+
+The `multimediate()` function with `correlated=FALSE` option will reproduce the @RuizHernandez2017 results, using instead the counterfactual frame, yielding fairly consistent findings.
+
+
+```{r echo=TRUE, fig.show='hold', results='hide', warning=FALSE, message=FALSE}
+# Please provide the corresponding path or place file in working directory.
+nhanes <- read.csv("bootstrap_sample_multimediate.csv")
+
+# Multimediate requires that in the Aalen model, factors are recoded as dummy variables
+nhanes$race.1 <- as.factor(ifelse(nhanes$race == 1, 1, 0))
+nhanes$race.2 <- as.factor(ifelse(nhanes$race == 2, 1, 0))
+nhanes$race.3 <- as.factor(ifelse(nhanes$race == 3, 1, 0))
+nhanes$race.4 <- as.factor(ifelse(nhanes$race == 4, 1, 0))
+nhanes$riagendr.1 <- as.factor(ifelse(nhanes$riagendr == 1, 1, 0))
+nhanes$riagendr.2 <- as.factor(ifelse(nhanes$riagendr == 2, 1, 0))
+nhanes$smoking.1 <- as.factor(ifelse(nhanes$smoking == 1, 1, 0))
+nhanes$smoking.2 <- as.factor(ifelse(nhanes$smoking == 2, 1, 0))
+nhanes$smoking.3 <- as.factor(ifelse(nhanes$smoking == 3, 1, 0))
+nhanes$bmi_cat <- as.factor(I(nhanes$bmxbmi >= 30))
+nhanes$lbxtc_cat <- as.factor(I(nhanes$lbxtc >= 200))
+nhanes$lowhdl <- as.factor(nhanes$lowhdl)
+nhanes$cholmed <- as.factor(nhanes$cholmed)
+nhanes$hbp <- as.factor(nhanes$hbp)
+nhanes$sedent <- as.factor(nhanes$sedent)
+nhanes$diab <- as.factor(nhanes$diab)
+
+# In this example the multiple mediators are continuous variables.
+# We log-transform to improve normality.
+
+nhanes$log.cr.ucd <- log(nhanes$cr.ucd) # Urine cadmium
+nhanes$log.bpb <- log(nhanes$lbxbpb) # Blood lead
+
+# Cautionary note: treatment variables must NOT BE factors
+# In this example treatment if time period.
+
+nhanes$wv.gr.1 <- ifelse(nhanes$wv.gr == 1, 1, 0) # Indicator for 1988-1994 survey
+nhanes$wv.gr.2 <- ifelse(nhanes$wv.gr == 2, 1, 0) # Indicator for 1999-2004 survey
+
+#> dim(nhanes)
+#[1] 15421   788
+
+
+# We first run the outcome model including indicator for 1999-2004 (treatment)
+# the two mediators and confounders:
+
+variables_y <- paste0(
+  "Surv(ridageyr,peryr.age.8yr,cvd.8yr==1) ~ const(wv.gr.2) +
+       const(log.bpb) + const(log.cr.ucd) + const(race.2) + 
+       const(race.3)+const(race.4) + const(diab) + 
+       const(bmi_cat) + const(riagendr.2) + const(smoking.2) + 
+       const(smoking.3) + const(lbxtc_cat) + const(lowhdl) + 
+       const(cholmed) + const(hbp)+const(sedent)"
+)
+
+model.y = aalen(
+  as.formula(variables_y),
+  start.time = 40,
+  weights = nhanes$wtshm12yr,
+  data = nhanes,
+  robust = T
+)
+```
+
+      
+We subsequently run the mediator  models. Cautionary note: the mediators mediators 
+must be entered in the same order as in the outcome model.
+
+
+```{r echo=TRUE, fig.show='hold', results='hide', warning=FALSE, message=FALSE}
+variables1 <- paste0("log.bpb ~ wv.gr.2 + riagendr.2 +  ridageyr +  race.2 + race.3 +
+                           race.4 + smoking.2 + smoking.3")
+variables2 <- paste0("log.cr.ucd ~ wv.gr.2 + riagendr.2 +  ridageyr + race.2 + race.3 +
+                           race.4 + smoking.2 + smoking.3")
+      
+# NOTE: Here we have not adjusted one given mediator model for other correlated 
+# mediators, since `multimediate` internally simulate marginal pair-wise correlations 
+# between the multiple mediators and we want to compare results with correlated=TRUE
+# option in next section. Generally, if we are to set the correlated=TRUE option it is 
+# not recommended to adjust one given mediator for other correlated mediators.
+
+modM1 = lm(variables1, data = nhanes)
+modM2 = lm(variables2, data = nhanes)
+
+lmodel.m=list(modM1, modM2)
+      
+est_1 <- as.data.frame(paste0(round(summary(modM1)$coef[2, 1], 2), ' (', round((
+  summary(modM1)$coef[2, 1] - (summary(modM1)$coef[2, 2] * 1.96)
+), 2), ', ', round((
+  summary(modM1)$coef[2, 1] + (summary(modM1)$coef[2, 2] * 1.96)
+), 2), ')'))
+
+# Note that exp(est_1) will estimate the relative change in blood lead levels 
+# comparing time periods
+
+est_2 <- as.data.frame(paste0(round(summary(modM2)$coef[2,1],2), ' (', round((summary(modM2)$coef[2,1] -
+                    (summary(modM2)$coef[2,2]*1.96)),2), ', ', round((summary(modM2)$coef[2,1] +
+                    (summary(modM2)$coef[2,2]*1.96)),2), ')'))
+
+# Note that exp(est_2) will estimate the relative change in urine cadmium levels 
+# comparing time periods
+```
+
+Once we have fitted the outcome and the mediator models we can call the `multimediate()` function to estimate direct, indirect and total effects.
+```{r echo=TRUE, fig.show='hold', results='hide', warning=FALSE, message=FALSE}
+      
+multim=multimediate(lmodel.m,correlated=FALSE,model.y,treat="wv.gr.2",treat.value=1,
+                        control.value=0,J=10,conf.level=0.95,data=nhanes)
+     
+
+sum <- suppressWarnings(summary(multim, option='avg'))
+
+```
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(sum)
+```
+
+Note that we set `option='avg'` for obtaining average mediation effects in the absence of exposure-mediator interactions. Also note the output table shows identical mediation
+effects for treatment and control because  we have not included exposure-mediator
+terms in the outcome model.
+
+
+We next run and outcome model *without* the mediator.
+
+
+```{r echo=TRUE, fig.show='hold', results='hide', warning=FALSE, message=FALSE}
+
+variables_y2 <- paste0("Surv(ridageyr,peryr.age.8yr,cvd.8yr==1) ~ const(wv.gr.2) +
+              const(race.2)+const(race.3)+const(race.4)+const(diab)+const(bmi_cat)+const(riagendr.2)+
+              const(smoking.2)+const(smoking.3)+const(lbxtc_cat)+const(lowhdl)+const(cholmed)+const(hbp)+const(sedent)")
+ 
+model.y2 = aalen(as.formula(variables_y2), start.time=40,
+                 weights=nhanes$wtshm12yr, data = nhanes, robust=T)
+              
+    m_y2 <- as.data.frame(as.matrix(paste0(round(model.y2$gamma[1,1]*100000,2), ' (', round((model.y2$gamma[1,1] - (sqrt(model.y2$robvar.gamma[1,1])*1.96))*100000,2), ', ', round((model.y2$gamma[1,1] + (sqrt(model.y2$robvar.gamma[1,1])*1.96))*100000,2), ')')))
+
+
+```
+
+We expect the coeffcient for time period will equal  the total effect in the multimediate output (sanity check). Happily it does as shown next:
+```{r, echo=FALSE, results='asis'}
+knitr::kable(m_y2)
+```
+
+
+We repeated the re-sampling with replacement 1000 times and we display the distribution of absolute and relative mediation effects:
+
+
+```{r, echo=FALSE, fig.show='hold', out.width="45%", warning=FALSE, error=FALSE, message=FALSE}
+
+knitr::include_graphics("Final_absolute_mediation.pdf")
+
+
+knitr::include_graphics("Final_relative_mediation.pdf")
+
+```
+
+
+Next, we show interesting extensions of multiple mediation that we could not 
+carry out with the difference and product of coefficient methods in the 
+original @RuizHernandez2017 paper. 
+
+## Multiple mediation analysis with `correlated=TRUE`
+
+We will allow for correlation between multiple mediators (in this case blood lead and urine cadmium, which are exposure biomarkers), which may share common sources of exposure and metabolic pathways.
+
+```{r echo=TRUE, fig.show='hold', results='hide', warning=FALSE, message=FALSE}
+multim=multimediate(lmodel.m,correlated=TRUE,model.y,treat="wv.gr.2",treat.value=1,
+                        control.value=0,J=10,conf.level=0.95,data=nhanes)
+     
+
+sum <- suppressWarnings(summary(multim, option='avg'))
+
+```
+
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(sum)
+```
+
+We observed that, in this case, the estimated mediation effects do not substantially change after allowing for correlation between multiple mediators. Thus, supporting the correlation between mediators is not relevant in the original @RuizHernandez2017 paper.
+
+## Multiple mediation analysis including exposure-mediator interactions 
+
+Interestingly, `Multimediate` can also accommodate exposure-mediator interactions because the counter factual framework enables so.
+
+```{r echo=TRUE, fig.show='hold', results='hide', warning=FALSE, message=FALSE}
+
+variables_y <- paste0("Surv(ridageyr,peryr.age.8yr,cvd.8yr==1) ~ const(wv.gr.2) +
+              const(log.cr.ucd)+const(log.bpb) + const(wv.gr.2*log.cr.ucd)  +const(race.2)+
+              const(race.3)+ const(race.4)+ const(diab)+ const(bmi_cat)+ const(riagendr.2)+
+              const(smoking.2)+const(smoking.3)+ const(lbxtc_cat)+const(lowhdl)+const(cholmed)+
+                const(hbp)+const(sedent)")
+
+
+model.y = aalen(as.formula(variables_y),start.time=40,
+                weights=nhanes$wtshm12yr, data = nhanes, robust=T)
+                      
+                      
+ 
+# Warning: at the current moment multimediate only takes one exposure-mediator 
+# interaction at a time (work in progress to accomodate more). Note that the first 
+# mediator model in the lmodel.m list must be the one with the interaction, and this 
+# ordering must be consistent with the order mediators have been included in the outcome
+# model.
+        
+variables1 <- paste0("log.cr.ucd ~ wv.gr.2 + riagendr.2 +  ridageyr + race.2 + race.3 +
+                     race.4 + smoking.2 + smoking.3")
+variables2 <- paste0("log.bpb ~  wv.gr.2 + riagendr.2 +  ridageyr +  race.2 + race.3 +
+                     race.4 + smoking.2 + smoking.3")
+      
+    
+modM1 = lm(variables1, data = nhanes)
+modM2 = lm(variables2, data = nhanes)
+lmodel.m=list(modM1, modM2)
+      
+    
+multim=multimediate(lmodel.m,correlated=TRUE,model.y,treat="wv.gr.2",treat.value=1,
+                             control.value=0,J=10,conf.level=0.95,data=nhanes)
+
+sum <- suppressWarnings(summary(multim, option='navg'))
+
+```
+
+Note the option `option='navg'` for obtaining average mediation effects in the presence of exposure-mediator interactions. Now, we obtain different mediation effects estimates for both NHANES periods. 
+
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(sum)
+```
+
+The results suggest that at the cadmium exposure levels observed in NHANES 1999-2004, the association of cadmium with cardiovascular mortality might be weaker compared to the association at cadmium exposure levels observed in 1988-1994. The interaction p-value in the outcome model, however, is suggestive (equal to 0.09). 
+
+## Multimediate can do more!
+
+Note that `multimediate` can also accommodate continuous and binary outcome models, as well as categorical or continuous exposures/treatments (@Jerolon2020). We could also think of modeling a non linear single mediator, by treating the mediator's main and spline terms as correlated mediators. For the moment, `multimediate` should only be used for continuous mediators, but we have work in progress to accommodate categorical mediators and both.
+
+## References

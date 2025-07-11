@@ -65,7 +65,6 @@ For binary outcomes, it also estimates average causal mediation effects on the o
 For survival outcomes, \code{multimediate} additionally estimates average causal mediation effects on cases per person-year scale.
 }
 \examples{
-
 # Load example data
 data(data1)
 summary(data1)

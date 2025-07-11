@@ -1,5 +1,5 @@
 ---
-title: "multimediate"
+title: "Getting Started with the `multimediate` package"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{multimediate}
