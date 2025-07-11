@@ -33,7 +33,6 @@
 #' }
 #'
 #' @examples
-#'
 #' # Load example data
 #' data(data1)
 #' summary(data1)
@@ -147,7 +146,7 @@ multimediate = function(lmodel.m,correlated=FALSE,model.y,treat,treat.value=1,co
   PredictM1<-PredictM0<-PredictM1b<-PredictM0b<- array(0, dim=c(J,N,NM))
 
 
-  if (verbose) print("Simulation of counterfactuals mediators")
+  if (verbose) message("Simulation of counterfactuals mediators")
   if (verbose) pb <- txtProgressBar(min = 0, max = NM, style = 3,title ="Simulation of counterfactuals mediators")
 
   for (nm in 1:NM){
@@ -224,7 +223,7 @@ multimediate = function(lmodel.m,correlated=FALSE,model.y,treat,treat.value=1,co
     if (NM!=1 & e<=2) {
       Pr0.NM<-Pr1.NM <-ORPr0.NM<-ORPr1.NM <- array(NA,dim=c(N,J,NM))
     }
-    if (verbose) print(title[e])
+    if (verbose) message(title[e])
     if (verbose) pb <- txtProgressBar(min = 0, max = J, style = 3,title=title[e])
     for (j in 1:J) {
       pred.data.t <- pred.data.c <-model.frame(model.y)
@@ -442,7 +441,7 @@ multimediate = function(lmodel.m,correlated=FALSE,model.y,treat,treat.value=1,co
       }
     }
   }
-  if (verbose) print("Computing average point estimates together with p-values and confidence intervals")
+  if (verbose) message("Computing average point estimates together with p-values and confidence intervals")
   # Step 3.3 : Compute the effects.
   # Compute the average effects. That is, we simply take the difference accross
   # two outcome predictions under treatment and the two outcome predictions under
