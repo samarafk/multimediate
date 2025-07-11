@@ -31,6 +31,8 @@
 
 multimediate_survival=function(lmodel.m, correlated = FALSE, model.y, treat, treat.value = 1, control.value = 0, J = 1000,conf.level = 0.95, fun = mean, data = NULL, peryr = 100000, verbose = TRUE){
 
+  message("verbose = ", verbose)
+
   N=dim(lmodel.m[[1]]$model)[1]
   NM=length(lmodel.m)
 
