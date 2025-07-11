@@ -216,10 +216,10 @@ We repeated the re-sampling with replacement 1000 times and we display the distr
 
 ```{r, echo=FALSE, fig.show='hold', out.width="45%", warning=FALSE, error=FALSE, message=FALSE}
 
-knitr::include_graphics("Final_absolute_mediation.pdf")
+knitr::include_graphics("Final_absolute_mediation.png")
 
 
-knitr::include_graphics("Final_relative_mediation.pdf")
+knitr::include_graphics("Final_relative_mediation.png")
 
 ```
 
