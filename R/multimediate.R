@@ -33,6 +33,7 @@
 #' }
 #'
 #' @examples
+#'
 #' # Load example data
 #' data(data1)
 #' summary(data1)
@@ -62,9 +63,9 @@
 #' summary(med.analysis, opt = "avg")
 #'
 #' @references
-#' Jérolon, A., Baglietto, L., Birmelé, E., Alarcon, F., & Perduca, V. (2021).
+#' Jerolon, A., Baglietto, L., Birmele, E., Alarcon, F., & Perduca, V. (2021).
 #' Causal mediation analysis in presence of multiple mediators uncausally related.
-#' \emph{The International Journal of Biostatistics}, 17(2), 191–221.
+#' The International Journal of Biostatistics, 17(2), 191-221.
 #' doi:10.1515/ijb-2019-0088
 #'
 #' Domingo-Relloso A, Jerolon A, Tellez-Plaza M, Bermudez JD.
