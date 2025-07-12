@@ -24,6 +24,7 @@ Description: Estimates key quantities in causal mediation analysis - including
     (2024) <doi:10.1101/2024.02.16.24302923>.
 License: GPL-3
 Encoding: UTF-8
+VignetteBuilder: knitr
 LazyData: true
 URL: https://samarafk.github.io/multimediate/
 Imports: 
