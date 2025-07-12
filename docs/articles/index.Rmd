@@ -1,0 +1,9 @@
+---
+title: ""
+output: html_document
+---
+
+### Vignettes
+
+- [Getting Started with the `multimediate` package](multimediate.html)
+- [Causal Mediation in Additive Survival Models](SurvivalMultimediate.html)

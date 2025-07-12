@@ -12,7 +12,7 @@
 
 
 
-<title>multimediate</title>
+<title>Getting Started with the multimediate package</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -336,7 +336,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">multimediate</h1>
+<h1 class="title toc-ignore">Getting Started with the
+<code>multimediate</code> package</h1>
 
 
 
@@ -547,18 +548,18 @@ Indirect Effect by M3
 </table>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">summary</span>(med.analysis,<span class="at">opt=</span><span class="st">&quot;avg&quot;</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co">#&gt;               . Estimation  IC.inf  IC.sup P.val</span></span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; 1    ACME.joint    81.5494 79.8501 83.0861     0</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; 2      PM.joint     0.8859  0.8781  0.8942     0</span></span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; 3       ACME.M1    10.3988  9.6326 11.1910     0</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; 4         PM.M1     0.1130  0.1049  0.1218     0</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; 5       ACME.M2    17.5109 16.6270 18.3698     0</span></span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; 6         PM.M2     0.1902  0.1804  0.2003     0</span></span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; 7       ACME.M3    53.6397 52.3675 54.9432     0</span></span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; 8         PM.M3     0.5828  0.5658  0.5995     0</span></span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; 9           ADE    10.5010  9.7397 11.2122     0</span></span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; 10 Total Effect    92.0504 90.5099 93.5028     0</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#plot(med.analysis)</span></span></code></pre></div>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; 1    ACME.joint    81.5825 79.8114 83.2367     0</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; 2      PM.joint     0.8861  0.8780  0.8946     0</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; 3       ACME.M1    10.4082  9.6572 11.1916     0</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt; 4         PM.M1     0.1131  0.1047  0.1218     0</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt; 5       ACME.M2    17.5295 16.6181 18.4545     0</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; 6         PM.M2     0.1904  0.1802  0.2012     0</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt; 7       ACME.M3    53.6448 52.2872 54.9504     0</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; 8         PM.M3     0.5827  0.5662  0.6011     0</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; 9           ADE    10.4811  9.7115 11.2080     0</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; 10 Total Effect    92.0637 90.5538 93.5323     0</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#plot(med.analysis)</span></span></code></pre></div>
 </div>
 <div id="example-2" class="section level2">
 <h2>Example 2</h2>
@@ -569,37 +570,37 @@ Indirect Effect by M3
 <li>Linear mediators : <span class="math inline">\(M_1,M_2,M_3\)</span></li>
 <li>Binary covariables : <span class="math inline">\(C_1,C_2,C_3\)</span></li>
 </ul>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">data</span>(data2)</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>data2<span class="sc">$</span>Treatment<span class="ot">=</span><span class="fu">as.factor</span>(data2<span class="sc">$</span>Treatment)</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>data2<span class="sc">$</span>C1<span class="ot">=</span><span class="fu">as.factor</span>(data2<span class="sc">$</span>C1)</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>data2<span class="sc">$</span>C2<span class="ot">=</span><span class="fu">as.factor</span>(data2<span class="sc">$</span>C2)</span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>data2<span class="sc">$</span>C3<span class="ot">=</span><span class="fu">as.factor</span>(data2<span class="sc">$</span>C3)</span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>data2<span class="sc">$</span>M1<span class="ot">=</span><span class="fu">as.numeric</span>(data2<span class="sc">$</span>M1)</span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>data2<span class="sc">$</span>M2<span class="ot">=</span><span class="fu">as.numeric</span>(data2<span class="sc">$</span>M2)</span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>data2<span class="sc">$</span>M3<span class="ot">=</span><span class="fu">as.numeric</span>(data2<span class="sc">$</span>M3)</span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>data2<span class="sc">$</span>Outcome<span class="ot">=</span><span class="fu">as.factor</span>(data2<span class="sc">$</span>Outcome)</span>
-<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="fu">summary</span>(data2)</span>
-<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="co">#&gt;  Treatment C1      C2      C3            M1                M2          </span></span>
-<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co">#&gt;  0:514     0:500   0:430   0:610   Min.   :-2.7798   Min.   :-2.19561  </span></span>
-<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co">#&gt;  1:486     1:500   1:570   1:390   1st Qu.:-0.1127   1st Qu.:-0.04618  </span></span>
-<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt;                                    Median : 0.5923   Median : 0.61047  </span></span>
-<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="co">#&gt;                                    Mean   : 0.5699   Mean   : 0.60425  </span></span>
-<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt;                                    3rd Qu.: 1.2644   3rd Qu.: 1.23342  </span></span>
-<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="co">#&gt;                                    Max.   : 3.8948   Max.   : 3.75137  </span></span>
-<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="co">#&gt;        M3           Outcome   </span></span>
-<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a><span class="co">#&gt;  Min.   :-3.3517   FALSE:757  </span></span>
-<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a><span class="co">#&gt;  1st Qu.:-0.2396   TRUE :243  </span></span>
-<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a><span class="co">#&gt;  Median : 0.4367              </span></span>
-<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="co">#&gt;  Mean   : 0.4572              </span></span>
-<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a><span class="co">#&gt;  3rd Qu.: 1.1357              </span></span>
-<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a><span class="co">#&gt;  Max.   : 4.0804</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>M1reg<span class="ot">=</span><span class="fu">lm</span>(M1<span class="sc">~</span> Treatment <span class="sc">+</span> C1, <span class="at">data=</span>data2)</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>M2reg<span class="ot">=</span><span class="fu">lm</span>(M2<span class="sc">~</span> Treatment <span class="sc">+</span> C2, <span class="at">data=</span>data2)</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>M3reg<span class="ot">=</span><span class="fu">lm</span>(M3<span class="sc">~</span> Treatment <span class="sc">+</span> C3, <span class="at">data=</span>data2)</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>Yreg<span class="ot">=</span><span class="fu">glm</span>(Outcome<span class="sc">~</span> Treatment <span class="sc">+</span> M1 <span class="sc">+</span> M2 <span class="sc">+</span> M3 <span class="sc">+</span> C1 <span class="sc">+</span> C2 <span class="sc">+</span> C3, <span class="at">data=</span>data2, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="st">&quot;logit&quot;</span>))</span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>med.analysis<span class="ot">=</span><span class="fu">multimediate</span>(<span class="at">lmodel.m=</span><span class="fu">list</span>(M1reg,M2reg,M3reg),<span class="at">correlated=</span><span class="cn">TRUE</span>,<span class="at">model.y=</span>Yreg,</span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>                        <span class="at">treat=</span><span class="st">&quot;Treatment&quot;</span>,<span class="at">treat.value=</span><span class="dv">1</span>,<span class="at">control.value=</span><span class="dv">0</span>,<span class="at">J=</span><span class="dv">1000</span>,<span class="at">conf.level=</span><span class="fl">0.95</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">data</span>(data2)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>data2<span class="sc">$</span>Treatment<span class="ot">=</span><span class="fu">as.factor</span>(data2<span class="sc">$</span>Treatment)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>data2<span class="sc">$</span>C1<span class="ot">=</span><span class="fu">as.factor</span>(data2<span class="sc">$</span>C1)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>data2<span class="sc">$</span>C2<span class="ot">=</span><span class="fu">as.factor</span>(data2<span class="sc">$</span>C2)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>data2<span class="sc">$</span>C3<span class="ot">=</span><span class="fu">as.factor</span>(data2<span class="sc">$</span>C3)</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>data2<span class="sc">$</span>M1<span class="ot">=</span><span class="fu">as.numeric</span>(data2<span class="sc">$</span>M1)</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>data2<span class="sc">$</span>M2<span class="ot">=</span><span class="fu">as.numeric</span>(data2<span class="sc">$</span>M2)</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>data2<span class="sc">$</span>M3<span class="ot">=</span><span class="fu">as.numeric</span>(data2<span class="sc">$</span>M3)</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>data2<span class="sc">$</span>Outcome<span class="ot">=</span><span class="fu">as.factor</span>(data2<span class="sc">$</span>Outcome)</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="fu">summary</span>(data2)</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt;  Treatment C1      C2      C3            M1                M2          </span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt;  0:514     0:500   0:430   0:610   Min.   :-2.7798   Min.   :-2.19561  </span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt;  1:486     1:500   1:570   1:390   1st Qu.:-0.1127   1st Qu.:-0.04618  </span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt;                                    Median : 0.5923   Median : 0.61047  </span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt;                                    Mean   : 0.5699   Mean   : 0.60425  </span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt;                                    3rd Qu.: 1.2644   3rd Qu.: 1.23342  </span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt;                                    Max.   : 3.8948   Max.   : 3.75137  </span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt;        M3           Outcome   </span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#&gt;  Min.   :-3.3517   FALSE:757  </span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#&gt;  1st Qu.:-0.2396   TRUE :243  </span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="co">#&gt;  Median : 0.4367              </span></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="co">#&gt;  Mean   : 0.4572              </span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a><span class="co">#&gt;  3rd Qu.: 1.1357              </span></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="co">#&gt;  Max.   : 4.0804</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>M1reg<span class="ot">=</span><span class="fu">lm</span>(M1<span class="sc">~</span> Treatment <span class="sc">+</span> C1, <span class="at">data=</span>data2)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>M2reg<span class="ot">=</span><span class="fu">lm</span>(M2<span class="sc">~</span> Treatment <span class="sc">+</span> C2, <span class="at">data=</span>data2)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>M3reg<span class="ot">=</span><span class="fu">lm</span>(M3<span class="sc">~</span> Treatment <span class="sc">+</span> C3, <span class="at">data=</span>data2)</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>Yreg<span class="ot">=</span><span class="fu">glm</span>(Outcome<span class="sc">~</span> Treatment <span class="sc">+</span> M1 <span class="sc">+</span> M2 <span class="sc">+</span> M3 <span class="sc">+</span> C1 <span class="sc">+</span> C2 <span class="sc">+</span> C3, <span class="at">data=</span>data2, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="st">&quot;logit&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>med.analysis<span class="ot">=</span><span class="fu">multimediate</span>(<span class="at">lmodel.m=</span><span class="fu">list</span>(M1reg,M2reg,M3reg),<span class="at">correlated=</span><span class="cn">TRUE</span>,<span class="at">model.y=</span>Yreg,</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>                        <span class="at">treat=</span><span class="st">&quot;Treatment&quot;</span>,<span class="at">treat.value=</span><span class="dv">1</span>,<span class="at">control.value=</span><span class="dv">0</span>,<span class="at">J=</span><span class="dv">1000</span>,<span class="at">conf.level=</span><span class="fl">0.95</span>)</span></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -649,43 +650,43 @@ Indirect Effect by M3
 </td>
 </tr>
 </table>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a> <span class="fu">summary</span>(med.analysis,<span class="at">opt=</span><span class="st">&quot;avg&quot;</span>,<span class="at">logit=</span><span class="st">&quot;all&quot;</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; Warning in summary.mm(med.analysis, opt = &quot;avg&quot;, logit = &quot;all&quot;): The</span></span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; proportions mediated on the OR scale can be considered if the outcome is rare,</span></span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt; otherwise the proportions mediated on effects scale and/or logOR scale have to</span></span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; be considered.</span></span>
-<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt;               . Estimation  IC.inf IC.sup P.val               . Estimation</span></span>
-<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt; 1    ACME.joint     0.0770  0.0550 0.0990 0.000   OR ACME.joint     1.9387</span></span>
-<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt; 2      PM.joint     0.4474  0.3292 0.6112 0.000     OR PM.joint     0.6286</span></span>
-<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="co">#&gt; 3       ACME.M1     0.0245 -0.0005 0.0580 0.054      OR ACME.M1     1.2400</span></span>
-<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="co">#&gt; 4         PM.M1     0.1429 -0.0031 0.3694 0.054        OR PM.M1     0.2482</span></span>
-<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="co">#&gt; 5       ACME.M2     0.0210  0.0030 0.0490 0.024      OR ACME.M2     1.2043</span></span>
-<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="co">#&gt; 6         PM.M2     0.1232  0.0190 0.3012 0.024        OR PM.M2     0.2198</span></span>
-<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co">#&gt; 7       ACME.M3     0.0280  0.0125 0.0475 0.000      OR ACME.M3     1.2733</span></span>
-<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="co">#&gt; 8         PM.M3     0.1628  0.0738 0.3019 0.000        OR PM.M3     0.2777</span></span>
-<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="co">#&gt; 9           ADE     0.0950  0.0520 0.1395 0.000          OR ADE     2.2671</span></span>
-<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="co">#&gt; 10 Total Effect     0.1720  0.1240 0.2240 0.000 OR Total Effect     4.4320</span></span>
-<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co">#&gt;     IC.inf IC.sup P.val                  . Estimation  IC.inf IC.sup P.val</span></span>
-<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co">#&gt; 1   1.6156 2.3564 0.000   logOR ACME.joint     0.6620  0.4797 0.8572 0.000</span></span>
-<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="co">#&gt; 2   0.5163 0.7429 0.000     logOR PM.joint     0.4474  0.3312 0.6040 0.000</span></span>
-<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="co">#&gt; 3   0.9925 1.6333 0.060      logOR ACME.M1     0.2151 -0.0076 0.4906 0.060</span></span>
-<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a><span class="co">#&gt; 4  -0.0102 0.5193 0.060        logOR PM.M1     0.1445 -0.0055 0.3662 0.060</span></span>
-<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a><span class="co">#&gt; 5   1.0357 1.4992 0.032      logOR ACME.M2     0.1859  0.0351 0.4049 0.032</span></span>
-<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a><span class="co">#&gt; 6   0.0477 0.4329 0.032        logOR PM.M2     0.1248  0.0247 0.2842 0.032</span></span>
-<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a><span class="co">#&gt; 7   1.1359 1.4911 0.000      logOR ACME.M3     0.2416  0.1274 0.3995 0.000</span></span>
-<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a><span class="co">#&gt; 8   0.1528 0.4410 0.000        logOR PM.M3     0.1623  0.0808 0.2966 0.000</span></span>
-<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a><span class="co">#&gt; 9   1.5484 3.2267 0.000          logOR ADE     0.8185  0.4372 1.1715 0.000</span></span>
-<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a><span class="co">#&gt; 10  2.9130 6.6957 0.000 logOR Total Effect     1.4889  1.0692 1.9015 0.000</span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a></span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co"># summary(med.analysis,opt=&quot;avg&quot;,logit=&quot;effects&quot;)</span></span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co"># plot(med.analysis)</span></span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a></span>
-<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co"># summary(med.analysis,opt=&quot;avg&quot;,logit=&quot;OR&quot;)</span></span>
-<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="co">#plot(med.analysis,logit = &quot;OR&quot;)</span></span>
-<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a></span>
-<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="co">#summary(med.analysis,opt=&quot;avg&quot;,logit=&quot;logOR&quot;)</span></span>
-<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a><span class="co">#plot(med.analysis,logit = &quot;logOR&quot;)</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a> <span class="fu">summary</span>(med.analysis,<span class="at">opt=</span><span class="st">&quot;avg&quot;</span>,<span class="at">logit=</span><span class="st">&quot;all&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="co">#&gt; Warning in summary.mm(med.analysis, opt = &quot;avg&quot;, logit = &quot;all&quot;): The</span></span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="co">#&gt; proportions mediated on the OR scale can be considered if the outcome is rare,</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="co">#&gt; otherwise the proportions mediated on effects scale and/or logOR scale have to</span></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt; be considered.</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt;               . Estimation IC.inf IC.sup P.val               . Estimation</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a><span class="co">#&gt; 1    ACME.joint     0.0765 0.0545 0.0990 0.000   OR ACME.joint     1.9407</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co">#&gt; 2      PM.joint     0.4485 0.3288 0.5824 0.000     OR PM.joint     0.6313</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">#&gt; 3       ACME.M1     0.0245 0.0000 0.0540 0.046      OR ACME.M1     1.2448</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="co">#&gt; 4         PM.M1     0.1436 0.0000 0.3611 0.046        OR PM.M1     0.2543</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="co">#&gt; 5       ACME.M2     0.0205 0.0035 0.0480 0.014      OR ACME.M2     1.1990</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt; 6         PM.M2     0.1216 0.0219 0.3009 0.014        OR PM.M2     0.2164</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt; 7       ACME.M3     0.0270 0.0120 0.0470 0.000      OR ACME.M3     1.2749</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#&gt; 8         PM.M3     0.1610 0.0706 0.3135 0.000        OR PM.M3     0.2805</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt; 9           ADE     0.0955 0.0535 0.1380 0.000          OR ADE     2.2984</span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt; 10 Total Effect     0.1710 0.1180 0.2190 0.000 OR Total Effect     4.4488</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt;     IC.inf IC.sup P.val                  . Estimation  IC.inf IC.sup P.val</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co">#&gt; 1   1.6064 2.3588 0.000   logOR ACME.joint     0.6630  0.4740 0.8581 0.000</span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co">#&gt; 2   0.5038 0.7323 0.000     logOR PM.joint     0.4481  0.3328 0.5852 0.000</span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co">#&gt; 3   0.9962 1.6349 0.058      logOR ACME.M1     0.2190 -0.0038 0.4916 0.058</span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="co">#&gt; 4  -0.0048 0.5065 0.058        logOR PM.M1     0.1467 -0.0023 0.3584 0.058</span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co">#&gt; 5   1.0376 1.4833 0.016      logOR ACME.M2     0.1815  0.0369 0.3943 0.016</span></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co">#&gt; 6   0.0491 0.4411 0.016        logOR PM.M2     0.1216  0.0261 0.2930 0.016</span></span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a><span class="co">#&gt; 7   1.1242 1.4975 0.000      logOR ACME.M3     0.2429  0.1171 0.4038 0.000</span></span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a><span class="co">#&gt; 8   0.1385 0.4366 0.000        logOR PM.M3     0.1627  0.0755 0.2978 0.000</span></span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a><span class="co">#&gt; 9   1.5848 3.2651 0.000          logOR ADE     0.8322  0.4605 1.1833 0.000</span></span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a><span class="co">#&gt; 10  2.9467 6.5280 0.000 logOR Total Effect     1.4926  1.0807 1.8761 0.000</span></span>
+<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a></span>
+<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a><span class="co"># summary(med.analysis,opt=&quot;avg&quot;,logit=&quot;effects&quot;)</span></span>
+<span id="cb9-30"><a href="#cb9-30" tabindex="-1"></a><span class="co"># plot(med.analysis)</span></span>
+<span id="cb9-31"><a href="#cb9-31" tabindex="-1"></a></span>
+<span id="cb9-32"><a href="#cb9-32" tabindex="-1"></a></span>
+<span id="cb9-33"><a href="#cb9-33" tabindex="-1"></a><span class="co"># summary(med.analysis,opt=&quot;avg&quot;,logit=&quot;OR&quot;)</span></span>
+<span id="cb9-34"><a href="#cb9-34" tabindex="-1"></a><span class="co">#plot(med.analysis,logit = &quot;OR&quot;)</span></span>
+<span id="cb9-35"><a href="#cb9-35" tabindex="-1"></a></span>
+<span id="cb9-36"><a href="#cb9-36" tabindex="-1"></a><span class="co">#summary(med.analysis,opt=&quot;avg&quot;,logit=&quot;logOR&quot;)</span></span>
+<span id="cb9-37"><a href="#cb9-37" tabindex="-1"></a><span class="co">#plot(med.analysis,logit = &quot;logOR&quot;)</span></span></code></pre></div>
 </div>
 <div id="example-3" class="section level2">
 <h2>Example 3</h2>
@@ -696,42 +697,42 @@ Indirect Effect by M3
 <li>Linear mediators <span class="math inline">\(M_1,M_2,M_3\)</span></li>
 <li>Binary covariables <span class="math inline">\(C_1,C_2,C_3\)</span></li>
 </ul>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">data</span>(data3)</span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>data3<span class="sc">$</span>Treatment<span class="ot">=</span><span class="fu">as.factor</span>(data3<span class="sc">$</span>Treatment)</span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>data3<span class="sc">$</span>C1<span class="ot">=</span><span class="fu">as.factor</span>(data3<span class="sc">$</span>C1)</span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>data3<span class="sc">$</span>C2<span class="ot">=</span><span class="fu">as.factor</span>(data3<span class="sc">$</span>C2)</span>
-<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>data3<span class="sc">$</span>C3<span class="ot">=</span><span class="fu">as.factor</span>(data3<span class="sc">$</span>C3)</span>
-<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>data3<span class="sc">$</span>M1<span class="ot">=</span><span class="fu">as.numeric</span>(data3<span class="sc">$</span>M1)</span>
-<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>data3<span class="sc">$</span>M2<span class="ot">=</span><span class="fu">as.numeric</span>(data3<span class="sc">$</span>M2)</span>
-<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>data3<span class="sc">$</span>M3<span class="ot">=</span><span class="fu">as.numeric</span>(data3<span class="sc">$</span>M3)</span>
-<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>data3<span class="sc">$</span>Outcome<span class="ot">=</span><span class="fu">as.factor</span>(data3<span class="sc">$</span>Outcome)</span>
-<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a></span>
-<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="fu">summary</span>(data3)</span>
-<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a><span class="co">#&gt;  Treatment C1      C2      C3            M1               M2         </span></span>
-<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a><span class="co">#&gt;  0:487     0:487   0:399   0:590   Min.   :-1.005   Min.   :-0.3562  </span></span>
-<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a><span class="co">#&gt;  1:513     1:513   1:601   1:410   1st Qu.: 5.971   1st Qu.: 7.4968  </span></span>
-<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a><span class="co">#&gt;                                    Median : 8.068   Median :12.3671  </span></span>
-<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a><span class="co">#&gt;                                    Mean   : 8.640   Mean   :11.2222  </span></span>
-<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a><span class="co">#&gt;                                    3rd Qu.:11.451   3rd Qu.:14.2538  </span></span>
-<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a><span class="co">#&gt;                                    Max.   :18.107   Max.   :21.2199  </span></span>
-<span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a><span class="co">#&gt;        M3          Outcome</span></span>
-<span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a><span class="co">#&gt;  Min.   :-0.7423   0:516  </span></span>
-<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a><span class="co">#&gt;  1st Qu.: 5.5540   1: 64  </span></span>
-<span id="cb12-22"><a href="#cb12-22" tabindex="-1"></a><span class="co">#&gt;  Median : 9.6019   2:102  </span></span>
-<span id="cb12-23"><a href="#cb12-23" tabindex="-1"></a><span class="co">#&gt;  Mean   : 9.5298   3:318  </span></span>
-<span id="cb12-24"><a href="#cb12-24" tabindex="-1"></a><span class="co">#&gt;  3rd Qu.:13.3874          </span></span>
-<span id="cb12-25"><a href="#cb12-25" tabindex="-1"></a><span class="co">#&gt;  Max.   :19.1836</span></span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>M1reg<span class="ot">=</span><span class="fu">lm</span>(M1<span class="sc">~</span> Treatment <span class="sc">+</span> C1 <span class="sc">+</span> C3, <span class="at">data=</span>data3)</span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>M2reg<span class="ot">=</span><span class="fu">lm</span>(M2<span class="sc">~</span> Treatment <span class="sc">+</span> C1 <span class="sc">+</span> C2, <span class="at">data=</span>data3)</span>
-<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>M3reg<span class="ot">=</span><span class="fu">lm</span>(M3<span class="sc">~</span> Treatment <span class="sc">+</span> C2 <span class="sc">+</span> C3, <span class="at">data=</span>data3)</span>
-<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a></span>
-<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
-<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>Yreg<span class="ot">=</span><span class="fu">polr</span>(Outcome <span class="sc">~</span> Treatment <span class="sc">+</span> M1 <span class="sc">+</span> M2 <span class="sc">+</span> M3 <span class="sc">+</span> C1 <span class="sc">+</span> C2 <span class="sc">+</span> C3 , <span class="at">data =</span> data3, <span class="at">method =</span> <span class="st">&quot;probit&quot;</span>)</span>
-<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span></code></pre></div>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>med.analysis<span class="ot">=</span><span class="fu">multimediate</span>(<span class="at">lmodel.m=</span><span class="fu">list</span>(M1reg,M2reg,M3reg),<span class="at">correlated=</span><span class="cn">TRUE</span>,<span class="at">model.y=</span>Yreg,</span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>                        <span class="at">treat=</span><span class="st">&quot;Treatment&quot;</span>,<span class="at">treat.value=</span><span class="dv">1</span>,<span class="at">control.value=</span><span class="dv">0</span>,<span class="at">J=</span><span class="dv">100</span>,<span class="at">conf.level=</span><span class="fl">0.95</span>)</span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="fu">summary</span>(med.analysis,<span class="at">opt=</span><span class="st">&quot;avg&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">data</span>(data3)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>data3<span class="sc">$</span>Treatment<span class="ot">=</span><span class="fu">as.factor</span>(data3<span class="sc">$</span>Treatment)</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>data3<span class="sc">$</span>C1<span class="ot">=</span><span class="fu">as.factor</span>(data3<span class="sc">$</span>C1)</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>data3<span class="sc">$</span>C2<span class="ot">=</span><span class="fu">as.factor</span>(data3<span class="sc">$</span>C2)</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>data3<span class="sc">$</span>C3<span class="ot">=</span><span class="fu">as.factor</span>(data3<span class="sc">$</span>C3)</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>data3<span class="sc">$</span>M1<span class="ot">=</span><span class="fu">as.numeric</span>(data3<span class="sc">$</span>M1)</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>data3<span class="sc">$</span>M2<span class="ot">=</span><span class="fu">as.numeric</span>(data3<span class="sc">$</span>M2)</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>data3<span class="sc">$</span>M3<span class="ot">=</span><span class="fu">as.numeric</span>(data3<span class="sc">$</span>M3)</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>data3<span class="sc">$</span>Outcome<span class="ot">=</span><span class="fu">as.factor</span>(data3<span class="sc">$</span>Outcome)</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="fu">summary</span>(data3)</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="co">#&gt;  Treatment C1      C2      C3            M1               M2         </span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="co">#&gt;  0:487     0:487   0:399   0:590   Min.   :-1.005   Min.   :-0.3562  </span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="co">#&gt;  1:513     1:513   1:601   1:410   1st Qu.: 5.971   1st Qu.: 7.4968  </span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="co">#&gt;                                    Median : 8.068   Median :12.3671  </span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="co">#&gt;                                    Mean   : 8.640   Mean   :11.2222  </span></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co">#&gt;                                    3rd Qu.:11.451   3rd Qu.:14.2538  </span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co">#&gt;                                    Max.   :18.107   Max.   :21.2199  </span></span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="co">#&gt;        M3          Outcome</span></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="co">#&gt;  Min.   :-0.7423   0:516  </span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a><span class="co">#&gt;  1st Qu.: 5.5540   1: 64  </span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a><span class="co">#&gt;  Median : 9.6019   2:102  </span></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a><span class="co">#&gt;  Mean   : 9.5298   3:318  </span></span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a><span class="co">#&gt;  3rd Qu.:13.3874          </span></span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a><span class="co">#&gt;  Max.   :19.1836</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>M1reg<span class="ot">=</span><span class="fu">lm</span>(M1<span class="sc">~</span> Treatment <span class="sc">+</span> C1 <span class="sc">+</span> C3, <span class="at">data=</span>data3)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>M2reg<span class="ot">=</span><span class="fu">lm</span>(M2<span class="sc">~</span> Treatment <span class="sc">+</span> C1 <span class="sc">+</span> C2, <span class="at">data=</span>data3)</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>M3reg<span class="ot">=</span><span class="fu">lm</span>(M3<span class="sc">~</span> Treatment <span class="sc">+</span> C2 <span class="sc">+</span> C3, <span class="at">data=</span>data3)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>Yreg<span class="ot">=</span><span class="fu">polr</span>(Outcome <span class="sc">~</span> Treatment <span class="sc">+</span> M1 <span class="sc">+</span> M2 <span class="sc">+</span> M3 <span class="sc">+</span> C1 <span class="sc">+</span> C2 <span class="sc">+</span> C3 , <span class="at">data =</span> data3, <span class="at">method =</span> <span class="st">&quot;probit&quot;</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>med.analysis<span class="ot">=</span><span class="fu">multimediate</span>(<span class="at">lmodel.m=</span><span class="fu">list</span>(M1reg,M2reg,M3reg),<span class="at">correlated=</span><span class="cn">TRUE</span>,<span class="at">model.y=</span>Yreg,</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>                        <span class="at">treat=</span><span class="st">&quot;Treatment&quot;</span>,<span class="at">treat.value=</span><span class="dv">1</span>,<span class="at">control.value=</span><span class="dv">0</span>,<span class="at">J=</span><span class="dv">100</span>,<span class="at">conf.level=</span><span class="fl">0.95</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="fu">summary</span>(med.analysis,<span class="at">opt=</span><span class="st">&quot;avg&quot;</span>)</span></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -781,18 +782,18 @@ Indirect Effect by M3
 </td>
 </tr>
 </table>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">summary</span>(med.analysis,<span class="at">opt=</span><span class="st">&quot;avg&quot;</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co">#&gt;               . Estimation IC.inf IC.sup P.val</span></span>
-<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt; 1    ACME.joint     1.5281 0.8425 1.9638  0.00</span></span>
-<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">#&gt; 2      PM.joint     0.6993 0.5295 0.8447  0.00</span></span>
-<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co">#&gt; 3       ACME.M1     0.4036 0.1178 0.6961  0.00</span></span>
-<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co">#&gt; 4         PM.M1     0.1905 0.0504 0.3798  0.00</span></span>
-<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&gt; 5       ACME.M2     0.3570 0.0509 0.6855  0.04</span></span>
-<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&gt; 6         PM.M2     0.1689 0.0222 0.3522  0.04</span></span>
-<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co">#&gt; 7       ACME.M3     0.4568 0.2180 0.7421  0.00</span></span>
-<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co">#&gt; 8         PM.M3     0.2153 0.0940 0.3852  0.00</span></span>
-<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="co">#&gt; 9           ADE     0.6520 0.3229 1.0757  0.00</span></span>
-<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co">#&gt; 10 Total Effect     2.1800 1.4735 2.5175  0.00</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">summary</span>(med.analysis,<span class="at">opt=</span><span class="st">&quot;avg&quot;</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="co">#&gt;               . Estimation IC.inf IC.sup P.val</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co">#&gt; 1    ACME.joint     1.5421 1.0425 1.9567     0</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#&gt; 2      PM.joint     0.6977 0.5774 0.8146     0</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co">#&gt; 3       ACME.M1     0.4165 0.1204 0.7676     0</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt; 4         PM.M1     0.1929 0.0519 0.3616     0</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt; 5       ACME.M2     0.3601 0.0345 0.7152     0</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt; 6         PM.M2     0.1654 0.0153 0.3423     0</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="co">#&gt; 7       ACME.M3     0.4564 0.2353 0.6824     0</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#&gt; 8         PM.M3     0.2104 0.1049 0.3440     0</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co">#&gt; 9           ADE     0.6629 0.4111 0.9683     0</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="co">#&gt; 10 Total Effect     2.2050 1.6413 2.5277     0</span></span></code></pre></div>
 </div>
 <div id="example-4" class="section level2">
 <h2>Example 4</h2>
@@ -805,39 +806,39 @@ Indirect Effect by M3
 <li>Polytomic mediator <span class="math inline">\(M_3\)</span></li>
 <li>Binary covariables <span class="math inline">\(C_1,C_2,C_3\)</span></li>
 </ul>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">data</span>(data4)</span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>data4<span class="sc">$</span>Treatment<span class="ot">=</span><span class="fu">as.factor</span>(data4<span class="sc">$</span>Treatment)</span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>data4<span class="sc">$</span>C1<span class="ot">=</span><span class="fu">as.factor</span>(data4<span class="sc">$</span>C1)</span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>data4<span class="sc">$</span>C2<span class="ot">=</span><span class="fu">as.factor</span>(data4<span class="sc">$</span>C2)</span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>data4<span class="sc">$</span>C3<span class="ot">=</span><span class="fu">as.factor</span>(data4<span class="sc">$</span>C3)</span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>data4<span class="sc">$</span>M1<span class="ot">=</span><span class="fu">as.numeric</span>(data4<span class="sc">$</span>M1)</span>
-<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>data4<span class="sc">$</span>M3<span class="ot">=</span><span class="fu">as.factor</span>(data4<span class="sc">$</span>M3)</span>
-<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>data4<span class="sc">$</span>M2<span class="ot">=</span><span class="fu">as.factor</span>(data4<span class="sc">$</span>M2)</span>
-<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>data4<span class="sc">$</span>Outcome<span class="ot">=</span><span class="fu">as.numeric</span>(data4<span class="sc">$</span>Outcome)</span>
-<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="fu">summary</span>(data4)</span>
-<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a><span class="co">#&gt;  Treatment C1      C2      C3            M1         M2      M3     </span></span>
-<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a><span class="co">#&gt;  0:530     0:501   0:399   0:605   Min.   : 7.944   0:841   0:533  </span></span>
-<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="co">#&gt;  1:470     1:499   1:601   1:395   1st Qu.:16.721   1:159   1:224  </span></span>
-<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a><span class="co">#&gt;                                    Median :21.915           2:243  </span></span>
-<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a><span class="co">#&gt;                                    Mean   :21.988                  </span></span>
-<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a><span class="co">#&gt;                                    3rd Qu.:26.679                  </span></span>
-<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a><span class="co">#&gt;                                    Max.   :37.638                  </span></span>
-<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a><span class="co">#&gt;     Outcome      </span></span>
-<span id="cb16-19"><a href="#cb16-19" tabindex="-1"></a><span class="co">#&gt;  Min.   : 38.22  </span></span>
-<span id="cb16-20"><a href="#cb16-20" tabindex="-1"></a><span class="co">#&gt;  1st Qu.: 79.09  </span></span>
-<span id="cb16-21"><a href="#cb16-21" tabindex="-1"></a><span class="co">#&gt;  Median :109.25  </span></span>
-<span id="cb16-22"><a href="#cb16-22" tabindex="-1"></a><span class="co">#&gt;  Mean   :111.24  </span></span>
-<span id="cb16-23"><a href="#cb16-23" tabindex="-1"></a><span class="co">#&gt;  3rd Qu.:140.45  </span></span>
-<span id="cb16-24"><a href="#cb16-24" tabindex="-1"></a><span class="co">#&gt;  Max.   :194.37</span></span></code></pre></div>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>M1reg<span class="ot">=</span><span class="fu">lm</span>(M1<span class="sc">~</span>  Treatment <span class="sc">+</span> C1 <span class="sc">+</span> C2 <span class="sc">+</span> C3, <span class="at">data =</span> data4)</span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>M2reg<span class="ot">=</span><span class="fu">glm</span>(M2<span class="sc">~</span> Treatment <span class="sc">+</span> C1 <span class="sc">+</span> C3, <span class="at">data =</span> data4, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="st">&quot;probit&quot;</span>))</span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span></code></pre></div>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>M3reg<span class="ot">=</span><span class="fu">polr</span>(M3<span class="sc">~</span>Treatment <span class="sc">+</span> C2 <span class="sc">+</span> C3     , <span class="at">data =</span> data4, <span class="at">method =</span> <span class="st">&quot;probit&quot;</span>)</span>
-<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span></code></pre></div>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a></span>
-<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>Yreg<span class="ot">=</span><span class="fu">lm</span>(Outcome<span class="sc">~</span> Treatment <span class="sc">+</span> M1 <span class="sc">+</span> M2 <span class="sc">+</span> M3 <span class="sc">+</span> C1 <span class="sc">+</span> C2 <span class="sc">+</span> C3, <span class="at">data=</span>data4)</span></code></pre></div>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>med.analysis<span class="ot">=</span><span class="fu">multimediate</span>(<span class="at">lmodel.m=</span><span class="fu">list</span>(M1reg,M2reg,M3reg),<span class="at">correlated=</span><span class="cn">TRUE</span>,<span class="at">model.y=</span>Yreg,</span>
-<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>                        <span class="at">treat=</span><span class="st">&quot;Treatment&quot;</span>,<span class="at">treat.value=</span><span class="dv">1</span>,<span class="at">control.value=</span><span class="dv">0</span>,<span class="at">J=</span><span class="dv">1000</span>,<span class="at">conf.level=</span><span class="fl">0.95</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">data</span>(data4)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>data4<span class="sc">$</span>Treatment<span class="ot">=</span><span class="fu">as.factor</span>(data4<span class="sc">$</span>Treatment)</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>data4<span class="sc">$</span>C1<span class="ot">=</span><span class="fu">as.factor</span>(data4<span class="sc">$</span>C1)</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>data4<span class="sc">$</span>C2<span class="ot">=</span><span class="fu">as.factor</span>(data4<span class="sc">$</span>C2)</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>data4<span class="sc">$</span>C3<span class="ot">=</span><span class="fu">as.factor</span>(data4<span class="sc">$</span>C3)</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>data4<span class="sc">$</span>M1<span class="ot">=</span><span class="fu">as.numeric</span>(data4<span class="sc">$</span>M1)</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>data4<span class="sc">$</span>M3<span class="ot">=</span><span class="fu">as.factor</span>(data4<span class="sc">$</span>M3)</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>data4<span class="sc">$</span>M2<span class="ot">=</span><span class="fu">as.factor</span>(data4<span class="sc">$</span>M2)</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>data4<span class="sc">$</span>Outcome<span class="ot">=</span><span class="fu">as.numeric</span>(data4<span class="sc">$</span>Outcome)</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="fu">summary</span>(data4)</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co">#&gt;  Treatment C1      C2      C3            M1         M2      M3     </span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co">#&gt;  0:530     0:501   0:399   0:605   Min.   : 7.944   0:841   0:533  </span></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="co">#&gt;  1:470     1:499   1:601   1:395   1st Qu.:16.721   1:159   1:224  </span></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co">#&gt;                                    Median :21.915           2:243  </span></span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co">#&gt;                                    Mean   :21.988                  </span></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="co">#&gt;                                    3rd Qu.:26.679                  </span></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co">#&gt;                                    Max.   :37.638                  </span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="co">#&gt;     Outcome      </span></span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="co">#&gt;  Min.   : 38.22  </span></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="co">#&gt;  1st Qu.: 79.09  </span></span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="co">#&gt;  Median :109.25  </span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a><span class="co">#&gt;  Mean   :111.24  </span></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="co">#&gt;  3rd Qu.:140.45  </span></span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a><span class="co">#&gt;  Max.   :194.37</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>M1reg<span class="ot">=</span><span class="fu">lm</span>(M1<span class="sc">~</span>  Treatment <span class="sc">+</span> C1 <span class="sc">+</span> C2 <span class="sc">+</span> C3, <span class="at">data =</span> data4)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>M2reg<span class="ot">=</span><span class="fu">glm</span>(M2<span class="sc">~</span> Treatment <span class="sc">+</span> C1 <span class="sc">+</span> C3, <span class="at">data =</span> data4, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="st">&quot;probit&quot;</span>))</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>M3reg<span class="ot">=</span><span class="fu">polr</span>(M3<span class="sc">~</span>Treatment <span class="sc">+</span> C2 <span class="sc">+</span> C3     , <span class="at">data =</span> data4, <span class="at">method =</span> <span class="st">&quot;probit&quot;</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>Yreg<span class="ot">=</span><span class="fu">lm</span>(Outcome<span class="sc">~</span> Treatment <span class="sc">+</span> M1 <span class="sc">+</span> M2 <span class="sc">+</span> M3 <span class="sc">+</span> C1 <span class="sc">+</span> C2 <span class="sc">+</span> C3, <span class="at">data=</span>data4)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>med.analysis<span class="ot">=</span><span class="fu">multimediate</span>(<span class="at">lmodel.m=</span><span class="fu">list</span>(M1reg,M2reg,M3reg),<span class="at">correlated=</span><span class="cn">TRUE</span>,<span class="at">model.y=</span>Yreg,</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>                        <span class="at">treat=</span><span class="st">&quot;Treatment&quot;</span>,<span class="at">treat.value=</span><span class="dv">1</span>,<span class="at">control.value=</span><span class="dv">0</span>,<span class="at">J=</span><span class="dv">1000</span>,<span class="at">conf.level=</span><span class="fl">0.95</span>)</span></code></pre></div>
 <table>
 <thead>
 <tr>
@@ -887,18 +888,18 @@ Indirect Effect by M3
 </td>
 </tr>
 </table>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">summary</span>(med.analysis,<span class="at">opt=</span><span class="st">&quot;avg&quot;</span>)</span>
-<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="co">#&gt;               . Estimation  IC.inf  IC.sup P.val</span></span>
-<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="co">#&gt; 1    ACME.joint    47.9586 46.2903 49.5585 0.000</span></span>
-<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="co">#&gt; 2      PM.joint     0.8272  0.8061  0.8469 0.000</span></span>
-<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="co">#&gt; 3       ACME.M1    33.8316 33.0873 34.6129 0.000</span></span>
-<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a><span class="co">#&gt; 4         PM.M1     0.5837  0.5671  0.6016 0.000</span></span>
-<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a><span class="co">#&gt; 5       ACME.M2     0.0008 -0.0026  0.0056 0.644</span></span>
-<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a><span class="co">#&gt; 6         PM.M2     0.0000  0.0000  0.0001 0.644</span></span>
-<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a><span class="co">#&gt; 7       ACME.M3    14.1262 12.7203 15.5276 0.000</span></span>
-<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a><span class="co">#&gt; 8         PM.M3     0.2437  0.2183  0.2694 0.000</span></span>
-<span id="cb21-11"><a href="#cb21-11" tabindex="-1"></a><span class="co">#&gt; 9           ADE    10.0152  8.9144 11.1702 0.000</span></span>
-<span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a><span class="co">#&gt; 10 Total Effect    57.9738 56.9722 58.9797 0.000</span></span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">summary</span>(med.analysis,<span class="at">opt=</span><span class="st">&quot;avg&quot;</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="co">#&gt;               . Estimation  IC.inf  IC.sup P.val</span></span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="co">#&gt; 1    ACME.joint    47.9419 46.1842 49.6012 0.000</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a><span class="co">#&gt; 2      PM.joint     0.8270  0.8028  0.8496 0.000</span></span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a><span class="co">#&gt; 3       ACME.M1    33.8436 33.0623 34.5909 0.000</span></span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="co">#&gt; 4         PM.M1     0.5840  0.5662  0.5997 0.000</span></span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a><span class="co">#&gt; 5       ACME.M2     0.0009 -0.0028  0.0071 0.608</span></span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="co">#&gt; 6         PM.M2     0.0000  0.0000  0.0001 0.608</span></span>
+<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a><span class="co">#&gt; 7       ACME.M3    14.0974 12.5787 15.5737 0.000</span></span>
+<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a><span class="co">#&gt; 8         PM.M3     0.2432  0.2159  0.2695 0.000</span></span>
+<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a><span class="co">#&gt; 9           ADE    10.0248  8.7977 11.3318 0.000</span></span>
+<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a><span class="co">#&gt; 10 Total Effect    57.9667 56.9544 58.9418 0.000</span></span></code></pre></div>
 </div>
 <div id="example-5" class="section level2">
 <h2>Example 5</h2>
@@ -907,48 +908,48 @@ Indirect Effect by M3
 <li>Survival Outcome <span class="math inline">\(Y\)</span></li>
 <li>Linear mediators <span class="math inline">\(M_1,M_2,M_3\)</span></li>
 </ul>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">data</span>(data5)</span>
-<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="co"># data5$Exposure=as.factor(data5$Exposure)</span></span>
-<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="co"># data5$M1=as.numeric(data5$M1)</span></span>
-<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a><span class="co"># data5$M3=as.numeric(data5$M3)</span></span>
-<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a><span class="co"># data5$M2=as.numeric(data5$M2)</span></span>
-<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a><span class="co"># data5$Outcome=as.numeric(data5$Outcome)</span></span>
-<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a><span class="fu">summary</span>(data5)</span>
-<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a><span class="co">#&gt;     Exposure            M1               M2               M3        </span></span>
-<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a><span class="co">#&gt;  Min.   :0.0000   Min.   : 4.395   Min.   : 3.663   Min.   : 6.050  </span></span>
-<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a><span class="co">#&gt;  1st Qu.:0.0000   1st Qu.: 7.332   1st Qu.: 6.623   1st Qu.: 9.563  </span></span>
-<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a><span class="co">#&gt;  Median :1.0000   Median : 8.006   Median : 7.301   Median :10.269  </span></span>
-<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a><span class="co">#&gt;  Mean   :0.5097   Mean   : 8.004   Mean   : 7.324   Mean   :10.292  </span></span>
-<span id="cb22-13"><a href="#cb22-13" tabindex="-1"></a><span class="co">#&gt;  3rd Qu.:1.0000   3rd Qu.: 8.668   3rd Qu.: 8.031   3rd Qu.:11.011  </span></span>
-<span id="cb22-14"><a href="#cb22-14" tabindex="-1"></a><span class="co">#&gt;  Max.   :1.0000   Max.   :11.361   Max.   :11.176   Max.   :13.883  </span></span>
-<span id="cb22-15"><a href="#cb22-15" tabindex="-1"></a><span class="co">#&gt;      event     surv_time      </span></span>
-<span id="cb22-16"><a href="#cb22-16" tabindex="-1"></a><span class="co">#&gt;  Min.   :1   Min.   :0.00000  </span></span>
-<span id="cb22-17"><a href="#cb22-17" tabindex="-1"></a><span class="co">#&gt;  1st Qu.:1   1st Qu.:0.02000  </span></span>
-<span id="cb22-18"><a href="#cb22-18" tabindex="-1"></a><span class="co">#&gt;  Median :1   Median :0.04000  </span></span>
-<span id="cb22-19"><a href="#cb22-19" tabindex="-1"></a><span class="co">#&gt;  Mean   :1   Mean   :0.05808  </span></span>
-<span id="cb22-20"><a href="#cb22-20" tabindex="-1"></a><span class="co">#&gt;  3rd Qu.:1   3rd Qu.:0.08000  </span></span>
-<span id="cb22-21"><a href="#cb22-21" tabindex="-1"></a><span class="co">#&gt;  Max.   :1   Max.   :0.57000</span></span></code></pre></div>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>modM1<span class="ot">=</span><span class="fu">lm</span>(M1 <span class="sc">~</span> Exposure, <span class="at">data =</span> data5)    </span>
-<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>modM2<span class="ot">=</span><span class="fu">lm</span>(M2 <span class="sc">~</span> Exposure, <span class="at">data =</span> data5)</span>
-<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>modM3<span class="ot">=</span><span class="fu">lm</span>(M3 <span class="sc">~</span> Exposure, <span class="at">data =</span> data5)</span>
-<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>lmodel.m<span class="ot">=</span><span class="fu">list</span>(modM1,modM2, modM3)</span>
-<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a></span>
-<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a><span class="fu">library</span>(timereg)</span>
-<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a><span class="co">#&gt; Loading required package: survival</span></span></code></pre></div>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>model.y<span class="ot">=</span><span class="fu">aalen</span>(<span class="fu">Surv</span>(surv_time, event) <span class="sc">~</span> <span class="fu">const</span>(Exposure) <span class="sc">+</span> <span class="fu">const</span>(M1) <span class="sc">+</span> <span class="fu">const</span>(M2) <span class="sc">+</span> <span class="fu">const</span>(M3), <span class="at">data =</span> data5, <span class="at">robust=</span>T)</span></code></pre></div>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>multi.media<span class="ot">=</span><span class="fu">multimediate</span>(lmodel.m,<span class="at">correlated=</span><span class="cn">TRUE</span>,model.y,<span class="at">treat=</span><span class="st">&#39;Exposure&#39;</span>,<span class="at">treat.value=</span><span class="dv">1</span>,<span class="at">control.value=</span><span class="dv">0</span>,<span class="at">J=</span><span class="dv">1000</span>,<span class="at">conf.level=</span><span class="fl">0.95</span>,<span class="at">data=</span>data5)</span></code></pre></div>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">summary</span>(multi.media, <span class="at">opt=</span><span class="st">&#39;avg&#39;</span>)</span>
-<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="co">#&gt;               .  Estimation      IC.inf      IC.sup P.val</span></span>
-<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="co">#&gt; 1    ACME.joint 113526.7278  66341.5781 163930.8039 0.000</span></span>
-<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a><span class="co">#&gt; 2      PM.joint      0.5494      0.2540      1.1237 0.000</span></span>
-<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a><span class="co">#&gt; 3       ACME.M1   2103.6958  -4308.7569   9567.5636 0.514</span></span>
-<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a><span class="co">#&gt; 4         PM.M1      0.0104     -0.0210      0.0510 0.514</span></span>
-<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a><span class="co">#&gt; 5       ACME.M2  48168.9636  -1098.7624  94776.2611 0.056</span></span>
-<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a><span class="co">#&gt; 6         PM.M2      0.2322     -0.0043      0.5559 0.056</span></span>
-<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a><span class="co">#&gt; 7       ACME.M3  63254.0684  23719.4878 103248.6928 0.000</span></span>
-<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a><span class="co">#&gt; 8         PM.M3      0.3047      0.0965      0.6380 0.000</span></span>
-<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a><span class="co">#&gt; 9           ADE 112991.2513 -13482.2225 233612.2017 0.086</span></span>
-<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a><span class="co">#&gt; 10 Total Effect 226517.9791 112864.3347 342020.5498 0.000</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">data</span>(data5)</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="co"># data5$Exposure=as.factor(data5$Exposure)</span></span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="co"># data5$M1=as.numeric(data5$M1)</span></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="co"># data5$M3=as.numeric(data5$M3)</span></span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="co"># data5$M2=as.numeric(data5$M2)</span></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="co"># data5$Outcome=as.numeric(data5$Outcome)</span></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a><span class="fu">summary</span>(data5)</span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="co">#&gt;     Exposure            M1               M2               M3        </span></span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a><span class="co">#&gt;  Min.   :0.0000   Min.   : 4.395   Min.   : 3.663   Min.   : 6.050  </span></span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a><span class="co">#&gt;  1st Qu.:0.0000   1st Qu.: 7.332   1st Qu.: 6.623   1st Qu.: 9.563  </span></span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a><span class="co">#&gt;  Median :1.0000   Median : 8.006   Median : 7.301   Median :10.269  </span></span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a><span class="co">#&gt;  Mean   :0.5097   Mean   : 8.004   Mean   : 7.324   Mean   :10.292  </span></span>
+<span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a><span class="co">#&gt;  3rd Qu.:1.0000   3rd Qu.: 8.668   3rd Qu.: 8.031   3rd Qu.:11.011  </span></span>
+<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a><span class="co">#&gt;  Max.   :1.0000   Max.   :11.361   Max.   :11.176   Max.   :13.883  </span></span>
+<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a><span class="co">#&gt;      event     surv_time      </span></span>
+<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a><span class="co">#&gt;  Min.   :1   Min.   :0.00000  </span></span>
+<span id="cb18-17"><a href="#cb18-17" tabindex="-1"></a><span class="co">#&gt;  1st Qu.:1   1st Qu.:0.02000  </span></span>
+<span id="cb18-18"><a href="#cb18-18" tabindex="-1"></a><span class="co">#&gt;  Median :1   Median :0.04000  </span></span>
+<span id="cb18-19"><a href="#cb18-19" tabindex="-1"></a><span class="co">#&gt;  Mean   :1   Mean   :0.05808  </span></span>
+<span id="cb18-20"><a href="#cb18-20" tabindex="-1"></a><span class="co">#&gt;  3rd Qu.:1   3rd Qu.:0.08000  </span></span>
+<span id="cb18-21"><a href="#cb18-21" tabindex="-1"></a><span class="co">#&gt;  Max.   :1   Max.   :0.57000</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>modM1<span class="ot">=</span><span class="fu">lm</span>(M1 <span class="sc">~</span> Exposure, <span class="at">data =</span> data5)    </span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>modM2<span class="ot">=</span><span class="fu">lm</span>(M2 <span class="sc">~</span> Exposure, <span class="at">data =</span> data5)</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>modM3<span class="ot">=</span><span class="fu">lm</span>(M3 <span class="sc">~</span> Exposure, <span class="at">data =</span> data5)</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>lmodel.m<span class="ot">=</span><span class="fu">list</span>(modM1,modM2, modM3)</span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="fu">library</span>(timereg)</span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a><span class="co">#&gt; Loading required package: survival</span></span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a>model.y<span class="ot">=</span><span class="fu">aalen</span>(<span class="fu">Surv</span>(surv_time, event) <span class="sc">~</span> <span class="fu">const</span>(Exposure) <span class="sc">+</span> <span class="fu">const</span>(M1) <span class="sc">+</span> <span class="fu">const</span>(M2) <span class="sc">+</span> <span class="fu">const</span>(M3), <span class="at">data =</span> data5, <span class="at">robust=</span>T)</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>multi.media<span class="ot">=</span><span class="fu">multimediate</span>(lmodel.m,<span class="at">correlated=</span><span class="cn">TRUE</span>,model.y,<span class="at">treat=</span><span class="st">&#39;Exposure&#39;</span>,<span class="at">treat.value=</span><span class="dv">1</span>,<span class="at">control.value=</span><span class="dv">0</span>,<span class="at">J=</span><span class="dv">1000</span>,<span class="at">conf.level=</span><span class="fl">0.95</span>,<span class="at">data=</span>data5)</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">summary</span>(multi.media, <span class="at">opt=</span><span class="st">&#39;avg&#39;</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="co">#&gt;               .  Estimation      IC.inf      IC.sup P.val</span></span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="co">#&gt; 1    ACME.joint 115205.6896  67042.0465 162811.6616 0.000</span></span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="co">#&gt; 2      PM.joint      0.5476      0.2625      1.1254 0.000</span></span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="co">#&gt; 3       ACME.M1   2348.2280  -4745.8431  10745.8561 0.458</span></span>
+<span id="cb21-6"><a href="#cb21-6" tabindex="-1"></a><span class="co">#&gt; 4         PM.M1      0.0110     -0.0213      0.0518 0.458</span></span>
+<span id="cb21-7"><a href="#cb21-7" tabindex="-1"></a><span class="co">#&gt; 5       ACME.M2  47750.3556   2288.7470  96271.4029 0.040</span></span>
+<span id="cb21-8"><a href="#cb21-8" tabindex="-1"></a><span class="co">#&gt; 6         PM.M2      0.2258      0.0104      0.5552 0.040</span></span>
+<span id="cb21-9"><a href="#cb21-9" tabindex="-1"></a><span class="co">#&gt; 7       ACME.M3  65107.1059  26265.4908 105670.6870 0.000</span></span>
+<span id="cb21-10"><a href="#cb21-10" tabindex="-1"></a><span class="co">#&gt; 8         PM.M3      0.3083      0.1100      0.6783 0.000</span></span>
+<span id="cb21-11"><a href="#cb21-11" tabindex="-1"></a><span class="co">#&gt; 9           ADE 114531.7341 -20309.6088 234776.5196 0.082</span></span>
+<span id="cb21-12"><a href="#cb21-12" tabindex="-1"></a><span class="co">#&gt; 10 Total Effect 229737.4237 113347.7146 344473.1502 0.000</span></span></code></pre></div>
 </div>
 
 

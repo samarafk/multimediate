@@ -1,0 +1,29 @@
+template:
+  bootstrap: 5
+  bootswatch: flatly
+
+home:
+  title: multimediate
+  tagline: Causal Mediation Analysis with Multiple Mediators
+
+authors:
+  sidebar:
+    - name: Allan Jerolon
+    - name: Arce Domingos-Relloso
+    - name: Samara Kiihl
+    - name: Maria Tellez-Plaza
+
+navbar:
+  structure:
+    left:
+      - home
+      - reference
+      - articles
+    right:
+      - github
+
+articles:
+  - title: Get Started
+    contents:
+      - multimediate
+      - SurvivalMultimediate
