@@ -6,7 +6,7 @@ output:
   rmarkdown::html_vignette
 bibliography: refs.bib
 vignette: >
-  %\VignetteIndexEntry{"Causal Mediation in Additive Survival Models with the `multimediate` package"}
+  %\VignetteIndexEntry{Causal Mediation in Additive Survival Models with the `multimediate` package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -172,7 +172,7 @@ Once we have fitted the outcome and the mediator models we can call the `multime
 ```{r echo=TRUE, fig.show='hold', results='hide', warning=FALSE, message=FALSE}
       
 multim=multimediate(lmodel.m,correlated=FALSE,model.y,treat="wv.gr.2",treat.value=1,
-                        control.value=0,J=10,conf.level=0.95,data=nhanes)
+                        control.value=0,J=1000,conf.level=0.95,data=nhanes)
      
 
 sum <- suppressWarnings(summary(multim, option='avg'))
@@ -234,7 +234,7 @@ We will allow for correlation between multiple mediators (in this case blood lea
 
 ```{r echo=TRUE, fig.show='hold', results='hide', warning=FALSE, message=FALSE}
 multim=multimediate(lmodel.m,correlated=TRUE,model.y,treat="wv.gr.2",treat.value=1,
-                        control.value=0,J=10,conf.level=0.95,data=nhanes)
+                        control.value=0,J=1000,conf.level=0.95,data=nhanes)
      
 
 sum <- suppressWarnings(summary(multim, option='avg'))
@@ -284,7 +284,7 @@ lmodel.m=list(modM1, modM2)
       
     
 multim=multimediate(lmodel.m,correlated=TRUE,model.y,treat="wv.gr.2",treat.value=1,
-                             control.value=0,J=10,conf.level=0.95,data=nhanes)
+                             control.value=0,J=1000,conf.level=0.95,data=nhanes)
 
 sum <- suppressWarnings(summary(multim, option='navg'))
 
