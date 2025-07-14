@@ -300,7 +300,7 @@ knitr::kable(sum)
 
 The results suggest that at the cadmium exposure levels observed in NHANES 1999-2004, the association of cadmium with cardiovascular mortality might be weaker compared to the association at cadmium exposure levels observed in 1988-1994. The interaction p-value in the outcome model, however, is suggestive (equal to 0.09). 
 
-## Multimediate can do more!
+## `multimediate` can do more!
 
 Note that `multimediate` can also accommodate continuous and binary outcome models, as well as categorical or continuous exposures/treatments (@Jerolon2020). We could also think of modeling a non linear single mediator, by treating the mediator's main and spline terms as correlated mediators. For the moment, `multimediate` should only be used for continuous mediators, but we have work in progress to accommodate categorical mediators and both.
 
