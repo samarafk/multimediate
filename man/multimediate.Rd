@@ -45,7 +45,16 @@ multimediate(
 \item{verbose}{Logical. If \code{TRUE} (default), messages and a progress bar are displayed during execution.}
 }
 \value{
-multimediate returns an object of class \code{mm}. The function \code{summary} (i.e., \code{summary.mm}) can be used to obtain a table of the results.
+multimediate returns an object of class \code{mm}, a list that contains at least the components listed below.
+The function \code{summary} (i.e., \code{summary.mm}) can be used to obtain a table of the results.
+\itemize{
+  \item \code{model.y}: the fitted outcome model.
+  \item \code{model.m}: a list of fitted mediator models, one for each mediator.
+  \item \code{treatment}: a character string indicating the name of the treatment variable used in the models.
+  \item \code{treat.value}: value of the treatment variable used as the treatment condition.
+  \item \code{control.value}: value of the treatment variable used as the control condition.
+  \item \code{sims}: the number of Monte Carlo draws for quasi-Bayesian approximation.
+}
 }
 \description{
 \code{multimediate} estimates several quantities in causal mediation analysis, including the average causal mediation effect (indirect effect), average direct effect, proportion mediated, and total effect, in the presence of multiple uncausally related mediators.
