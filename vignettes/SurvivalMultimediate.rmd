@@ -5,6 +5,8 @@ date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette
 bibliography: refs.bib
+nocite: | 
+  @DomingoRelloso2024
 vignette: >
   %\VignetteIndexEntry{Causal Mediation in Additive Survival Models with the `multimediate` package}
   %\VignetteEngine{knitr::rmarkdown}
@@ -99,7 +101,7 @@ nhanes$log.cr.ucd <- log(nhanes$cr.ucd) # Urine cadmium
 nhanes$log.bpb <- log(nhanes$lbxbpb) # Blood lead
 
 # Cautionary note: treatment variables must NOT BE factors
-# In this example treatment if time period.
+# In this example treatment is time period.
 
 nhanes$wv.gr.1 <- ifelse(nhanes$wv.gr == 1, 1, 0) # Indicator for 1988-1994 survey
 nhanes$wv.gr.2 <- ifelse(nhanes$wv.gr == 2, 1, 0) # Indicator for 1999-2004 survey
@@ -130,8 +132,7 @@ model.y = aalen(
 ```
 
       
-We subsequently run the mediator  models. Cautionary note: the mediators mediators 
-must be entered in the same order as in the outcome model.
+We subsequently run the mediator  models. Cautionary note: the mediators must be entered in the same order as in the outcome model.
 
 
 ```{r echo=TRUE, fig.show='hold', results='hide', warning=FALSE, message=FALSE}
@@ -141,7 +142,7 @@ variables2 <- paste0("log.cr.ucd ~ wv.gr.2 + riagendr.2 +  ridageyr + race.2 + r
                            race.4 + smoking.2 + smoking.3")
       
 # NOTE: Here we have not adjusted one given mediator model for other correlated 
-# mediators, since `multimediate` internally simulate marginal pair-wise correlations 
+# mediators, since `multimediate` internally simulates marginal pair-wise correlations 
 # between the multiple mediators and we want to compare results with correlated=TRUE
 # option in next section. Generally, if we are to set the correlated=TRUE option it is 
 # not recommended to adjust one given mediator for other correlated mediators.
@@ -250,7 +251,7 @@ We observed that, in this case, the estimated mediation effects do not substanti
 
 ## Multiple mediation analysis including exposure-mediator interactions 
 
-Interestingly, `Multimediate` can also accommodate exposure-mediator interactions because the counter factual framework enables so.
+Interestingly, `multimediate` can also accommodate exposure-mediator interactions because the counterfactual framework enables so.
 
 ```{r echo=TRUE, fig.show='hold', results='hide', warning=FALSE, message=FALSE}
 
