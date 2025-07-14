@@ -21,4 +21,4 @@ install_github("samarafk/multimediate")
 
 ## Examples
 
-Vignettes and examples of usage can be found at the Articles menu in https://samarafk.github.io/multimediate/.
+Vignettes and examples of usage can be found in https://samarafk.github.io/multimediate/.
