@@ -16,8 +16,11 @@ library(devtools)
 install_github("samarafk/multimediate") 
 ```
 
+Or you can install the released version of `multimediate` from CRAN with:
 
-
+```r
+install.packages("multimediate")
+```
 
 ## Examples
 
