@@ -20,27 +20,31 @@ knitr::opts_chunk$set(
 )
 ```
 
-We provide a short toy example that allows interested readers to reproduce the analysis from @RuizHernandez2017 using the `multimediate` package which implements multiple mediation analysis in the setting of additive survival.
-
-
-To get started, install the development version of the `multimediate` package directly from GitHub using the `devtools` package:
-
-```{r install-package, echo=TRUE, error=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, results='hide'}
-if (!requireNamespace("devtools", quietly = TRUE)) {
-  install.packages("devtools")
-}
-
-suppressMessages(
-  devtools::install_github(
-    "samarafk/multimediate",
-    build_vignettes = FALSE,
-    force = TRUE
+```{r check_multimediate, include = FALSE}
+# Check if 'multimediate' is installed
+if (!requireNamespace("multimediate", quietly = TRUE)) {
+  stop(
+    "This vignette requires the 'multimediate' package.\n",
+    "Please install it by running:\n",
+    "install.packages('multimediate')",
+    call. = FALSE
   )
-)
+}
+```
+
+We provide a short toy example that allows interested readers to reproduce the analysis from @RuizHernandez2017 using the `multimediate` package which implements counterfactual multiple mediation analysis in the setting of additive survival.
+
+
+We first download and install the package:
+
+
+```{r install_multimediate, eval = FALSE}
+# Install from CRAN
+install.packages("multimediate")
 ```
 
 
-We set `build_vignettes` to `FALSE` as it will take time for the vignettes to be generated. Now, we load the needed packages. We can verify that the package correctly uploaded by running  `packageVersion("multimediate")`. Which should return `[1] ‘0.1.4’`. 
+Now, we load the needed packages. We can verify that the package correctly uploaded by running  `packageVersion("multimediate")`. Which should return `[1] ‘0.1.4’`. 
 
 
 ```{r echo=TRUE, fig.show='hold', results='hide', warning=FALSE, error=FALSE, message=FALSE}
@@ -50,14 +54,7 @@ suppressPackageStartupMessages(library(timereg))
 ```
 
 
-The toy dataset provided in this vignette is a custom simulated dataset with the following features:
-
-- Rows (one row per participant in the data set) were selected using random sampling with replacement from @RuizHernandez2017 study population.
-
-- The sample size matches that of the original study, with 15421 resampled observations.
-
-- Please note that the original dataset included imputed values for urine that were missing completely at random (MCAR). For more details on the imputation process, refer to @RuizHernandez2017. Consequently, the source data set for the re-sampling cannot be directly derived from the downloadable datasets in the official NHANES website.
-
+The toy dataset provided in this vignette is a subset of the study population used in the manuscript by @RuizHernandez2017. The original dataset included imputation of missing completely at random urine cadmium values and blood lead values below the detection limit (for a deeper understanding of the imputation, see @RuizHernandez2017). Here we provided the subset of actually measured  (i.e. unimputed)  urine cadmium values.
 
 
 ## Multiple mediation analysis with `correlated=FALSE`
@@ -74,7 +71,7 @@ The `multimediate()` function with `correlated=FALSE` option will reproduce the 
 
 ```{r echo=TRUE, fig.show='hold', results='hide', warning=FALSE, message=FALSE}
 # Please provide the corresponding path or place file in working directory.
-nhanes <- read.csv("bootstrap_sample_multimediate.csv")
+nhanes <- read.csv("250825_Nhanes_Multimediate.csv")
 
 # Multimediate requires that in the Aalen model, factors are recoded as dummy variables
 nhanes$race.1 <- as.factor(ifelse(nhanes$race == 1, 1, 0))
@@ -206,7 +203,7 @@ model.y2 = aalen(as.formula(variables_y2), start.time=40,
 
 ```
 
-We expect the coeffcient for time period will equal  the total effect in the multimediate output (sanity check). Happily it does as shown next:
+We expect the coefficient for time period will equal  the total effect in the multimediate output (sanity check). Happily it does as shown next:
 ```{r, echo=FALSE, results='asis'}
 knitr::kable(m_y2)
 ```
