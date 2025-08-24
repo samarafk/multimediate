@@ -209,19 +209,6 @@ knitr::kable(m_y2)
 ```
 
 
-We repeated the re-sampling with replacement 1000 times and we display the distribution of absolute and relative mediation effects:
-
-
-```{r, echo=FALSE, fig.show='hold', out.width="45%", warning=FALSE, error=FALSE, message=FALSE}
-
-knitr::include_graphics("Final_absolute_mediation.png")
-
-
-knitr::include_graphics("Final_relative_mediation.png")
-
-```
-
-
 Next, we show interesting extensions of multiple mediation that we could not 
 carry out with the difference and product of coefficient methods in the 
 original @RuizHernandez2017 paper. 
