@@ -54,7 +54,7 @@ suppressPackageStartupMessages(library(timereg))
 ```
 
 
-The toy dataset provided in this vignette is a subset of the study population used in the manuscript by @RuizHernandez2017. The original dataset included imputation of missing completely at random urine cadmium values and blood lead values below the detection limit (for a deeper understanding of the imputation, see @RuizHernandez2017). Here we provided the subset of actually measured  (i.e. unimputed)  urine cadmium values.
+The toy dataset provided in this vignette is a subset of the study population used in the manuscript by @RuizHernandez2017. The original dataset included imputation of missing completely at random urine cadmium values and blood lead values below the detection limit (for a deeper understanding of the imputation, see @RuizHernandez2017). Here we provided the subset of actually measured  (i.e. unimputed)  urine cadmium values. Also we extended the followup for deaths collection to 10 years.
 
 
 ## Multiple mediation analysis with `correlated=FALSE`
@@ -71,7 +71,7 @@ The `multimediate()` function with `correlated=FALSE` option will reproduce the 
 
 ```{r echo=TRUE, fig.show='hold', results='hide', warning=FALSE, message=FALSE}
 # Please provide the corresponding path or place file in working directory.
-nhanes <- read.csv("250825_Nhanes_Multimediate.csv")
+nhanes <- read.csv("251003_Nhanes_Multimediate.csv")
 
 # Multimediate requires that in the Aalen model, factors are recoded as dummy variables
 nhanes$race.1 <- as.factor(ifelse(nhanes$race == 1, 1, 0))
@@ -103,15 +103,13 @@ nhanes$log.bpb <- log(nhanes$lbxbpb) # Blood lead
 nhanes$wv.gr.1 <- ifelse(nhanes$wv.gr == 1, 1, 0) # Indicator for 1988-1994 survey
 nhanes$wv.gr.2 <- ifelse(nhanes$wv.gr == 2, 1, 0) # Indicator for 1999-2004 survey
 
-#> dim(nhanes)
-#[1] 15421   788
-
+dim(nhanes)
 
 # We first run the outcome model including indicator for 1999-2004 (treatment)
 # the two mediators and confounders:
 
 variables_y <- paste0(
-  "Surv(ridageyr,peryr.age.8yr,cvd.8yr==1) ~ const(wv.gr.2) +
+  "Surv(ridageyr,peryr.age.10yr,cvd.10yr==1) ~ const(wv.gr.2) +
        const(log.bpb) + const(log.cr.ucd) + const(race.2) + 
        const(race.3)+const(race.4) + const(diab) + 
        const(bmi_cat) + const(riagendr.2) + const(smoking.2) + 
@@ -191,7 +189,7 @@ We next run and outcome model *without* the mediator.
 
 ```{r echo=TRUE, fig.show='hold', results='hide', warning=FALSE, message=FALSE}
 
-variables_y2 <- paste0("Surv(ridageyr,peryr.age.8yr,cvd.8yr==1) ~ const(wv.gr.2) +
+variables_y2 <- paste0("Surv(ridageyr,peryr.age.10yr,cvd.10yr==1) ~ const(wv.gr.2) +
               const(race.2)+const(race.3)+const(race.4)+const(diab)+const(bmi_cat)+const(riagendr.2)+
               const(smoking.2)+const(smoking.3)+const(lbxtc_cat)+const(lowhdl)+const(cholmed)+const(hbp)+const(sedent)")
  
@@ -239,8 +237,8 @@ Interestingly, `multimediate` can also accommodate exposure-mediator interaction
 
 ```{r echo=TRUE, fig.show='hold', results='hide', warning=FALSE, message=FALSE}
 
-variables_y <- paste0("Surv(ridageyr,peryr.age.8yr,cvd.8yr==1) ~ const(wv.gr.2) +
-              const(log.cr.ucd)+const(log.bpb) + const(wv.gr.2*log.cr.ucd)  +const(race.2)+
+variables_y <- paste0("Surv(ridageyr,peryr.age.10yr,cvd.10yr==1) ~ const(wv.gr.2) +
+              const(log.bpb) + const(log.cr.ucd)+const(wv.gr.2*log.bpb)  +const(race.2)+
               const(race.3)+ const(race.4)+ const(diab)+ const(bmi_cat)+ const(riagendr.2)+
               const(smoking.2)+const(smoking.3)+ const(lbxtc_cat)+const(lowhdl)+const(cholmed)+
                 const(hbp)+const(sedent)")
@@ -257,9 +255,9 @@ model.y = aalen(as.formula(variables_y),start.time=40,
 # ordering must be consistent with the order mediators have been included in the outcome
 # model.
         
-variables1 <- paste0("log.cr.ucd ~ wv.gr.2 + riagendr.2 +  ridageyr + race.2 + race.3 +
+variables1 <- paste0("log.bpb ~  wv.gr.2 + riagendr.2 +  ridageyr +  race.2 + race.3 +
                      race.4 + smoking.2 + smoking.3")
-variables2 <- paste0("log.bpb ~  wv.gr.2 + riagendr.2 +  ridageyr +  race.2 + race.3 +
+variables2 <- paste0("log.cr.ucd ~ wv.gr.2 + riagendr.2 +  ridageyr + race.2 + race.3 +
                      race.4 + smoking.2 + smoking.3")
       
     
