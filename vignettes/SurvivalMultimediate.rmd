@@ -54,7 +54,7 @@ suppressPackageStartupMessages(library(timereg))
 ```
 
 
-The toy dataset provided in this vignette is a subset of the study population used in the manuscript by @RuizHernandez2017. The original dataset included imputation of missing completely at random urine cadmium values and blood lead values below the detection limit (for a deeper understanding of the imputation, see @RuizHernandez2017). Here we provided the subset of actually measured  (i.e. unimputed)  urine cadmium values. Also we extended the followup for deaths collection to 10 years.
+The toy dataset provided in this vignette is a subset of the study population used in the manuscript by @RuizHernandez2017. The original dataset included imputation of missing completely at random urine cadmium values and blood lead values below the detection limit (for a deeper understanding of the imputation, see @RuizHernandez2017. Here we provided the subset of actually measured  (i.e. unimputed)  urine cadmium values. Also we extended the followup for mortality data collection to 10 years.
 
 
 ## Multiple mediation analysis with `correlated=FALSE`
@@ -280,7 +280,7 @@ Note the option `option='navg'` for obtaining average mediation effects in the p
 knitr::kable(sum)
 ```
 
-The results suggest that at the cadmium exposure levels observed in NHANES 1999-2004, the association of cadmium with cardiovascular mortality might be weaker compared to the association at cadmium exposure levels observed in 1988-1994. The interaction p-value in the outcome model, however, is suggestive (equal to 0.09). 
+The estimated mediation effects are similar as in the model not including the interaction. Indeed, the interaction p-value in the outcome model is far from being statistically significant  (equal to 0.96). Thus, our results do not suppor exposure-mediator interaction for cadmium models.
 
 ## `multimediate` can do more!
 
