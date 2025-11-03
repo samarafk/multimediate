@@ -161,10 +161,17 @@ CorCond2 = function(e,lmodel){
     for (i in 1:dim(value)[1]){
       com = parse(text= paste(paste(names(datav),value[i,], sep = "=="), collapse = " & "))
       datai=subset(data,eval(com))
+      
+      # skip if not enough observations
+      if (nrow(datai) < 2) next
+      
       valueMi=c(1,as.numeric(as.character(value[i,names(value) %in% names(lmodel[[1]]$model)])))
       valueMj=c(1,as.numeric(as.character(value[i,names(value) %in% names(lmodel[[2]]$model)])))
 
       covMiMj=cov(as.numeric(as.character(datai[,Mi])),as.numeric(as.character(datai[,Mj])))
+      
+      # skip if covariance is NA or infinite
+      if (is.na(covMiMj) || !is.finite(covMiMj)) next
 
       if( (is.Polr.Mi & is.Polr.Mj) | (is.Glm.Mi & is.Polr.Mj) | (is.Polr.Mi & is.Glm.Mj) | (is.Glm.Mi & is.Glm.Mj) ){
         bornep=borneq=NULL
