@@ -67,7 +67,7 @@ CorCond2 = function(e,lmodel){
     Mi=names(lmodel[[1]]$model)[1]
     Mj=names(lmodel[[2]]$model)[1]
     data=cbind(lmodel[[1]]$model,lmodel[[2]]$model)[,unique(c(names(lmodel[[1]]$model),names(lmodel[[2]]$model)))]
-    datav=data[,-c(which(names(data)==Mi),which(names(data)==Mj))]
+    datav=data[,-c(which(names(data)==Mi),which(names(data)==Mj)),drop = FALSE]
     value=unique(datav)
 
     if(is.null(dim(value))){
@@ -159,17 +159,39 @@ CorCond2 = function(e,lmodel){
     Covariance.estim=NULL
     Correlation.estim=NULL
     for (i in 1:dim(value)[1]){
-      com = parse(text= paste(paste(names(datav),value[i,], sep = "=="), collapse = " & "))
-      datai=subset(data,eval(com))
-      
+      # Get the current row of values to match
+      current_values = value[i, , drop = FALSE]
+
+      # Create a logical vector for matching
+      matches = rep(TRUE, nrow(data))
+
+      # Check each covariate
+      for (col_name in colnames(datav)) {
+        if (is.numeric(datav[[col_name]]) || is.numeric(current_values[[col_name]])) {
+          # For numeric variables, use tolerance-based comparison
+          # Convert to numeric if needed
+          data_col = as.numeric(as.character(data[[col_name]]))
+          target_val = as.numeric(as.character(current_values[[col_name]]))
+
+          # Use tolerance for comparison (adjust tol as needed)
+          tol = sqrt(.Machine$double.eps)
+          matches = matches & (abs(data_col - target_val) <= tol)
+        } else {
+          # For factor/character variables, use exact match
+          matches = matches & (as.character(data[[col_name]]) == as.character(current_values[[col_name]]))
+        }
+      }
+
+      datai = data[matches, , drop = FALSE]
+
       # skip if not enough observations
       if (nrow(datai) < 2) next
-      
+
       valueMi=c(1,as.numeric(as.character(value[i,names(value) %in% names(lmodel[[1]]$model)])))
       valueMj=c(1,as.numeric(as.character(value[i,names(value) %in% names(lmodel[[2]]$model)])))
 
       covMiMj=cov(as.numeric(as.character(datai[,Mi])),as.numeric(as.character(datai[,Mj])))
-      
+
       # skip if covariance is NA or infinite
       if (is.na(covMiMj) || !is.finite(covMiMj)) next
 

@@ -1,6 +1,6 @@
 Package: multimediate
 Title: Causal Mediation Analysis in Presence of Multiple Mediators Uncausally Related
-Version: 0.1.5
+Version: 0.1.6
 Authors@R: 
     c(person(given = "Allan",
              family = "Jerolon",
