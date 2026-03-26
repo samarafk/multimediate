@@ -54,7 +54,7 @@ suppressPackageStartupMessages(library(timereg))
 ```
 
 
-The toy dataset provided in this vignette is a subset of the study population used in the manuscript by @RuizHernandez2017. The original dataset included imputation of missing completely at random urine cadmium values and blood lead values below the detection limit (for a deeper understanding of the imputation, see @RuizHernandez2017. Here we provided the subset of actually measured  (i.e. unimputed)  urine cadmium values. Also we extended the followup for mortality data collection to 10 years.
+The toy dataset provided in this vignette is a subset of the study population used in the manuscript by @RuizHernandez2017. The original dataset included imputation of missing completely at random urine cadmium values and blood lead values below the detection limit (for a deeper understanding of the imputation, see @RuizHernandez2017. Here we provided the subset of actually measured  (i.e. unimputed)  urine cadmium values. Also we extended the followup for mortality data collection to 10 years. The toy dataset can be downloaded from [here](https://raw.githubusercontent.com/samarafk/multimediate/refs/heads/master/vignettes/251003_Nhanes_Multimediate.csv).
 
 
 ## Multiple mediation analysis with `correlated=FALSE`
