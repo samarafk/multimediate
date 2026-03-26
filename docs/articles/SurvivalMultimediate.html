@@ -12,7 +12,7 @@
 
 <meta name="author" content="Tellez-Plaza, María" />
 
-<meta name="date" content="2025-10-08" />
+<meta name="date" content="2026-03-26" />
 
 <title>Causal Mediation in Additive Survival Models with the multimediate package</title>
 
@@ -364,7 +364,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h1 class="title toc-ignore">Causal Mediation in Additive Survival
 Models with the <code>multimediate</code> package</h1>
 <h4 class="author">Tellez-Plaza, María</h4>
-<h4 class="date">2025-10-08</h4>
+<h4 class="date">2026-03-26</h4>
 
 
 
@@ -389,8 +389,8 @@ dataset included imputation of missing completely at random urine
 cadmium values and blood lead values below the detection limit (for a
 deeper understanding of the imputation, see <span class="citation">Ruiz-Hernandez et al. (2017)</span>. Here we provided
 the subset of actually measured (i.e. unimputed) urine cadmium values.
-Also we extended the followup for mortality data collection to 10
-years.</p>
+Also we extended the followup for mortality data collection to 10 years.
+The toy dataset can be downloaded from <a href="https://raw.githubusercontent.com/samarafk/multimediate/refs/heads/master/vignettes/251003_Nhanes_Multimediate.csv">here</a>.</p>
 <div id="multiple-mediation-analysis-with-correlatedfalse" class="section level2">
 <h2>Multiple mediation analysis with <code>correlated=FALSE</code></h2>
 <p>In <span class="citation">Ruiz-Hernandez et al. (2017)</span>, the
@@ -513,108 +513,108 @@ and total effects.</p>
 <tbody>
 <tr class="odd">
 <td align="left">ACME.joint.treat</td>
-<td align="right">-94.3997</td>
-<td align="right">-147.0478</td>
-<td align="right">-42.2592</td>
+<td align="right">-95.5678</td>
+<td align="right">-141.9440</td>
+<td align="right">-45.8003</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="even">
 <td align="left">PM(treat)</td>
-<td align="right">0.5207</td>
-<td align="right">0.1863</td>
-<td align="right">1.1778</td>
-<td align="right">0.000</td>
+<td align="right">0.5244</td>
+<td align="right">0.1866</td>
+<td align="right">1.3079</td>
+<td align="right">0.002</td>
 </tr>
 <tr class="odd">
 <td align="left">ACME.joint.control</td>
-<td align="right">-94.3997</td>
-<td align="right">-147.0478</td>
-<td align="right">-42.2592</td>
+<td align="right">-95.5678</td>
+<td align="right">-141.9440</td>
+<td align="right">-45.8003</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="even">
 <td align="left">PM(control)</td>
-<td align="right">0.5207</td>
-<td align="right">0.1863</td>
-<td align="right">1.1778</td>
-<td align="right">0.000</td>
+<td align="right">0.5244</td>
+<td align="right">0.1866</td>
+<td align="right">1.3079</td>
+<td align="right">0.002</td>
 </tr>
 <tr class="odd">
 <td align="left">ACME.treat.log.bpb</td>
-<td align="right">-66.0982</td>
-<td align="right">-116.9757</td>
-<td align="right">-15.9155</td>
+<td align="right">-67.0260</td>
+<td align="right">-113.9973</td>
+<td align="right">-19.8052</td>
 <td align="right">0.006</td>
 </tr>
 <tr class="even">
 <td align="left">PM(treat).log.bpb</td>
-<td align="right">0.3509</td>
-<td align="right">0.0724</td>
-<td align="right">0.8268</td>
-<td align="right">0.006</td>
+<td align="right">0.3441</td>
+<td align="right">0.0905</td>
+<td align="right">0.9346</td>
+<td align="right">0.010</td>
 </tr>
 <tr class="odd">
 <td align="left">ACME.control.log.bpb</td>
-<td align="right">-66.0982</td>
-<td align="right">-116.9757</td>
-<td align="right">-15.9155</td>
+<td align="right">-67.0260</td>
+<td align="right">-113.9973</td>
+<td align="right">-19.8052</td>
 <td align="right">0.006</td>
 </tr>
 <tr class="even">
 <td align="left">PM(control).log.bpb</td>
-<td align="right">0.3509</td>
-<td align="right">0.0724</td>
-<td align="right">0.8268</td>
-<td align="right">0.006</td>
+<td align="right">0.3441</td>
+<td align="right">0.0905</td>
+<td align="right">0.9346</td>
+<td align="right">0.010</td>
 </tr>
 <tr class="odd">
 <td align="left">ACME.treat.log.cr.ucd</td>
-<td align="right">-28.3015</td>
-<td align="right">-48.3761</td>
-<td align="right">-9.3259</td>
+<td align="right">-28.5418</td>
+<td align="right">-46.9001</td>
+<td align="right">-10.7041</td>
 <td align="right">0.002</td>
 </tr>
 <tr class="even">
 <td align="left">PM(treat).log.cr.ucd</td>
-<td align="right">0.1586</td>
-<td align="right">0.0388</td>
-<td align="right">0.3838</td>
+<td align="right">0.1582</td>
+<td align="right">0.0499</td>
+<td align="right">0.3779</td>
 <td align="right">0.002</td>
 </tr>
 <tr class="odd">
 <td align="left">ACME.control.log.cr.ucd</td>
-<td align="right">-28.3015</td>
-<td align="right">-48.3761</td>
-<td align="right">-9.3259</td>
+<td align="right">-28.5418</td>
+<td align="right">-46.9001</td>
+<td align="right">-10.7041</td>
 <td align="right">0.002</td>
 </tr>
 <tr class="even">
 <td align="left">PM(control).log.cr.ucd</td>
-<td align="right">0.1586</td>
-<td align="right">0.0388</td>
-<td align="right">0.3838</td>
+<td align="right">0.1582</td>
+<td align="right">0.0499</td>
+<td align="right">0.3779</td>
 <td align="right">0.002</td>
 </tr>
 <tr class="odd">
 <td align="left">ADE.treat</td>
-<td align="right">-111.5327</td>
-<td align="right">-241.2674</td>
-<td align="right">19.1708</td>
-<td align="right">0.098</td>
+<td align="right">-110.3946</td>
+<td align="right">-239.3806</td>
+<td align="right">27.8505</td>
+<td align="right">0.118</td>
 </tr>
 <tr class="even">
 <td align="left">ADE.control</td>
-<td align="right">-111.5327</td>
-<td align="right">-241.2674</td>
-<td align="right">19.1708</td>
-<td align="right">0.098</td>
+<td align="right">-110.3946</td>
+<td align="right">-239.3806</td>
+<td align="right">27.8505</td>
+<td align="right">0.118</td>
 </tr>
 <tr class="odd">
 <td align="left">Total Effect</td>
-<td align="right">-205.9324</td>
-<td align="right">-320.6998</td>
-<td align="right">-94.3693</td>
-<td align="right">0.000</td>
+<td align="right">-205.9624</td>
+<td align="right">-320.9064</td>
+<td align="right">-80.4389</td>
+<td align="right">0.002</td>
 </tr>
 </tbody>
 </table>
@@ -644,7 +644,7 @@ next:</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">-201.65 (-317.7, -85.61)</td>
+<td align="left">-201.71 (-317.74, -85.68)</td>
 </tr>
 </tbody>
 </table>
@@ -676,107 +676,107 @@ may share common sources of exposure and metabolic pathways.</p>
 <tbody>
 <tr class="odd">
 <td align="left">ACME.joint.treat</td>
-<td align="right">-95.5885</td>
-<td align="right">-146.3312</td>
-<td align="right">-44.0272</td>
+<td align="right">-94.2084</td>
+<td align="right">-140.2749</td>
+<td align="right">-43.4595</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="even">
 <td align="left">PM(treat)</td>
-<td align="right">0.5137</td>
-<td align="right">0.1805</td>
-<td align="right">1.1810</td>
+<td align="right">0.5419</td>
+<td align="right">0.1881</td>
+<td align="right">1.1617</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="odd">
 <td align="left">ACME.joint.control</td>
-<td align="right">-95.5885</td>
-<td align="right">-146.3312</td>
-<td align="right">-44.0272</td>
+<td align="right">-94.2084</td>
+<td align="right">-140.2749</td>
+<td align="right">-43.4595</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="even">
 <td align="left">PM(control)</td>
-<td align="right">0.5137</td>
-<td align="right">0.1805</td>
-<td align="right">1.1810</td>
+<td align="right">0.5419</td>
+<td align="right">0.1881</td>
+<td align="right">1.1617</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="odd">
 <td align="left">ACME.treat.log.bpb</td>
-<td align="right">-67.0958</td>
-<td align="right">-116.6899</td>
-<td align="right">-15.8575</td>
-<td align="right">0.004</td>
+<td align="right">-65.6377</td>
+<td align="right">-112.9075</td>
+<td align="right">-18.0914</td>
+<td align="right">0.010</td>
 </tr>
 <tr class="even">
 <td align="left">PM(treat).log.bpb</td>
-<td align="right">0.3580</td>
-<td align="right">0.0759</td>
-<td align="right">0.8411</td>
-<td align="right">0.004</td>
+<td align="right">0.3776</td>
+<td align="right">0.0777</td>
+<td align="right">0.8135</td>
+<td align="right">0.010</td>
 </tr>
 <tr class="odd">
 <td align="left">ACME.control.log.bpb</td>
-<td align="right">-67.0958</td>
-<td align="right">-116.6899</td>
-<td align="right">-15.8575</td>
-<td align="right">0.004</td>
+<td align="right">-65.6377</td>
+<td align="right">-112.9075</td>
+<td align="right">-18.0914</td>
+<td align="right">0.010</td>
 </tr>
 <tr class="even">
 <td align="left">PM(control).log.bpb</td>
-<td align="right">0.3580</td>
-<td align="right">0.0759</td>
-<td align="right">0.8411</td>
-<td align="right">0.004</td>
+<td align="right">0.3776</td>
+<td align="right">0.0777</td>
+<td align="right">0.8135</td>
+<td align="right">0.010</td>
 </tr>
 <tr class="odd">
 <td align="left">ACME.treat.log.cr.ucd</td>
-<td align="right">-28.4927</td>
-<td align="right">-48.7361</td>
-<td align="right">-9.3144</td>
-<td align="right">0.002</td>
+<td align="right">-28.5707</td>
+<td align="right">-47.0199</td>
+<td align="right">-10.2792</td>
+<td align="right">0.000</td>
 </tr>
 <tr class="even">
 <td align="left">PM(treat).log.cr.ucd</td>
-<td align="right">0.1528</td>
-<td align="right">0.0390</td>
-<td align="right">0.3529</td>
-<td align="right">0.002</td>
+<td align="right">0.1820</td>
+<td align="right">0.0441</td>
+<td align="right">0.3603</td>
+<td align="right">0.000</td>
 </tr>
 <tr class="odd">
 <td align="left">ACME.control.log.cr.ucd</td>
-<td align="right">-28.4927</td>
-<td align="right">-48.7361</td>
-<td align="right">-9.3144</td>
-<td align="right">0.002</td>
+<td align="right">-28.5707</td>
+<td align="right">-47.0199</td>
+<td align="right">-10.2792</td>
+<td align="right">0.000</td>
 </tr>
 <tr class="even">
 <td align="left">PM(control).log.cr.ucd</td>
-<td align="right">0.1528</td>
-<td align="right">0.0390</td>
-<td align="right">0.3529</td>
-<td align="right">0.002</td>
+<td align="right">0.1820</td>
+<td align="right">0.0441</td>
+<td align="right">0.3603</td>
+<td align="right">0.000</td>
 </tr>
 <tr class="odd">
 <td align="left">ADE.treat</td>
-<td align="right">-112.5341</td>
-<td align="right">-246.3659</td>
-<td align="right">17.7682</td>
-<td align="right">0.088</td>
+<td align="right">-115.2293</td>
+<td align="right">-236.6575</td>
+<td align="right">13.6777</td>
+<td align="right">0.098</td>
 </tr>
 <tr class="even">
 <td align="left">ADE.control</td>
-<td align="right">-112.5341</td>
-<td align="right">-246.3659</td>
-<td align="right">17.7682</td>
-<td align="right">0.088</td>
+<td align="right">-115.2293</td>
+<td align="right">-236.6575</td>
+<td align="right">13.6777</td>
+<td align="right">0.098</td>
 </tr>
 <tr class="odd">
 <td align="left">Total Effect</td>
-<td align="right">-208.1226</td>
-<td align="right">-320.3532</td>
-<td align="right">-95.7705</td>
+<td align="right">-209.4377</td>
+<td align="right">-317.4797</td>
+<td align="right">-93.2899</td>
 <td align="right">0.000</td>
 </tr>
 </tbody>
@@ -844,108 +844,108 @@ periods.</p>
 <tbody>
 <tr class="odd">
 <td align="left">ACME.joint.treat</td>
-<td align="right">-58.3744</td>
-<td align="right">-143.3592</td>
-<td align="right">24.1236</td>
-<td align="right">0.140</td>
+<td align="right">-58.0567</td>
+<td align="right">-143.1624</td>
+<td align="right">26.7626</td>
+<td align="right">0.198</td>
 </tr>
 <tr class="even">
 <td align="left">PM(treat)</td>
-<td align="right">0.3390</td>
-<td align="right">-0.0947</td>
-<td align="right">1.0828</td>
-<td align="right">0.140</td>
+<td align="right">0.3351</td>
+<td align="right">-0.1079</td>
+<td align="right">1.2139</td>
+<td align="right">0.200</td>
 </tr>
 <tr class="odd">
 <td align="left">ACME.joint.control</td>
-<td align="right">-119.7350</td>
-<td align="right">-170.3306</td>
-<td align="right">-67.5683</td>
+<td align="right">-117.2578</td>
+<td align="right">-173.5910</td>
+<td align="right">-66.0968</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="even">
 <td align="left">PM(control)</td>
-<td align="right">0.6118</td>
-<td align="right">0.2874</td>
-<td align="right">1.2170</td>
-<td align="right">0.000</td>
+<td align="right">0.5946</td>
+<td align="right">0.2892</td>
+<td align="right">1.3142</td>
+<td align="right">0.002</td>
 </tr>
 <tr class="odd">
 <td align="left">ACME.treat.log.bpb</td>
-<td align="right">-30.1140</td>
-<td align="right">-108.2133</td>
-<td align="right">47.5489</td>
+<td align="right">-30.8193</td>
+<td align="right">-114.0273</td>
+<td align="right">50.6152</td>
 <td align="right">0.476</td>
 </tr>
 <tr class="even">
 <td align="left">PM(treat).log.bpb</td>
-<td align="right">0.1542</td>
-<td align="right">-0.2536</td>
-<td align="right">0.6806</td>
-<td align="right">0.476</td>
+<td align="right">0.1548</td>
+<td align="right">-0.3017</td>
+<td align="right">0.7046</td>
+<td align="right">0.480</td>
 </tr>
 <tr class="odd">
 <td align="left">ACME.control.log.bpb</td>
-<td align="right">-91.4746</td>
-<td align="right">-141.8467</td>
-<td align="right">-40.3954</td>
+<td align="right">-90.0204</td>
+<td align="right">-146.6738</td>
+<td align="right">-37.0974</td>
 <td align="right">0.000</td>
 </tr>
 <tr class="even">
 <td align="left">PM(control).log.bpb</td>
-<td align="right">0.4674</td>
-<td align="right">0.1645</td>
-<td align="right">1.0498</td>
-<td align="right">0.000</td>
+<td align="right">0.4795</td>
+<td align="right">0.1605</td>
+<td align="right">1.1489</td>
+<td align="right">0.004</td>
 </tr>
 <tr class="odd">
 <td align="left">ACME.treat.log.cr.ucd</td>
-<td align="right">-28.2603</td>
-<td align="right">-47.8338</td>
-<td align="right">-9.0230</td>
-<td align="right">0.002</td>
+<td align="right">-27.2374</td>
+<td align="right">-47.9751</td>
+<td align="right">-8.0475</td>
+<td align="right">0.004</td>
 </tr>
 <tr class="even">
 <td align="left">PM(treat).log.cr.ucd</td>
-<td align="right">0.1508</td>
-<td align="right">0.0399</td>
-<td align="right">0.3480</td>
-<td align="right">0.002</td>
+<td align="right">0.1395</td>
+<td align="right">0.0339</td>
+<td align="right">0.3304</td>
+<td align="right">0.004</td>
 </tr>
 <tr class="odd">
 <td align="left">ACME.control.log.cr.ucd</td>
-<td align="right">-28.2603</td>
-<td align="right">-47.8338</td>
-<td align="right">-9.0230</td>
-<td align="right">0.002</td>
+<td align="right">-27.2374</td>
+<td align="right">-47.9751</td>
+<td align="right">-8.0475</td>
+<td align="right">0.004</td>
 </tr>
 <tr class="even">
 <td align="left">PM(control).log.cr.ucd</td>
-<td align="right">0.1508</td>
-<td align="right">0.0399</td>
-<td align="right">0.3480</td>
-<td align="right">0.002</td>
+<td align="right">0.1395</td>
+<td align="right">0.0339</td>
+<td align="right">0.3304</td>
+<td align="right">0.004</td>
 </tr>
 <tr class="odd">
 <td align="left">ADE.treat</td>
-<td align="right">-97.2185</td>
-<td align="right">-217.6141</td>
-<td align="right">22.8343</td>
-<td align="right">0.126</td>
+<td align="right">-99.6615</td>
+<td align="right">-226.1213</td>
+<td align="right">29.7445</td>
+<td align="right">0.132</td>
 </tr>
 <tr class="even">
 <td align="left">ADE.control</td>
-<td align="right">-158.5790</td>
-<td align="right">-333.0215</td>
-<td align="right">7.8943</td>
-<td align="right">0.072</td>
+<td align="right">-158.8626</td>
+<td align="right">-339.0431</td>
+<td align="right">29.4705</td>
+<td align="right">0.082</td>
 </tr>
 <tr class="odd">
 <td align="left">Total Effect</td>
-<td align="right">-216.9534</td>
-<td align="right">-337.8046</td>
-<td align="right">-100.3597</td>
-<td align="right">0.000</td>
+<td align="right">-216.9193</td>
+<td align="right">-339.7829</td>
+<td align="right">-88.6296</td>
+<td align="right">0.002</td>
 </tr>
 </tbody>
 </table>
