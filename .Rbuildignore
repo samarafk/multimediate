@@ -4,3 +4,5 @@
 ^multimediate\.Rproj$
 ^doc$
 ^Meta$
+^\.positai$
+^\.claude$
