@@ -44,7 +44,7 @@ install.packages("multimediate")
 ```
 
 
-Now, we load the needed packages. We can verify that the package correctly uploaded by running  `packageVersion("multimediate")`. Which should return `[1] ‘0.1.4’`. 
+Now, we load the needed packages. We can verify that the package correctly uploaded by running  `packageVersion("multimediate")`. Which should return `[1] ‘0.1.6’`. 
 
 
 ```{r echo=TRUE, fig.show='hold', results='hide', warning=FALSE, error=FALSE, message=FALSE}
